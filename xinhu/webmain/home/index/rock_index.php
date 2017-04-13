@@ -269,10 +269,10 @@ $(document).ready(function(){
 						<div style="color:#888888">扫一扫体验微信办公</div></td>
 						<td>
 							<div style="line-height:26px;padding:5px;">
-							<b>微信办公/企业微信办公</b><br>&nbsp; &nbsp; 结合了信呼上系统，单据待办推送提醒，<a href="http://xh829.com/view_weixin.html" target="_blank">[微信企业号]</a>，<a href="http://xh829.com/view_weixinqy.html" target="_blank">[企业微信]</a>。<br>
-							1、申请微信企业号体验，去<a href="http://xh829.com/view_weixinty.html" target="_blank">[申请]</a>。<br>
+							<b>微信办公/企业微信办公</b><br>&nbsp; &nbsp; 结合了LEGEND上系统，单据待办推送提醒，<a href="http://xxxxxxxx.com/view_weixin.html" target="_blank">[微信企业号]</a>，<a href="http://xxxxxxxx.com/view_weixinqy.html" target="_blank">[企业微信]</a>。<br>
+							1、申请微信企业号体验，去<a href="http://xxxxxxxx.com/view_weixinty.html" target="_blank">[申请]</a>。<br>
 							2、扫一扫验证帐号即可使用。<br>
-							3、可到【系统→系统工具→升级系统】下安装，有问题？<a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=290802026&site=qq&menu=yes"><img border="0" align="absmiddle" src="http://xh829.com/images/qquser.png" height="22" title="在线交流"/></a>
+							3、可到【系统→系统工具→升级系统】下安装，有问题？<a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=290802026&site=qq&menu=yes"><img border="0" align="absmiddle" src="http://xxxxxxxx.com/images/qquser.png" height="22" title="在线交流"/></a>
 							</div>
 						</td>
 						</tr></table>
@@ -296,17 +296,17 @@ $(document).ready(function(){
 				
 				<div class="panel panel-success">
 				  <div class="panel-heading">
-					<h3 class="panel-title">关于信呼</h3>
+					<h3 class="panel-title">关于LEGEND</h3>
 				  </div>
 				  <div class="panel-body">
 					
 					<div style="line-height:25px">
-					软件：信呼<br>
-					官网：<a href="http://xh829.com/" target="_blank">http://xh829.com/</a><br>
+					软件：LEGEND<br>
+					官网：<a href="http://xxxxxxxx.com/" target="_blank">http://xxxxxxxx.com/</a><br>
 					版本：V<span id="banben">1.0</span><br>
-					下载：服务端，PC客户端，APP<a href="http://xh829.com/view_down.html" target="_blank">[去下载]</a><br>
-					声明：我们是开源的，请遵守我们的<a href="http://xh829.com/view_version.html" target="_blank">开源协议</a>，谢谢！<br>
-					帮助：提供开发帮助使用文档<a href="http://xh829.com/help.html" target="_blank">[查看]，<a href="http://xh829.com/view_bidu.html" target="_blank">[必读]</a>
+					下载：服务端，PC客户端，APP<a href="http://xxxxxxxx.com/view_down.html" target="_blank">[去下载]</a><br>
+					声明：我们是开源的，请遵守我们的<a href="http://xxxxxxxx.com/view_version.html" target="_blank">开源协议</a>，谢谢！<br>
+					帮助：提供开发帮助使用文档<a href="http://xxxxxxxx.com/help.html" target="_blank">[查看]，<a href="http://xxxxxxxx.com/view_bidu.html" target="_blank">[必读]</a>
 					</div>
 	
 					
@@ -371,6 +371,6 @@ $(document).ready(function(){
 		</table>
 	</div>
 	
-	<div class="tishi" align="center">Copyright ©2017 xh829.com开源信呼办公系统 技术支持：<a href="http://xh829.com/" target="_blank">信呼开发团队</a></div>
+	<div class="tishi" align="center">Copyright ©2017 xh829.com开源LEGEND办公系统 技术支持：<a href="http://xxxxxxxx.com/" target="_blank">LEGEND开发团队</a></div>
 	
 </div>

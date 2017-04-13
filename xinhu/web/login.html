@@ -5,7 +5,7 @@
 <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="yes" />
-<title>信呼</title>
+<title>LEGEND</title>
 <link rel="stylesheet" type="text/css" href="res/css/webimcss.css"/>
 <link rel="shortcut icon" href="favicon.ico" />
 <script type="text/javascript" src="res/js/jquery.js"></script>
@@ -19,7 +19,7 @@
 <script>
 var temp_token='';
 function initbody(){
-	systemtitle = js.getoption('systemtitle','信呼');
+	systemtitle = js.getoption('systemtitle','LEGEND');
 	resize();
 	$(window).resize(resize);
 	js.splittime=0;
@@ -60,7 +60,7 @@ function updatejian(upb){
 	var ver = '';
 	try{ver = nwjs.fs.readFileSync('version.txt');}catch(e){}
 	if(!upb)js.msg('wait','检查中...');
-	$.getJSON('http://xh829.com/api.php?a=clientupg&callback=?&version='+ver+'',function(a){
+	$.getJSON('http://xxxxxxxx.com/api.php?a=clientupg&callback=?&version='+ver+'',function(a){
 		var d = a.data;
 		js.msg();
 		if(d.upbool){

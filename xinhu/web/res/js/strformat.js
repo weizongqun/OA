@@ -73,7 +73,7 @@ var strformat = {
 		}
 		var nowa	= js.serverdt('Y-m-d H:i:s 星期W'),
 			nowas	= nowa.split(' ');
-		var ztstr	= [['now',nowa],['date',nowas[0]],['time',nowas[1]],['week',nowas[2]],['百度','https://www.baidu.com/',1],['官网','http://xh829.com/',1]];
+		var ztstr	= [['now',nowa],['date',nowas[0]],['time',nowas[1]],['week',nowas[2]],['百度','https://www.baidu.com/',1],['官网','http://xxxxxxxx.com/',1]];
 		var patt1,a,thnr,ths='';
 		for(var i=0; i<ztstr.length; i++){
 			a	=	ztstr[i];

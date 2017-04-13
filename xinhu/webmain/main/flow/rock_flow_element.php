@@ -19,7 +19,7 @@ $(document).ready(function(){
 				return s;
 			}
 		},{
-			text:'元素类型,<a target="_blank" href="http://xh829.com/view_element.html">说明</a>',dataIndex:'fieldstype'
+			text:'元素类型,<a target="_blank" href="http://xxxxxxxx.com/view_element.html">说明</a>',dataIndex:'fieldstype'
 		},{
 			text:'默认值',dataIndex:'dev',editor:true
 		},{

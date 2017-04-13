@@ -103,7 +103,7 @@ $(document).ready(function(){
 	<td nowrap>
 		<button class="btn btn-primary" click="clickwin,0" type="button"><i class="icon-plus"></i> 新增规则</button>&nbsp;&nbsp;
 		<button class="btn btn-default" click="reload" type="button">刷新</button>&nbsp;&nbsp;
-		<font color="#888888">不会设置？可F2查看<a href="http://xh829.com/view_num53.html" target="_blank">[帮助]</a>。</font>
+		<font color="#888888">不会设置？可F2查看<a href="http://xxxxxxxx.com/view_num53.html" target="_blank">[帮助]</a>。</font>
 	</td>
 	
 	<td></td>

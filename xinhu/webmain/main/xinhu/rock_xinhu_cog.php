@@ -90,7 +90,7 @@ $(document).ready(function(){
 		
 		<tr>
 			<td  align="right" width="200"><font color=red>*</font> 服务端推送地址：</td>
-			<td class="tdinput"><input id="push_{rand}"  style="width:300px" readonly class="form-control"><br><font color=#888888>用于推送到信呼客户端,http://开头</font></td>
+			<td class="tdinput"><input id="push_{rand}"  style="width:300px" readonly class="form-control"><br><font color=#888888>用于推送到LEGEND客户端,http://开头</font></td>
 		</tr>
 		
 		<tr>
@@ -100,7 +100,7 @@ $(document).ready(function(){
 		
 		<tr>
 			<td></td>
-			<td class="tdinput"><font color="#888888">不知道地址？请先安装并运行服务端，</font><a href="http://xh829.com/view_server.html" target="_blank">[去下载安装]</a></td>
+			<td class="tdinput"><font color="#888888">不知道地址？请先安装并运行服务端，</font><a href="http://xxxxxxxx.com/view_server.html" target="_blank">[去下载安装]</a></td>
 		</tr>
 		
 		<tr>
