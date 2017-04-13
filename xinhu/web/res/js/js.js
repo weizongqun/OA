@@ -1,7 +1,7 @@
 /**
 *	createname：雨中磐石
 *	homeurl：http://xxxxxxxx.com/
-*	Copyright (c) 2016 rainrock (xh829.com)
+*	Copyright (c) 2016 rainrock (xxxxxxxx.com)
 *	Date:2016-01-01
 */
 var PROJECT='',HOST='',token='',adminid=0,nwjsgui=false,adminface='images/noface.png',QOM='xinhu_',device='',DEBUG=false;
@@ -25,7 +25,7 @@ $(document).ready(function(){
 		var sass = lurl.split('web/');
 		apiurl=sass[0];
 	}else if(nwjsgui){
-		apiurl='http://demo.xh829.com/';
+		apiurl='http://demo.xxxxxxxx.com/';
 	}	
 	apiurl 		= js.getoption('apiurl', apiurl);
 	js.splittime= parseFloat(js.getoption('splittime','0'));

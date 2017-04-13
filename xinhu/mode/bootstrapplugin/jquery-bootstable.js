@@ -3,7 +3,7 @@
 *	caratename：chenxihu
 *	caratetime：2014-04-06 21:40:00
 *	email:qqqq2900@126.com
-*	homepage:www.xh829.com
+*	homepage:www.xxxxxxxx.com
 */
 
 (function ($) {

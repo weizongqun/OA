@@ -371,6 +371,6 @@ $(document).ready(function(){
 		</table>
 	</div>
 	
-	<div class="tishi" align="center">Copyright ©2017 xh829.com开源LEGEND办公系统 技术支持：<a href="http://xxxxxxxx.com/" target="_blank">LEGEND开发团队</a></div>
+	<div class="tishi" align="center">Copyright ©2017 xxxxxxxx.com开源LEGEND办公系统 技术支持：<a href="http://xxxxxxxx.com/" target="_blank">LEGEND开发团队</a></div>
 	
 </div>
