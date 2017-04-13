@@ -55,7 +55,7 @@ $(document).ready(function(){
 	
 	<td width="80%"></td>
 	<td align="right" nowrap>
-		<a class="btn btn-default" href="http://xh829.com/view_email.html" target="_blank">?查看邮件帮助</a>
+		<a class="btn btn-default" href="http://xxxxxxxx.com/view_email.html" target="_blank">?查看邮件帮助</a>
 	</td>
 </tr>
 </table>

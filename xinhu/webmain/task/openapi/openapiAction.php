@@ -2,7 +2,7 @@
 /**
 *	对外开发接口文件
 *	createname：LEGEND
-*	homeurl：http://xh829.com/
+*	homeurl：http://xxxxxxxx.com/
 *	Copyright (c) 2016 rainrock (xh829.com)
 *	Date:2016-11-01
 *	explain：返回200为正常

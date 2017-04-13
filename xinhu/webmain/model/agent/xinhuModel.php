@@ -8,7 +8,7 @@ class agent_xinhuClassModel extends agentModel
 	{
 		$rows[] = array(
 			'title' => '欢迎使用LEGEND',
-			'cont'	=> '官网：<a href="http://xh829.com/" target="_blank">http://xh829.com/</a><br>版本：'.VERSION.'',
+			'cont'	=> '官网：<a href="http://xxxxxxxx.com/" target="_blank">http://xxxxxxxx.com/</a><br>版本：'.VERSION.'',
 			'statuscolor' => 'green',
 			'statustext'  => '官网'
 		);
@@ -20,7 +20,7 @@ class agent_xinhuClassModel extends agentModel
 		);
 		$rows[] = array(
 			'title' => 'LEGEND相关帮助',
-			'cont'	=> '1、常见使用问题，<a href="http://xh829.com/view_cjwt.html" target="_blank">[查看]</a><br>2、使用前必读 ，<a href="http://xh829.com/view_bidu.html" target="_blank">[查看]</a><br>3、二次开发前必读 ，<a href="http://xh829.com/view_devbd.html" target="_blank">[查看]</a><br>4、更多帮助问题列表 ，<a href="http://xh829.com/infor.html" target="_blank">[查看]</a>',
+			'cont'	=> '1、常见使用问题，<a href="http://xxxxxxxx.com/view_cjwt.html" target="_blank">[查看]</a><br>2、使用前必读 ，<a href="http://xxxxxxxx.com/view_bidu.html" target="_blank">[查看]</a><br>3、二次开发前必读 ，<a href="http://xxxxxxxx.com/view_devbd.html" target="_blank">[查看]</a><br>4、更多帮助问题列表 ，<a href="http://xxxxxxxx.com/infor.html" target="_blank">[查看]</a>',
 			'statuscolor' => 'green',
 			'statustext'  => '官网'
 		);

@@ -1,6 +1,6 @@
 <?php
 if(!defined('HOST'))die('not access');
-//这个文件是初始配置文件，详细安装配置方法浏览网址：http://xh829.com/view_anzz.html
+//这个文件是初始配置文件，详细安装配置方法浏览网址：http://xxxxxxxx.com/view_anzz.html
 //如果你已经安装成功，这个文件可以删掉哦。
 return array(
 	'title'		=> 'lEGEND协同办公系统',	//系统默认标题

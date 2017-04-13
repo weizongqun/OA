@@ -156,7 +156,7 @@ function sendtype(receid,type){
 function linkbooschange(){
 	if(otherlogin)return;
 	if(!connectbool){
-		js.msg('msg','无法连接服务器2<br><span id="lianmiao"></span><a href="javascript:;" onclick="return connectserver()">[重连]</a>&nbsp;<a href="http://xh829.com/view_server.html" target="_blank">[帮助]</a>',-1);
+		js.msg('msg','无法连接服务器2<br><span id="lianmiao"></span><a href="javascript:;" onclick="return connectserver()">[重连]</a>&nbsp;<a href="http://xxxxxxxx.com/view_server.html" target="_blank">[帮助]</a>',-1);
 		relianshotime(30);
 	}
 }
@@ -1490,7 +1490,7 @@ var chatclass = function(opts){
 	};
 	this.cropScreen=function(){
 		if(!nwjsgui){
-			js.msg('msg','无法使用截屏，请使用客户端,<a href="http://xh829.com/" target="_blank">[去下载]</a>');
+			js.msg('msg','无法使用截屏，请使用客户端,<a href="http://xxxxxxxx.com/" target="_blank">[去下载]</a>');
 			return;
 		}
 		var oatg = this.getpath();

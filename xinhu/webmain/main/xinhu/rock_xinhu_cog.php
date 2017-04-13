@@ -100,7 +100,7 @@ $(document).ready(function(){
 		
 		<tr>
 			<td></td>
-			<td class="tdinput"><font color="#888888">不知道地址？请先安装并运行服务端，</font><a href="http://xh829.com/view_server.html" target="_blank">[去下载安装]</a></td>
+			<td class="tdinput"><font color="#888888">不知道地址？请先安装并运行服务端，</font><a href="http://xxxxxxxx.com/view_server.html" target="_blank">[去下载安装]</a></td>
 		</tr>
 		
 		<tr>

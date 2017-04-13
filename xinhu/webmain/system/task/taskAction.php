@@ -32,7 +32,7 @@ class taskClassAction extends Action
 		$ljth = str_replace('/','\\',ROOT_PATH);
 		echo '<title>计划任务开启方法</title>';
 		
-		echo '<font color="red">如您有安装LEGEND服务端，就不用根据下面来开启计划任务了</font><br><a target="_blank" style="color:blue" href="http://xh829.com/view_taskrun.html">查看官网上帮助</a><br>';
+		echo '<font color="red">如您有安装LEGEND服务端，就不用根据下面来开启计划任务了</font><br><a target="_blank" style="color:blue" href="http://xxxxxxxx.com/view_taskrun.html">查看官网上帮助</a><br>';
 		echo '计划任务的运行时间需要设置为5的倍数才可以运行到。<br>';
 		if(!$this->contain(PHP_OS,'WIN')){
 			echo '您的服务器系统是：Linux，可用根据以下设置定时任务<br>';

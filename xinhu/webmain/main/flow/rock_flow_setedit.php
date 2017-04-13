@@ -183,7 +183,7 @@ cont:
 		
 		<tr>
 			<td  align="right"></td>
-			<td style="padding:15px 0px" colspan="3" align="left"><button disabled class="btn btn-success" id="save_{rand}" type="button"><i class="icon-save"></i>&nbsp;保存</button>&nbsp; <span id="msgview_{rand}"></span>&nbsp;<a href="http://xh829.com/view_flowset.html" target="_blank">[看帮助]</a>查看各个字段说明
+			<td style="padding:15px 0px" colspan="3" align="left"><button disabled class="btn btn-success" id="save_{rand}" type="button"><i class="icon-save"></i>&nbsp;保存</button>&nbsp; <span id="msgview_{rand}"></span>&nbsp;<a href="http://xxxxxxxx.com/view_flowset.html" target="_blank">[看帮助]</a>查看各个字段说明
 		</td>
 		</tr>
 		

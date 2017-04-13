@@ -38,7 +38,7 @@ function _addbodykey(){
 		//弹出帮助
 		if(code==113){
 			js.confirm('是否打开查看关于['+nowtabs.name+']的帮助信息？',function(jg){
-				if(jg=='yes')window.open('http://xh829.com/view_'+nowtabs.num+'.html?title='+jm.base64encode(nowtabs.name)+'');
+				if(jg=='yes')window.open('http://xxxxxxxx.com/view_'+nowtabs.num+'.html?title='+jm.base64encode(nowtabs.name)+'');
 			});
 			return false;
 		}

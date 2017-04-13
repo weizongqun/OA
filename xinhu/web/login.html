@@ -60,7 +60,7 @@ function updatejian(upb){
 	var ver = '';
 	try{ver = nwjs.fs.readFileSync('version.txt');}catch(e){}
 	if(!upb)js.msg('wait','检查中...');
-	$.getJSON('http://xh829.com/api.php?a=clientupg&callback=?&version='+ver+'',function(a){
+	$.getJSON('http://xxxxxxxx.com/api.php?a=clientupg&callback=?&version='+ver+'',function(a){
 		var d = a.data;
 		js.msg();
 		if(d.upbool){

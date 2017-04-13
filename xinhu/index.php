@@ -1,7 +1,7 @@
 <?php 
 /**
 *	系统主要入口
-*	主页：http://xh829.com/
+*	主页：http://xxxxxxxx.com/
 *	软件：LEGEND
 *	作者：雨中磐石(rainrock)
 */

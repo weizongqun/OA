@@ -1286,7 +1286,7 @@ var chatclass = function(opts){
 	};
 	this.cropScreen=function(){
 		if(!nwjsgui){
-			js.msg('msg','无法使用截屏，请使用客户端,<a href="http://xh829.com/" target="_blank">[去下载]</a>');
+			js.msg('msg','无法使用截屏，请使用客户端,<a href="http://xxxxxxxx.com/" target="_blank">[去下载]</a>');
 			return;
 		}
 		var oatg = this.getpath();
