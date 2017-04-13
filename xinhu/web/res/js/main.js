@@ -165,7 +165,7 @@ var im={
 		$(window).resize(im.resize);
 		$(window).focus(function(){windowfocus=true});
 		$(window).blur(function(){windowfocus=false});
-		systemtitle = js.getoption('systemtitle','信呼');
+		systemtitle = js.getoption('systemtitle','LEGEND');
 		document.title=systemtitle;
 		var slogo = js.getoption('systemlogo');
 		if(slogo){

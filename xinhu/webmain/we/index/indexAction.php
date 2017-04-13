@@ -8,7 +8,7 @@ class indexClassAction extends ActionNot{
 	
 	public function defaultAction()
 	{
-		$this->title = getconfig('apptitle','信呼');
+		$this->title = getconfig('apptitle','LEGEND');
 	}
 	
 	public function editpassAction()

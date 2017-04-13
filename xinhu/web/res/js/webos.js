@@ -186,7 +186,7 @@ var im={
 		date = js.now();
 		$(window).focus(function(){windowfocus=true});
 		$(window).blur(function(){windowfocus=false});
-		systemtitle = js.getoption('systemtitle','信呼');
+		systemtitle = js.getoption('systemtitle','LEGEND');
 		document.title=systemtitle;
 		notifyobj=new notifyClass({
 			title:'系统提醒',

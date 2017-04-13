@@ -1,7 +1,7 @@
 <?php
 /**
 *	pThread 多线程插件，php.ini需要开启php_pthreads.dll扩展
-*	来自：信呼开发团队
+*	来自：LEGEND开发团队
 *	使用方法 c('thread')->startrun('http://127.0.0.1/');
 */
 class threadChajian extends Thread{

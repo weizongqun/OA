@@ -14,7 +14,7 @@ return array(
 	'db_pass'	=> '123456',			//数据库密码
 	'db_base'	=> 'rockxinhu',	//数据库名称
 
-	'randkey'	=> 'jlbfwngxzpyuaemovhdktiqsrc',			//系统密钥，必须填写(详见上面网址生成)
+	'randkey'	=> '',			//系统密钥，必须填写(详见上面网址生成)
 	
 	
 	'perfix'	=> 'xinhu_',	//数据库表名前缀

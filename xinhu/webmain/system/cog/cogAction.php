@@ -29,7 +29,7 @@ class cogClassAction extends Action
 			'taskurl'	=> getconfig('taskurl'),
 			'xinhukey'	=> getconfig('xinhukey'),
 			'db_drive'	=> getconfig('db_drive'),
-			'version'	=> '信呼V'.VERSION.'',
+			'version'	=> 'LEGENDV'.VERSION.'',
 			'phpos'	=> PHP_OS,
 			'phpver'	=> PHP_VERSION,
 			'mysqlver'	=> $this->db->getsyscount('version'),
@@ -126,7 +126,7 @@ class cogClassAction extends Action
 		$smarr['sqllog']		= '是否记录sql日志保存'.UPDIR.'/sqllog下';
 		$smarr['asynsend']		= '是否异步发送提醒消息，为true需开启服务端';
 		$smarr['install']		= '已安装，不要去掉啊';
-		$smarr['xinhukey']		= '信呼官网key，用于在线升级使用';
+		$smarr['xinhukey']		= 'LEGEND官网key，用于在线升级使用';
 		
 		$str1 = '';
 		foreach($arr as $k=>$v){

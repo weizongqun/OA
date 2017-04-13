@@ -1,6 +1,6 @@
 <?php
 /**
-*	来自：信呼开发团队
+*	来自：LEGEND开发团队
 *	作者：磐石(rainrock)
 *	网址：http://xh829.com/
 *	系统默认配置文件，请不要去修改，欢迎研究学习
@@ -24,7 +24,7 @@ if(!defined('PROJECT'))define('PROJECT', $rock->get('p', 'webmain'));
 if(!defined('ENTRANCE'))define('ENTRANCE', 'index');
 error_reporting(DEBUG ? E_ALL : 0);
 $config		= array(
-	'title'		=> '信呼',
+	'title'		=> 'LEGEND',
 	'url'		=> 'http://'.HOST.'/app/xinhu/',
 	'urly'		=> 'http://xh829.com/',
 	'db_host'	=> '',
