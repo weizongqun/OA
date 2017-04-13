@@ -18,8 +18,15 @@ class deptClassModel extends Model
 			}
 		}
 		foreach($darr as $k1=>$v1)$did.=','.$k1.'';
-		$rows = $this->getall('id in('.$did.')','id,name,pid,sort','sort');
+		$where= 'id in('.$did.')';
 		$dbs  = m('admin');
+		if((int)$dbs->getmou('type', $this->adminid)==1){
+			$where='id>0';
+		}else{
+			$where1=m('view')->viewwhere('dept', $this->adminid, 'id');
+			$where = '`id`>0 and ((1 '.$where1.') or (id in('.$did.')))';
+		}
+		$rows = $this->getall($where,'`id`,`name`,`pid`,`sort`','sort');
 		foreach($rows as $k=>$rs){
 			$stotal = $dbs->rows("`status`=1 and instr(`deptpath`,'[".$rs['id']."]')>0");
 			$rows[$k]['stotal'] = $stotal; //对应部门下有多少人

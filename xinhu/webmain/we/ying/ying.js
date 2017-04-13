@@ -137,6 +137,16 @@ var myScroll=false,yy={
 			yy.showdata(ret);
 		},mo, false,false, 'get');
 	},
+	getfirstnum:function(d){
+		var dbh = 'def',bh='';
+		var a = d[0];
+		if(a){
+			bh = a.url;
+			if(a.submenu[0])bh=a.submenu[0].url;
+		}
+		if(isempt(bh))bh=dbh;
+		return bh;
+	},
 	reload:function(){
 		this.getdata(this.nowevent,this.nowpage);
 	},

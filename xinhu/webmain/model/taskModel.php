@@ -78,6 +78,13 @@ class taskClassModel extends Model
 				$rs['runtime'] 	= strtotime($time);
 				$runa[] = $rs;
 			}
+			//每年
+			if($type=='y'){
+				$time 			= date('Y-'.$atime.'');
+				$rs['runtimes'] = $time;
+				$rs['runtime'] 	= strtotime($time);
+				$runa[] = $rs;
+			}
 		}
 		$brun	= array();
 		foreach($runa as $k=>$rs){

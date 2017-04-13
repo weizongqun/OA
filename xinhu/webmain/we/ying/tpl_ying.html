@@ -42,9 +42,19 @@ body,html{background-color:#f1f1f1;overflow:hidden}
 </style>
 <script>
 var json = <?=json_encode($arr)?>;
+function _getfirstnum(d){
+	var dbh = 'def',bh='';
+	var a = d[0];
+	if(a){
+		bh = a.url;
+		if(a.submenu[0])bh=a.submenu[0].url;
+	}
+	if(isempt(bh))bh=dbh;
+	return bh;
+}
 function yingyonginit(){
 	var url = location.href;
-	var urla= url.split('#'),dkey = 'def';
+	var urla= url.split('#'),dkey = _getfirstnum(json.menu);
 	if(urla[1])dkey = urla[1];
 	yy.getdata(dkey,1);
 }

@@ -355,7 +355,10 @@ class adminClassModel extends Model
 	
 	
 	
-	
+	public function getidtouser($id)
+	{
+		return $this->getmou('user', "`id`='$id'");
+	}
 	
 	
 	

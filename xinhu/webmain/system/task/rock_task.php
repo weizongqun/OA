@@ -161,7 +161,7 @@ $(document).ready(function(){
 	
 	
 	
-	<td width="80%">&nbsp;&nbsp;<a href="javascipt:;" onclick="openanzwwwew()">查看计划任务安装</a></td>
+	<td width="80%">&nbsp;&nbsp;<a href="javascipt:;" onclick="openanzwwwew()">[查看计划任务安装]</a>&nbsp;&nbsp;<a href="http://xh829.com/view_taskrun.html"target="_blank">[帮助]</a></td>
 	<td align="right" nowrap>
 		
 		<button class="btn btn-default" id="yun_{rand}" click="yunx" disabled type="button">运行</button> &nbsp; 
@@ -174,4 +174,4 @@ $(document).ready(function(){
 </div>
 <div class="blank10"></div>
 <div id="veiw_{rand}"></div>
-<div class="tishi">提示：执行地址如[sys,beifen]也就是运行webmain/task/runt/sysAction.php文件的beifenAction方法，以此类推。频率d每天,i分钟</div>
+<div class="tishi">提示：执行地址如[sys,beifen]也就是运行webmain/task/runt/sysAction.php文件的beifenAction方法，以此类推。频率d每天,i分钟,w周,m月,y年,h小时</div>

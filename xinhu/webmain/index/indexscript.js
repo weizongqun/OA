@@ -66,6 +66,14 @@
 		js.importjs('web/res/js/jquery-imgview.js');
 	}
 	setTimeout(_loadjsurl,1000);
+	
+	//每次ajax请求时判断
+	$.ajaxSetup({
+		statusCode:{
+			200:function(){
+			}
+		}
+	});
 }
 
 

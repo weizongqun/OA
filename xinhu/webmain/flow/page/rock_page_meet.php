@@ -2,7 +2,7 @@
 /**
 *	模块：meet.会议，
 *	说明：自定义区域内可写您想要的代码，模块列表页面，生成分为2块
-*	来源：http://xxxxxxxx.com/
+*	来源：http://xh829.com/
 */
 defined('HOST') or die ('not access');
 ?>

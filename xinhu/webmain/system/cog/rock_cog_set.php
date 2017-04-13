@@ -79,9 +79,9 @@ $(document).ready(function(){
 		</tr>
 		
 		<tr>
-			<td  align="right"><a target="_blank" href="http://xxxxxxxx.com/">LEGEND官网</a>key：</td>
+			<td  align="right"><a target="_blank" href="http://xh829.com/">信呼官网</a>key：</td>
 			<td class="tdinput"><input id="xinhukey_{rand}" class="form-control">
-			<font color="#888888">用于在线升级使用,看<a target="_blank" href="http://xxxxxxxx.com/view_xhkey.html">[帮助]</a>获取</font></td>
+			<font color="#888888">用于在线升级使用,看<a target="_blank" href="http://xh829.com/view_xhkey.html">[帮助]</a>获取</font></td>
 		</tr>
 		
 		<tr>

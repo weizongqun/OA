@@ -29,6 +29,13 @@ class asynrunClassAction extends apiAction
 		m('weixin:chat')->chattongbu($id);
 	}
 	
+	//消息同步到企业客服消息汇总
+	public function wxkefutbAction()
+	{
+		$id   = (int)$this->get('id');
+		m('weixin:kefu')->chattongbu($id);
+	}
+	
 	//薪资发放通知给人员
 	public function salaryffAction()
 	{

@@ -35,6 +35,9 @@ class flow_gongClassModel extends flowModel
 		if($zt==1)$this->tisongtodo();
 	}
 	
+	
+
+	
 	//发送推送通知
 	private function tisongtodo()
 	{

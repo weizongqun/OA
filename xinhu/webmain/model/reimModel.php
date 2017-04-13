@@ -25,11 +25,9 @@ class reimClassModel extends Model
 		$this->serverhosturl	= $dbs->getval('reimhostsystem');
 		$this->servertitle		= $dbs->getval('reimtitlesystem');
 		$this->wxcorpid			= $dbs->getval('weixin_corpid');
-		$_chatsecret			= $dbs->getval('weixin_chatsecret');
 		$this->wxchattb			= (int)$dbs->getval('weixin_chattb','0');
-		if(isempt($_chatsecret))$this->wxchattb = 0;
 		if(getconfig('systype')=='demo')$this->serverhosturl = $this->rock->jm->base64decode('d3M6Ly93d3cueGg4MjkuY29tOjY1NTIv');
-		if($this->isempt($this->servertitle))$this->servertitle='LEGEND';
+		if($this->isempt($this->servertitle))$this->servertitle='信呼';
 	}
 	
 	public function isanwx()
@@ -878,11 +876,21 @@ class reimClassModel extends Model
 		if($type == 'group'){
 			$arr 	= $this->sendgroup($sendid, $gid, $cans, $lx);
 		}
+		
+		//同步消息必须用异步
 		if($this->wxchattb==1 && isset($arr['id'])){
 			$msgid 	= $arr['msgid'];
-			if(isempt($msgid))$this->asynurl('asynrun','wxchattb', array(
-				'id' => $arr['id']
-			));
+			if(isempt($msgid)){
+				if(!isempt($this->optiondb->getval('weixin_chatsecret'))){
+					$this->asynurl('asynrun','wxchattb', array(
+						'id' => $arr['id']
+					));
+				}else if(!isempt($this->optiondb->getval('weixin_kefusecret'))){
+					if($type == 'user')$this->asynurl('asynrun','wxkefutb', array(
+						'id' => $arr['id']
+					));
+				}
+			}
 		}
 		return $arr;
 	}
@@ -1227,7 +1235,7 @@ class reimClassModel extends Model
 		$gid 			= 0;
 		$optdt 			= date('Y-m-d H:i:s', $arr['CreateTime']);
 		$cont 			= '';
-		if($Type=='single'){
+		if($Type=='single' || $Type=='userid'){
 			$gid = (int)m('admin')->getmou('id', "`user`='".$arr['Id']."'");
 			$type= 'user';
 		}

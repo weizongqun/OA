@@ -1,8 +1,8 @@
 <?php
 /**
-*	来自：LEGEND开发团队
+*	来自：信呼开发团队
 *	作者：磐石(rainrock)
-*	网址：http://xxxxxxxx.com/
+*	网址：http://xh829.com/
 *	系统的核心文件之一，处理工作流程模块的。
 */
 class flowModel extends Model
