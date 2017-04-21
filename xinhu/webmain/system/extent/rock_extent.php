@@ -99,7 +99,7 @@ $(document).ready(function(){
 	}
 	
 	function btn(bo){
-		get('save_{rand}').disabled = bo;
+		if(get('save_{rand}'))get('save_{rand}').disabled = bo;
 	}
 	
 	var c = {

@@ -202,6 +202,21 @@ PRIMARY KEY (`id`),KEY `mid` (`mid`)
 		);
 	}
 	
+	//条件where
+	public function flowwhereafter($table, $rows)
+	{
+		return array(
+			'flowarr'=> $this->getmodearr()
+		);
+	}
+	public function flowwherebefore($table)
+	{
+		return array(
+			'table' => '`[Q]'.$table.'` a left join `[Q]flow_set` b on a.setid=b.id',
+			'fields'=> 'a.*,b.num as modenum,b.name as modename'
+		);
+	}
+	
 	//单据通知设置
 	public function flowtodobefore($table)
 	{
@@ -690,7 +705,8 @@ class mode_'.$modenum.'ClassAction extends inputAction{
 		$oi   = 0;
 		$msg  = '';
 		foreach($rows as $k=>$rs){
-			$path 	= $dbs->createlistpage($rs);
+			$path 	= $dbs->createlistpage($rs,1);
+			if($path=='none')continue;
 			if($path==''){
 				if($path=='')$msg	= '无法生成，可能没权限写入'.P.'/flow/page目录';
 				break;

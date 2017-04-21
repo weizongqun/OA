@@ -87,7 +87,8 @@ function loginsuccess(d){
 }
 function yanzdengl(){
 	js.wx.load('处理中...');
-	js.location('?m=login&d=we&a=wxlogin');
+	var burl = js.request('backurl');
+	js.location('?m=login&d=we&a=wxlogin&backurl='+burl+'');
 }
 </script>
 </head>

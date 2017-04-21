@@ -13,7 +13,7 @@ function initbody(){
 		c.mencc(this);
 	});
 	c.initinput();
-	if(form('fileid')){
+	if(document.myform && form('fileid')){
 		if(typeof(FormData)=='function'){
 			f.fileobj = $.rockupload({
 				autoup:false,
@@ -208,8 +208,16 @@ var c={
 	changeshow:function(lx){
 		$('#showrecord'+lx+'').toggle();
 	},
+	loacdis:false,
 	showviews:function(o1){
+		this.loadicons();
 		$.imgview({'url':o1.src,'ismobile':ismobile==1});
+	},
+	loadicons:function(){
+		if(!this.loacdis){
+			$('body').append('<link rel="stylesheet" type="text/css" href="web/res/fontawesome/css/font-awesome.min.css">');
+			this.loacdis= true;
+		}
 	},
 	//初始上传框
 	initinput:function(){
@@ -271,6 +279,7 @@ var c={
 	downshow:function(id, ext,pts){
 		var url = 'index.php?m=public&a=fileviewer&id='+id+'&wintype=max';
 		if(pts!=''&&js.isimg(ext)){
+			this.loadicons();
 			$.imgview({'url':pts,'ismobile':ismobile==1});
 			return false;
 		}

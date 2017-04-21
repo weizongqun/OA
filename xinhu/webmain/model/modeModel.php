@@ -30,7 +30,7 @@ class modeClassModel extends Model
 	}
 	
 	//生成列表页面
-	public function createlistpage($modeid)
+	public function createlistpage($modeid, $lxss=0)
 	{
 		if(is_array($modeid)){
 			$mors	= $modeid;
@@ -38,10 +38,15 @@ class modeClassModel extends Model
 			$mors 	= m('flow_set')->getone($modeid,'`id`,`table`,`num`,`name`,`isflow`');
 		}
 		$num	= $mors['num'];
+		
+		$path 	= ''.P.'/flow/page/rock_page_'.$num.'.php';
+		if($lxss==1 && !file_exists($path))return 'none';
+		
 		$name	= $mors['name'];
 		$modeid	= $mors['id'];
+		$isflow	= $mors['isflow'];
 		$columnsstr = '';
-		$path 	= ''.P.'/flow/page/rock_page_'.$num.'.php';
+		$showzt	= false;
 		
 		$farr 	= m('flow_element')->getall("`mid`='$modeid' and `iszb`=0 and `islb`=1",'`fields`,`name`,`fieldstype`,`ispx`,`isalign`','`sort`');
 		foreach($farr as $k=>$rs){
@@ -50,6 +55,10 @@ class modeClassModel extends Model
 			if($rs['isalign']==1)$columnsstr.=',align:"left"';
 			if($rs['isalign']==2)$columnsstr.=',align:"right"';
 			$columnsstr.='},';
+			if($rs['fields']=='status')$showzt=true;
+		}
+		if($isflow==1){
+			$columnsstr.='{text:"状态",dataIndex:"statustext"},';
 		}
 		$jgpstr 	= '<!--SCRIPTend-->';
 		$hstart 	= '<!--HTMLstart-->';
@@ -58,14 +67,16 @@ class modeClassModel extends Model
 		$autoquye	= $this->rock->getcai($oldcont,'//[自定义区域start]','//[自定义区域end]');
 		
 		//读取流程模块的条件
-		$wrows 		= m('flow_where')->getall("`setid`='$modeid' and `num` is not null and `status`=1 and `islb`=1",'`id`,`num`,`name`','`sort`');
-		$whtml 		= '';
-		if($wrows){
-			$whtml='<div id="changatype{rand}" class="btn-group">';
-			foreach($wrows as $k=>$rs){
-				$whtml.='<button class="btn btn-default" id="changatype{rand}_'.$rs['num'].'" click="changatype,'.$rs['num'].'" type="button">'.$rs['name'].'</button>';
+		$whtml 		= '<div id="changatype{rand}" class="btn-group"></div>';
+		$zthtml		= '';
+		if($isflow==1 || $showzt){
+			$ztarr	= m('flow')->initflow($num)->getstatusarr();
+			$zthtml = '<td style="padding-left:10px"><select class="form-control" style="width:120px" id="selstatus_{rand}"><option value="">-全部状态-</option>';
+			foreach($ztarr as $zt=>$ztv){
+				if($isflow==0 && $zt==23)continue;
+				$zthtml .= '<option style="color:'.$ztv[1].'" value="'.$zt.'">'.$ztv[0].'</option>';
 			}
-			$whtml.='</div>';
+			$zthtml .= '</select></td>';
 		}
 		
 $html= "".$hstart."
@@ -76,11 +87,11 @@ $html= "".$hstart."
 		<td>
 			<input class=\"form-control\" style=\"width:160px\" id=\"key_{rand}\" placeholder=\"搜索关键词\">
 		</td>
+		$zthtml
 		<td style=\"padding-left:10px\">
-			<button class=\"btn btn-default\" click=\"searchbtn\" type=\"button\">搜索</button> 
-		</td>
-		<td style=\"padding-left:10px\">
-			<button class=\"btn btn-default\" click=\"searchhigh\" type=\"button\">高级搜索</button> 
+			<div style=\"width:81px\" class=\"btn-group\">
+			<button class=\"btn btn-default\" click=\"searchbtn\" type=\"button\">搜索</button><button class=\"btn btn-default\" id=\"downbtn_{rand}\" type=\"button\" style=\"padding-left:8px;padding-right:8px\"><i class=\"icon-angle-down\"></i></button> 
+			</div>
 		</td>
 		<td  width=\"90%\" style=\"padding-left:10px\">$whtml</td>
 	
@@ -105,8 +116,8 @@ defined('HOST') or die ('not access');
 <script>
 $(document).ready(function(){
 	{params}
-	var modenum = '".$num."',modename='".$name."',modeid='".$modeid."',atype = params.atype;
-	if(!atype)atype='';
+	var modenum = '".$num."',modename='".$name."',isflow=".$isflow.",modeid='".$modeid."',atype = params.atype,pnum=params.pnum;
+	if(!atype)atype='';if(!pnum)pnum='';
 	//常用操作c方法
 	var c = {
 		//刷新
@@ -117,20 +128,21 @@ $(document).ready(function(){
 		clickwin:function(o1,lx){
 			var id=0;
 			if(lx==1)id=a.changeid;
-			openinput(modename,modenum,id);
+			openinput(modename,modenum,id,'opegs{rand}');
 		},
 		//打开详情
 		view:function(){
 			var d=a.changedata;
-			openxiangs(modename,modenum,d.id);
+			openxiangs(modename,modenum,d.id,'opegs{rand}');
 		},
 		searchbtn:function(){
 			this.search({});
 		},
 		//搜索
 		search:function(cans){
-			var s=get('key_{rand}').value;
-			var canss = js.apply({key:s}, cans);
+			var s=get('key_{rand}').value,zt='';
+			if(get('selstatus_{rand}'))zt=get('selstatus_{rand}').value;
+			var canss = js.apply({key:s,keystatus:zt}, cans);
 			a.setparams(canss,true);
 		},
 		//高级搜索
@@ -153,7 +165,7 @@ $(document).ready(function(){
 		},
 		//对应控制器返回rul
 		getacturl:function(act){
-			return js.getajaxurl(act,'mode_".$num."|input','flow');
+			return js.getajaxurl(act,'mode_".$num."|input','flow',{'modeid':modeid});
 		},
 		//查看切换
 		changatype:function(o1,lx){
@@ -163,21 +175,58 @@ $(document).ready(function(){
 			nowtabssettext($(o1).html());
 		},
 		init:function(){
-			$('#changatype{rand}_'+atype+'').addClass('active');
+			$('#key_{rand}').keyup(function(e){
+				if(e.keyCode==13)c.searchbtn();
+			});
 			this.initpage();
 		},
 		initpage:function(){
 			
+		},
+		loaddata:function(d){
+			if(!d.atypearr)return;
+			var d1 = d.atypearr,len=d1.length,i,str='';
+			for(i=0;i<len;i++){
+				str+='<button class=\"btn btn-default\" click=\"changatype,'+d1[i].num+'\" id=\"changatype{rand}_'+d1[i].num+'\" type=\"button\">'+d1[i].name+'</button>';
+			}
+			$('#changatype{rand}').html(str);
+			$('#changatype{rand}_'+atype+'').addClass('active');
+			js.initbtn(c);
+		},
+		setcolumns:function(fid, cnas){
+			var d = false,i,ad=bootparams.columns,len=ad.length,oi=-1;
+			for(i=0;i<len;i++){
+				if(ad[i].dataIndex==fid){
+					d = ad[i];
+					oi= i;
+					break;
+				}
+			}
+			if(d){
+				d = js.apply(d, cnas);
+				bootparams.columns[oi]=d;
+			}
+		},
+		setparams:function(cs){
+			var ds = js.apply({},cs);
+			a.setparams(ds);
+		},
+		storeurl:function(){
+			var url = this.getacturl('publicstore')+'&pnum='+pnum+'';
+			return url;
+		},
+		printlist:function(){
+			js.msg('success','可使用导出，然后打开在打印');
 		}
 	};	
 	
 	//表格参数设定
 	var bootparams = {
 		fanye:true,modenum:modenum,modename:modename,
-		url:c.getacturl('publicstore'),storeafteraction:'storeaftershow',
+		url:c.storeurl(),storeafteraction:'storeaftershow',storebeforeaction:'storebeforeshow',
 		params:{atype:atype},
 		columns:[".$columnsstr."{
-			text:'',dataIndex:'caozuo'
+			text:'',dataIndex:'caozuo',callback:'opegs{rand}'
 		}],
 		itemdblclick:function(){
 			c.view();
@@ -187,8 +236,15 @@ $(document).ready(function(){
 		},
 		beforeload:function(){
 			get('xiang_{rand}').disabled=true;
+		},
+		load:function(d){
+			c.loaddata(d);
 		}
 	};
+	
+	opegs{rand}=function(){
+		c.reload();
+	}
 	
 //[自定义区域start]
 
@@ -199,6 +255,18 @@ $autoquye
 	js.initbtn(c);//初始化绑定按钮方法
 	var a = $('#view".$num."_{rand}').bootstable(bootparams);//加载表格
 	c.init();
+	$('#downbtn_{rand}').rockmenu({
+		width:110,top:35,donghua:false,
+		data:[{
+			name:'高级搜索',lx:0
+		},{
+			name:'打印',lx:1
+		}],
+		itemsclick:function(d, i){
+			if(d.lx==0)c.searchhigh();
+			if(d.lx==1)c.printlist();
+		}
+	});
 });
 </script>
 ".$jgpstr."";	
@@ -218,6 +286,7 @@ $rstr 	= "".$hstart."
 		}
 		$bo = $this->rock->createtxt($path, $str);
 		if(!$bo)$path='';
+		if($bo)$this->update('isscl=1', $modeid);
 		return $path;
 	}
 }

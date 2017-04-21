@@ -462,15 +462,21 @@ class inputAction extends Action
 	
 	
 	
-	
+	public function storebeforeshow($table)
+	{
+		$this->atypearr	= false;
+		if((int)$this->post('loadci')==1){
+			$this->atypearr = m('where')->getmywhere((int)$this->get('modeid'), $this->adminid, $this->get('pnum'));
+		}
+	}
 	
 	
 	//展示列数
 	public function storeaftershow($table, $rows)
 	{
-		return array(
-			'rows' => $rows
-		);
+		$barr['rows'] 		= $rows;
+		$barr['atypearr'] 	= $this->atypearr;
+		return $barr;
 	}
 	
 	//获取可搜索列表

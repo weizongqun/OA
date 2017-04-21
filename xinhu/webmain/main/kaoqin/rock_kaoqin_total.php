@@ -18,6 +18,10 @@ $(document).ready(function(){
 		text:'早退',dataIndex:'state2'
 	}];
 	var col3 = [{
+		text:'应上班(天)',dataIndex:'sbday'
+	},{
+		text:'已上班(天)',dataIndex:'ysbday'
+	},{
 		text:'未打卡',dataIndex:'weidk'
 	},{
 		text:'请假(小时)',dataIndex:'qingjia'

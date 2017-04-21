@@ -98,21 +98,24 @@
 		};
 		this.showlist=function(pid,oi){
 			var type=this.inputtype,hw=24;
-			var a=this.deptarr,len=a.length,i,s='',s2='';
+			var a=this.deptarr,len=a.length,i,s='',wjj,s2='';
 			var s1='<div style="width:'+(hw*oi)+'px"></div>';
 			var dob=this.changetype.indexOf('dept')==-1;
+			var uob=this.changetype.indexOf('user')>=0;
 			for(i=0;i<len;i++){
 				if(a[i].pid==pid){
+					wjj= 'images/files.png';
+					if(a[i].ntotal=='0' && uob)wjj= 'images/file.png';
 					s2 = '<input name="changeuserinput_'+rand+'" xls="d" xname="'+a[i].name+'" xu="'+i+'" value="'+a[i].id+'" style="width:18px;height:18px;" type="'+type+'">';
 					if(dob)s2='';
 					if(s2!='' && !this._isdeptcheck(a[i]))s2='';
 					s+='<div class="listsss">';
-					s+='<table width="100%"><tr><td>'+s1+'</td><td deptxu="'+i+'_'+oi+'" width="100%"><img align="absmiddle" height="20" height="20" src="images/files.png">&nbsp;'+a[i].name+'</td><td>'+s2+'</td></tr></table>';
+					s+='<table width="100%"><tr><td>'+s1+'</td><td deptxu="'+i+'_'+oi+'" width="100%"><img align="absmiddle" height="20" height="20" src="'+wjj+'">&nbsp;'+a[i].name+'</td><td>'+s2+'</td></tr></table>';
 					s+='</div>';
 					s+='<span  show="false" id="showdiv'+rand+'_'+a[i].id+'"></span>';
 				}
 			}
-			if(this.changetype.indexOf('user')>=0){
+			if(uob){
 				a=this.userarr;
 				len=a.length;
 				for(i=0;i<len;i++){

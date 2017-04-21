@@ -14,6 +14,8 @@ class deptClassModel extends Model
 				$dpatha = explode(',', $dpath);
 				foreach($dpatha as $dpatha1){
 					$darr[$dpatha1]=$dpatha1;
+					if(!isset($dtotal[$dpatha1]))$dtotal[$dpatha1]=0;
+					$dtotal[$dpatha1]++;
 				}
 			}
 		}
@@ -26,10 +28,11 @@ class deptClassModel extends Model
 			$where1=m('view')->viewwhere('dept', $this->adminid, 'id');
 			$where = '`id`>0 and ((1 '.$where1.') or (id in('.$did.')))';
 		}
-		$rows = $this->getall($where,'`id`,`name`,`pid`,`sort`','sort');
+		$rows = $this->getall($where,'`id`,`name`,`pid`,`sort`','`pid`,`sort`');
 		foreach($rows as $k=>$rs){
 			$stotal = $dbs->rows("`status`=1 and instr(`deptpath`,'[".$rs['id']."]')>0");
 			$rows[$k]['stotal'] = $stotal; //对应部门下有多少人
+			$rows[$k]['ntotal']	= $this->rock->arrvalue($dtotal, $rs['id'], '0');
 		}
 		return $rows;
 	}

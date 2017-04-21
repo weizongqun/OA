@@ -321,6 +321,7 @@ class adminClassModel extends Model
 			if($lx==1){
 				if(isempt($rs['pingyin']))$rows[$k]['pingyin'] = $py->get($rs['name'],1);
 			}
+			foreach($rs as $k1=>$v1)if($v1==null)$rows[$k][$k1]='';
 		}
 		return $rows;
 	}

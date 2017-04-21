@@ -6,9 +6,10 @@ agentobj.schedule.initagent = function(){
 	this.clickevent=function(d){
 		var lx = d.url;
 		if(js.ajaxbool)return;
-		if(lx=='guan'){
+		if(lx=='my' || lx=='rece'){
 			this.disabledscroll('auto');
-			this.getdata('guan', 1);
+			this.getdata(lx, 1);
+			this.winTitle(this.receinfor.name);
 		}else{
 			c.showcale();
 		}
@@ -30,7 +31,8 @@ agentobj.schedule.initagent = function(){
 					height:250,
 					selbgcolor:'#C0EDD6',
 					changemonth:function(y, m, o){
-						var dt = ''+y+'年'+xy10(m)+'月';
+						var dt = '日程：'+y+'年'+xy10(m)+'月';
+						me.winTitle(dt);
 						c.getdatass(o);
 					},
 					align:'center',valign:'center',

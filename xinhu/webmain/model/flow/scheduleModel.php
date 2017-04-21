@@ -38,27 +38,14 @@ class flow_scheduleClassModel extends flowModel
 		return $rs;
 	}
 	
-	protected function flowprintrows($rows)
-	{
-		foreach($rows as $k=>$rs){
-			$rows[$k] = $this->flowrsreplace($rs);
-		}
-		return $rows;
-	}
-	
+
 	protected function flowbillwhere($uid, $lx)
 	{
-		$where	= 'and uid='.$uid.'';
+		$where	= '';
 		$dt 	= $this->rock->post('dt');
-		$key 	= $this->rock->post('key');
-		//有提醒给我的
-		if($lx=='rece'){
-			$where = m('admin')->getjoinstr('receid', $uid, 0 , 1);
-		}
-		if($dt!='')$where.=" and `startdt` like '$dt%'";
-		if($key!='')$where.=" and `title` like '%$key%'";
+		if($dt!='')$where =" and `startdt` like '$dt%'";
 		return array(
-			'where' => $where,
+			'keywhere' => $where,
 			'order' => 'optdt desc'
 		);
 	}

@@ -8,9 +8,13 @@ class whereClassModel extends Model
 		$this->settable('flow_where');
 	}
 	
+	/**
+	*	条件格式化，返回是没有and开头的
+	*/
 	public function getstrwhere($str, $uid=0, $fid='')
 	{
 		if($uid==0)$uid = $this->adminid;
+		$dbs		= m('admin');
 		$sw1		= $this->rock->dbinstr('superid',$uid);
 		$super		= "select `id` from `[Q]admin` where $sw1";//我的直属下属
 		$allsuper	= "select `id` from `[Q]admin` where instr(`superpath`,'[$uid]')>0"; //我所有下属的下属
@@ -39,7 +43,7 @@ class whereClassModel extends Model
 		}
 		//receid
 		if(contain($str,'{receid}')){
-			$rstr= m('admin')->getjoinstr('receid', $uid, 1);
+			$rstr= $dbs->getjoinstr('{asqom}`receid`', $uid, 1);
 			$str = str_replace('{receid}', '('.$rstr.')', $str);
 		}
 		//本周一{weekfirst}
@@ -51,6 +55,36 @@ class whereClassModel extends Model
 		if(contain($str,'{weeklast}')){
 			$rstr= c('date')->getweeklast($this->rock->date);
 			$str = str_replace('{weeklast}', $rstr, $str);
+		}
+		
+		$barr = $this->rock->matcharr($str);
+		foreach($barr as $match){
+			$rstr = $type = '';
+			$_artr= explode(',', $match);
+			$fie	= $_artr[0];
+			if($fie=='asqom')continue;
+			if(isset($_artr[1]))$type = $_artr[1];
+			//包含uid里面
+			if($type=='uidin'){
+				$rstr= $this->rock->dbinstr('{asqom}`'.$fie.'`', $uid);
+			}
+			//我直属下级
+			if($type=='down'){
+				$rstr= $dbs->getdownwhere('{asqom}`'.$fie.'`', $uid, 1);
+			}
+			//我全部直属下级
+			if($type=='downall'){
+				$rstr= $dbs->getdownwhere('{asqom}`'.$fie.'`', $uid, 0);
+			}
+			//字段包含部门人员Id，空全部
+			if($type=='receall'){
+				$rstr= $dbs->getjoinstr('{asqom}`'.$fie.'`', $uid, 1);
+			}
+			//字段包含部门人员Id，空全部
+			if($type=='recenot'){
+				$rstr= $dbs->getjoinstr('{asqom}`'.$fie.'`', $uid, 1, 1);
+			}
+			$str = str_replace('{'.$match.'}', $rstr, $str);
 		}
 		return $str;
 	}
@@ -121,8 +155,23 @@ class whereClassModel extends Model
 		$arr 	= $this->getflowwhere($id, $uid, $fid);
 		if($arr){
 			$where = $arr['atr'];
-			if($lx==0)$where = ' and '.$where;
+			if($lx==0 && !isempt($where))$where = ' and '.$where;
 		}
 		return $where;
+	}
+	
+	
+	public function getmywhere($modeid,$uid=0, $pnum='')
+	{
+		if($uid==0)$uid = $this->adminid;
+		$where 	= m('admin')->getjoinstr('syrid', $uid, 1);
+		$where	= '`status`=1 and `setid`='.$modeid.' and `num` is not null and `islb`=1 and ('.$where.')';
+		if(isempt($pnum)){
+			$where .=" and ifnull(`pnum`,'')=''";
+		}else{
+			$where .=" and `pnum`='$pnum'";
+		}
+		$rows = $this->getrows($where, '`id`,`num`,`name`', '`sort`');
+		return $rows;
 	}
 }

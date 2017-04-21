@@ -48,29 +48,69 @@ function initbody(){
 function clearchater(){
 	nwjsgui.App.clearCache();
 	localStorage.clear();
+	var na = nwjsgui.App.manifest.name;
 	js.setoption('apiurl', apiurl);
-	js.confirm('基本缓存已删除，更多缓存删除，是否打开对应目录全部清空？',function(jg){
+	js.confirm('基本缓存已删除，更多缓存删除，是否打开对应['+na+']目录？需手动全部删除目录。',function(jg){
 		if(jg=='yes'){
-			nwjsgui.Shell.openItem(nwjsgui.App.dataPath);
+			var naea = nwjsgui.App.dataPath;
+			var oru= naea.split(na)[0]+na;
+			nwjsgui.Shell.openItem(oru);
 			nwjsgui.App.quit();
 		}
 	});
 }
+function getupurl(act){
+	return 'http://xxxxxxxx.com/api.php?a='+act+'&callback=?';
+}
+var version = '';
 function updatejian(upb){
-	var ver = '';
-	try{ver = nwjs.fs.readFileSync('version.txt');}catch(e){}
+	try{version = nwjs.fs.readFileSync('version.txt');}catch(e){}
 	if(!upb)js.msg('wait','检查中...');
-	$.getJSON('http://xxxxxxxx.com/api.php?a=clientupg&callback=?&version='+ver+'',function(a){
+	$.getJSON(getupurl('clientupg')+'&version='+version+'',function(a){
 		var d = a.data;
 		js.msg();
 		if(d.upbool){
-			js.confirm('有最新版本V'+d.version+'：'+d.desc+'。是否去直接下载？', function(jg){
-				if(jg=='yes')js.open(d.upgurl);
+			js.confirm('有最新版本V'+d.version+'：'+d.desc+'。是否直接在线更新？', function(jg){
+				if(jg=='yes')updatejianss();
 			});
 		}else{
 			if(!upb)js.msg('success','当前已是最新版本了');
 		}
 		js.setoption('lastjcupdate',js.now());
+	});
+}
+function updatejianss(){
+	setTimeout("js.alert('系统升级<span id=\"biloss\">(0%...)</span>');",10);
+	$.getJSON(getupurl('clientget')+'&version='+version+'',function(ret){
+		updaterows = ret.data;
+		updatejiansss(0);
+	});
+}
+var updatejianssstime;
+function updatejiansss(oi){
+	clearTimeout(updatejianssstime);
+	if(oi>=updaterows.length){
+		$('#biloss').html('<font color=green>升级完成,点头像刷新</font>');
+		return;
+	}
+	var path = updaterows[oi].filepath;
+	var spath= path.substr(4);
+	var bl   = ((oi+1)/updaterows.length)*100;
+	$('#biloss').html('('+js.float(bl)+'%...)<a href="javascipt:;" onclick="updatejiansss('+oi+')">[重试]</a>，文件：'+spath+'');
+	nwjs.createdir(spath);
+	var url = getupurl('clientgetfile')+'&path='+jm.base64encode(path)+'';
+	nwjs.downfile({
+		url:url,
+		oi:oi,
+		savefile:spath,
+		onsuccess:function(){
+			clearTimeout(updatejianssstime);
+			updatejianssstime = setTimeout('updatejiansss('+(this.oi+1)+')',300);
+		},
+		onerror:function(st){
+			clearTimeout(updatejianssstime);
+			$('#biloss').html('<font color=red>出错'+st+'</font>,<a href="javascipt:;" onclick="updatejiansss('+this.oi+')">[重试]</a>');
+		}
 	});
 }
 function bodyunload(){
@@ -83,6 +123,8 @@ function resize(){
 	$('#topblank').css('height',''+ts+'px');
 }
 function loginsubmit(lx){
+	//apiurl 	= 'http://demo.xxxxxxxx.com/';	//这里修改为你自己的系统网址，格式：http://开头,/结尾
+	//js.setoption('apiurl', apiurl);
 	if(js.ajaxbool)return false;
 	var user = get('adminuser').value;
 	var pass = get('adminpass').value;
@@ -90,7 +132,7 @@ function loginsubmit(lx){
 	js.setmsg('');
 	if(user==''){
 		js.setmsg('用户名不能为空');
-		get('adminpass').focus();
+		get('adminuser').focus();
 		return false;
 	}
 	if(pass==''&&temp_token==''){
@@ -129,8 +171,12 @@ function loginset(){
 		if(url.substr(url.length-1,1)!='/')url=url+'/';
 		js.setoption('apiurl', url);
 		apiurl=url;
+		changeurl();
 		js.msg('success','设置成功');
 	}, apiurl);
+}
+function changeurl(){
+	
 }
 </script>
 </head>

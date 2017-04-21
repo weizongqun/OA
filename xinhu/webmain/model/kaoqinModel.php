@@ -6,6 +6,7 @@ class kaoqinClassModel extends Model
 	public function initModel()
 	{
 		$this->settable('kqdist');
+		$this->admindb = m('admin');
 	}
 	
 	public function adddkjl($uid,$type=0, $dkdt='',$ip='',$mac='')
@@ -13,7 +14,7 @@ class kaoqinClassModel extends Model
 		$now = $this->rock->now;
 		if($dkdt=='')$dkdt = $now;
 		if($ip=='')$ip=$this->rock->ip;
-		$kqa 	= m('admin')->getusinfo($uid,'dkip,dkmac');
+		$kqa 	= $this->admindb->getusinfo($uid,'dkip,dkmac');
 		$mac	= strtolower($mac);
 		if(isempt($kqa['dkip']) && isempt($kqa['dkmac']))return '未设置打卡IP或MAC地址';
 		if(!isempt($kqa['dkip']) && $kqa['dkip']!='*'){
@@ -78,7 +79,7 @@ class kaoqinClassModel extends Model
 	*/
 	public function getdistid($uid, $dt, $type)
 	{
-		$s 		= m('admin')->getjoinstr('receid', $uid);
+		$s 		= $this->admindb->getjoinstr('receid', $uid);
 		$rows  	= $this->getall("`status`=1 and `type`=".$type." and '$dt' between `startdt` and `enddt` $s ");
 		$mid 	= $this->getpipeimid($uid, $rows);
 		return $mid;
@@ -170,7 +171,7 @@ class kaoqinClassModel extends Model
 		$max 	= c('date')->getmaxdt($month);
 		$enddt	= ''.$month.'-'.$max.'';
 		$s 		= "and (`quitdt` is null or `quitdt`>='$start') and (`workdate` is null or `workdate`<='$enddt') $where";
-		$urows 	= m('admin')->getall('1=1 '.$s.'', '`id`,`workdate`,`quitdt`');
+		$urows 	= $this->admindb->getall('1=1 '.$s.'', '`id`,`workdate`,`quitdt`');
 		foreach($urows as $k=>$urs){
 			$this->kqanaymonth($urs['id'], $month, $urs, $max);
 		}
@@ -179,7 +180,7 @@ class kaoqinClassModel extends Model
 	public function kqanayalldt($dt)
 	{
 		$s 		= "and (`quitdt` is null or `quitdt`>='$dt') and (`workdate` is null or `workdate`<='$dt')";
-		$urows 	= m('admin')->getall('1=1 '.$s.'', '`id`,`workdate`,`quitdt`');
+		$urows 	= $this->admindb->getall('1=1 '.$s.'', '`id`,`workdate`,`quitdt`');
 		foreach($urows as $k=>$urs){
 			$this->kqanay($urs['id'], $dt);
 		}
@@ -188,7 +189,7 @@ class kaoqinClassModel extends Model
 	public function kqanaymonth($uid, $month, $urs=false, $max=0)
 	{
 		$month	= substr($month, 0, 7);
-		if(!$urs)$urs 	= m('admin')->getone($uid, '`workdate`,`quitdt`,`id`');
+		if(!$urs)$urs 	= $this->admindb->getone($uid, '`workdate`,`quitdt`,`id`');
 		if($max==0)$max = c('date')->getmaxdt($month);
 		for($i=1; $i<=$max; $i++){
 			$oi = $i;if($oi<10)$oi='0'.$i.'';
@@ -370,14 +371,14 @@ class kaoqinClassModel extends Model
 	
 	
 	/**
-	*	计算剩余假期时间
+	*	计算剩余假期时间,如果审核未通过，申请人不删除照样也会扣除时间
 	*/
 	public function getqjsytime($uid, $type, $dt='', $id=0)
 	{
 		$types 	= '增加'.$type.'';
 		if($type=='调休')$types='加班';
 		if($dt=='')$dt = $this->rock->now;
-		$to1	= $this->db->getmou('[Q]kqinfo',"sum(totals)", "`kind`='请假' and `qjkind`='$type' and `uid`='$uid' and `id`<>$id ");
+		$to1	= $this->db->getmou('[Q]kqinfo',"sum(totals)", "`kind`='请假' and `qjkind`='$type' and `uid`='$uid' and `status` not in(5) and `id`<>$id ");
 		$zto	= $this->db->getmou('[Q]kqinfo',"sum(totals)", "`kind`='$types' and `uid`='$uid'  and `status`=1 and `stime`<='$dt'");
 		if(is_null($to1))$to1=0;
 		if(is_null($zto))$zto=0;
@@ -496,9 +497,121 @@ class kaoqinClassModel extends Model
 	
 	/**
 	*	统计月份应上班天数
+	*	return array(应上班天数, 有上班天数);
 	*/
 	public function getsbdt($uid, $month)
 	{
+		$month	= substr($month, 0, 7);
+		$dtobj  = c('date');
+		$max 	= $dtobj->getmaxdt($month);
+		$startdt= ''.$month.'-01';
+		$enddt  = ''.$month.'-'.$max.'';
+		$tian	= 0;
+		$ysb	= 0;
+		$anayarr= $this->db->getrows('[Q]kqanay', "`uid`=$uid and `dt` like '$month%'");
+		for($i=0; $i<$max; $i++){
+			$oi = ($i<10) ? '0'.$i.'' : $i;
+			$dt = ''.$month.'-'.$oi.'';
+			if($this->isworkdt($uid, $dt)==1){
+				$tian++;
+				foreach($anayarr as $k=>$rs){
+					if($rs['dt']==$dt && $rs['state']!='未打卡'){
+						$ysb++;
+						break;
+					}
+				}
+			}
+		}
+		return array($tian, $ysb, $tian-$ysb);
+	}
+	
+	
+	/**
+	*	all统计
+	*/
+	public function alltotal($month, $uids)
+	{
+		$barr = $this->alltotalrows($month, $uids);
+		$data = $barr['rows'][0];
+		$farrs 				= $barr['columns'];
+		$farrs['未打卡'] 	= 'weidk';
+		$farrs['请假'] 		= 'qingjia';
+		$farrs['加班'] 		= 'jiaban';
+		$farrs['外出出差'] 	= 'outci';
+		$farrs['打卡异常'] 	= 'errci';
+		$farrs['应上班'] 	= 'sbday';
+		$farrs['已上班'] 	= 'ysbday';
+		return array('data'=>$data, 'fields'=>$farrs, 'unita'=> array(
+			'qingjia' => '小时',
+			'jiaban'  => '小时',
+			'sbday'  	=> '天',
+			'ysbday'  	=> '天',
+		));
+	}
+	
+	public function alltotalrows($month, $uids)
+	{
+		$rows	= array();
+		if(is_array($uids)){
+			$rows = $uids;
+		}else{
+			$uidsa = explode(',', $uids);
+			foreach($uidsa as $_uids)$rows[] = array('id'=>$_uids);
+		}
+		$uids 	= '0';
+		foreach($rows as $k=>$rs)$uids.=','.$rs['id'].'';
+		$farrs	= $columns = array();
+		//获取考勤状态数组{'正常':'state0'}
+		if($rows){
+			$fuid 	= $rows[0]['id'];
+			$farrs 	= $this->getkqztarr($fuid, $month.'-01');
+			$columns= $farrs;
+		}
 		
+		$darr	= $this->db->getall("SELECT uid,state,states FROM `[Q]kqanay` where iswork=1 and dt like '$month%' and `uid` in($uids)");
+		$sarr 	= array();
+		foreach($darr as $k=>$rs){
+			$state 	= $rs['state'];
+			$uid 	= $rs['uid'];
+			if(!isempt($rs['states']))$state='正常';
+			if(!isset($sarr[$uid]))$sarr[$uid]=array();
+			if(!isset($sarr[$uid][$state]))$sarr[$uid][$state]=0;
+			$sarr[$uid][$state]++;
+		}
+		
+		$farrs['未打卡'] 	= 'weidk';
+		$farrs['请假'] 		= 'qingjia';
+		$farrs['加班'] 		= 'jiaban';
+		
+		$kqarr	= $this->db->getall("select sum(totals)as totals,kind,uid from `[Q]kqinfo` where `status`=1 and `uid` in($uids) and `stime` like '$month%' and `kind` in('请假','加班') group by `uid`,`kind`");
+		foreach($kqarr as $k=>$rs){
+			$uid 	= $rs['uid'];
+			if(!isset($sarr[$uid]))$sarr[$uid]=array();
+			$sarr[$uid][$rs['kind']] = $rs['totals'];
+		}
+		
+		foreach($rows as $k=>$rs){
+			$uid 	= $rs['id'];
+			if(isset($sarr[$uid])){
+				foreach($sarr[$uid] as $zt=>$v){
+					if(isset($farrs[$zt])){
+						$rows[$k][$farrs[$zt]] = $v;
+					}
+				}
+			}
+			$outci	= $this->db->rows('[Q]kqout',"`status`=1 and `uid`=$uid and `outtime` like '$month%'");
+			if($outci==0)$outci='';
+			$rows[$k]['outci'] = $outci;
+			
+			$errci	= $this->db->rows('[Q]kqerr',"`status`=1 and `uid`=$uid and `dt` like '$month%'");
+			if($errci==0)$errci='';
+			$rows[$k]['errci'] = $errci;
+			
+			$sbdt 			   	= $this->getsbdt($uid, $month);
+			$rows[$k]['sbday'] 	= $sbdt[0];
+			$rows[$k]['ysbday'] = $sbdt[1]>0 ?  $sbdt[1] : '';
+		}
+		
+		return array('rows'=>$rows,'columns'=>$columns);
 	}
 }

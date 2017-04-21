@@ -111,6 +111,7 @@ class JPushChajian extends Chajian{
 		$obj->addAlias($alias);
 		$result	= $obj
 			->setMessage($cont, $title) //发信息
+			->setOptions(null, 0)		//不保存离线消息
 			->send();
 		$msg = json_encode($result);	
 		return $result;

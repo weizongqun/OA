@@ -57,9 +57,9 @@ class kaoqinClassAction extends Action
 	public function kqinfoaftershow($table, $rows)
 	{
 		$uid 	= $this->adminid;
-		$types 	= explode(',','<font color=blue>待审核</font>,<font color=green>已审核</font>,<font color=red>未通过</font>');
+		$types 	= explode(',','<font color=blue>待审核</font>,<font color=green>已审核</font>,<font color=red>未通过</font>,,,<font color=#888888>已作废</font>');
 		foreach($rows as $k=>$rs){
-			$rows[$k]['status'] = $types[$rs['status']];
+			$rows[$k]['status'] = $this->rock->arrvalue($types, $rs['status']);
 			$modenum  = 'leavehr';
 			$modename = '考勤信息';
 			if($rs['kind']=='请假'){
@@ -72,6 +72,7 @@ class kaoqinClassAction extends Action
 			}
 			$rows[$k]['modenum'] 	= $modenum;
 			$rows[$k]['modename'] 	= $modename;
+			if($rs['status']==5)$rows[$k]['ishui'] 	= 1;
 		}
 		
 		$str = '';
@@ -310,9 +311,7 @@ class kaoqinClassAction extends Action
 		$this->months 	= $dt1;
 		$key	= $this->post('key');
 		$atype	= $this->post('atype');
-		$dt 	= $dt1.'-01';
-		$enddt	= c('date')->getenddt($dt1);
-		$s 		= "and (`quitdt` is null or `quitdt`>='$dt') and (`workdate` is null or `workdate`<='$enddt')";
+		$s 		= m('admin')->monthuwhere($dt1);
 		if($atype=='my'){
 			$s = 'and id='.$this->adminid.'';
 		}
@@ -322,7 +321,14 @@ class kaoqinClassAction extends Action
 		$fields = 'id,name,deptname,ranking,workdate';
 		return array('where'=>$s,'fields'=>$fields,'order'=>'`sort`');
 	}
+	
 	public function kqtotalaftershow($table, $rows)
+	{
+		return m('kaoqin')->alltotalrows($this->months, $rows);
+	}
+	
+	//弃用了
+	public function kqtotalaftershowdd($table, $rows)
 	{
 		$dtobj 	= c('date');
 		$uids 	= '0';

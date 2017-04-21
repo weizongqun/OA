@@ -109,7 +109,7 @@ function optmenuclass(o1,num,id,obj,mname,oi, cola){
 		}
 	};
 	this.openedit=function(){
-		openinput(this.modename,this.modenum,this.mid);
+		openinput(this.modename,this.modenum,this.mid, this.callbackstr);
 	};
 	this.showmenuclick=function(d){
 		d.num=this.modenum;d.mid=this.id;

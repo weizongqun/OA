@@ -38,3 +38,14 @@ function changesubmit(d){
 function savesuccess(){
 	
 };
+
+
+//下拉框联动例子
+function liandong(){
+	js.ajax(geturlact('initdatas'),{'参数1':'参数值'},function(ret){
+		//返回ret数据是个json数组，格式[{name:'',value:''},{...}]
+		var o = form('下拉框名称');
+		o.length = 1;
+		js.setselectdata(o,ret,'value'); //给下拉框设置数据源
+	},'get,json');
+}

@@ -1,6 +1,6 @@
 <?php
 /**
-*	来自：LEGEND开发团队
+*	来自：信呼开发团队
 *	作者：磐石(rainrock)
 *	网址：http://xxxxxxxx.com/
 *	系统的核心文件之一，处理工作流程模块的。
@@ -577,6 +577,14 @@ class flowModel extends Model
 	{
 		$this->update('`status`='.$zt.'', $this->id);
 		$this->billmodel->update('`status`='.$zt.'', $this->mwhere);
+	}
+	
+	/**
+	*	获取状态列表数组
+	*/
+	public function getstatusarr()
+	{
+		return $this->getstatus(null, '','',2);
 	}
 	
 	/**
@@ -1633,9 +1641,11 @@ class flowModel extends Model
 			$_wehs	= $nas;
 		}
 		$fwhere			= $this->getflowwhere($uid, $lx);//流程模块上条件
+		$path 			= ''.P.'/flow/page/rock_page_'.$this->modenum.'.php';
 		
-		
-		
+		if(isempt($fwhere) && isempt($inwhere) && $this->moders['isscl']==1){
+			$fwhere	 	= 'and 1=2';
+		}
 		$where 			= $inwhere;
 		$wherestr 		= $this->moders['where'];
 		if(!isempt($wherestr)){
@@ -1649,6 +1659,8 @@ class flowModel extends Model
 		
 		//关键词搜索
 		$key 			= $this->rock->post('key');
+		$status 		= $this->rock->post('keystatus');
+		if(!isempt($status))$where .= ' and {asqom}`status`='.$status.'';
 		if(!isempt($key) && isempt($arr['keywhere'])){
 			$_kearr = array();
 			$skeay 	= array('text','textarea','htmlediter','changeuser','changeusercheck','changedept','changedeptusercheck');

@@ -60,6 +60,10 @@ $(document).ready(function(){
 			}
 			cans.value=cans.idobj.value,
 			js.getuser(cans);
+		},
+		setdab:function(ov,lx){
+			var a = ['{read}','{unread}','{weekfirst}'];
+			h.form.wheresstr.value+=' '+a[lx];
 		}
 	};
 	js.initbtn(c);
@@ -83,8 +87,8 @@ $(document).ready(function(){
 		
 		<table cellspacing="0" border="0" width="100%" align="center" cellpadding="0">
 		<tr>
-			<td  align="right"  width="20%"><font color=red>*</font> 名称：</td>
-			<td class="tdinput"  width="35%"><input name="name" class="form-control"></td>
+			<td  align="right"  width="25%"><font color=red>*</font> 名称：</td>
+			<td class="tdinput"  width="25%"><input name="name" class="form-control"></td>
 			<td  align="right"   width="15%">编号：</td>
 			<td class="tdinput" width="30%"><input name="num"  maxlength="30" class="form-control"></td>
 		</tr>
@@ -93,11 +97,11 @@ $(document).ready(function(){
 
 		<tr>
 			<td  align="right" >主表字段条件：</td>
-			<td class="tdinput" colspan="3"><textarea  name="wheresstr" style="height:60px" class="form-control"></textarea><div class="tishi" style="padding-top:0px">对应主表上字段条件,<a click="setwhere" href="javascript:;">[设置条件]</a></div></td>
+			<td class="tdinput" colspan="3"><textarea  name="wheresstr" style="height:60px" class="form-control"></textarea><div class="tishi" style="padding-top:0px">对应主表上字段条件,<a click="setwhere" href="javascript:;">[设置条件]</a>&nbsp;<a href="javascript:;" click="setdab,0">[已读记录]</a>&nbsp;<a href="javascript:;" click="setdab,1">[未读记录]</a></div></td>
 		</tr>
 		
 		<tr>
-			<td  align="right" >人员包含条件：</td>
+			<td  align="right" >数据上人员包含条件：</td>
 			<td class="tdinput" colspan="3">
 			<div style="width:100%" class="input-group">
 				<input readonly class="form-control"  name="recename" >

@@ -8,6 +8,7 @@ var nwjs={
 	init:function(){
 		this.nw = nwjsgui;
 		if(!this.nw)return;
+		this.fs  = require('fs');
 		this.win = nwjsgui.Window.get();
 	},
 	
@@ -29,7 +30,7 @@ var nwjs={
 		}}));
 		
 		tray.menu 	= menu;
-		this.fs 	= require('fs');
+		
 		tray.on('click',function(){
 			nwjs.winshow();
 		});
@@ -71,8 +72,9 @@ var nwjs={
 		if(!this.nw)return;
 		if(this.server)this.server.close();
 		this.tray.remove();
-		nwjsgui.App.unregisterGlobalHotKey(this.shortcut);
+		if(this.shortcut)nwjsgui.App.unregisterGlobalHotKey(this.shortcut);
 		this.tray = false;
+		this.shortcut = false;
 		this.server=false;
 	},
 	changewinhide:function(){
@@ -189,5 +191,12 @@ var nwjs={
 		}).on('error', function(e) {
 			cans.onerror('error');
 		});
+	},
+	createdir:function(path){
+		var a1 = path.split('/'),spth='';
+		for(var i=0;i<a1.length-1;i++){
+			spth+=''+a1[i]+'/';
+			if(!this.fs.existsSync(spth))this.fs.mkdirSync(spth);
+		}
 	}
 };

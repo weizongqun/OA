@@ -34,7 +34,7 @@ class flow_workClassModel extends flowModel
 		
 		$zts 		= $rs['status'];
 		$str 		= $this->getstatus($rs,'','',1);
-		if($slx==1){
+		if($slx>=1){
 			$projectid 	= (int)$rs['projectid'];
 			$rs['projectid'] = '';
 			if($projectid>0){
@@ -136,48 +136,12 @@ class flow_workClassModel extends flowModel
 	
 	protected function flowbillwhere($uid, $lx)
 	{
-		$where 	= 'and '.$this->rock->dbinstr('distid', $uid);
-		if($lx=='def' || $lx=='wwc'){
-			$where.=' and status not in(1)';
-		}
-		if($lx=='myall'){
-			
-		}
-		if($lx=='all'){
-			$where = '';
-		}
-		//已完成
-		if($lx=='ywc'){
-			$where.=' and status=1';
-		}
-		//未完成
-		if($lx=='wcj'){
-			$where = 'and optid='.$uid.'';
-		}
-		
-		//下属任务
-		if($lx=='down' || $lx=='xxrw'){
-			$where  = 'and '.m('admin')->getdownwhere('`distid`', $uid, 1);
-		}
-		//督导
-		if($lx=='dd'){
-			$where  = $this->ddwhere($uid);
-		}
-		
-		$key 	= $this->rock->post('key');
-		$zt 	= $this->rock->post('zt');
+		$where		= '';
 		$projcetid 	= (int)$this->rock->post('projcetid');
-		if($projcetid>0)$where.=' and `projectid`='.$projcetid.'';
-		
-		if($zt!='')$where.=' and `status`='.$zt.'';
-		
-		if(!isempt($key)){
-			$where.=" and (`title` like '%$key%' or `type` like '%$key%' or `dist` like '$key%' or `grade` like '%$key%' or `projectid` in (select `id` from `[Q]project` where `title` like '%$key%'))";
-		}
+		if($projcetid>0)$where='and `projectid`='.$projcetid.'';
 		
 		return array(
-			'where' => $where,
-			'fields'=> 'id,type,grade,dist,startdt,title,enddt,`status`,state,optname,projectid,score,mark,ddname',
+			'keywhere' => $where,
 			'order' => '`optdt` desc'
 		);
 	}

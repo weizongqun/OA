@@ -2,6 +2,9 @@
 class fworkClassAction extends Action
 {
 	
+	/**
+	*	流程申请获取数组
+	*/
 	public function getmodearrAjax()
 	{
 		$rows = m('mode')->getmoderows($this->adminid,'and islu=1');
@@ -16,6 +19,37 @@ class fworkClassAction extends Action
 		$this->returnjson(array('rows'=>$row));
 	}
 	
+	/**
+	*	单据查看获取数组
+	*/
+	public function getmodesearcharrAjax()
+	{
+		$rows = m('mode')->getmoderows($this->adminid);
+		$row  = array();
+		$mid  = '0';
+		foreach($rows as $k=>$rs){
+			$path = ''.P.'/flow/page/rock_page_'.$rs['num'].'.php';
+			if(!file_exists($path))continue;
+			$lx = $rs['type'];
+			$mid.=','.$rs['id'].'';
+			$row[$lx][] = $rs;
+		}
+		if($mid!='0'){
+			$where 	= m('admin')->getjoinstr('syrid', $this->adminid, 1);
+			$wrows 	= m('flow_where')->getrows('`setid` in('.$mid.') and `status`=1 and `islb` and `num` is not null and ('.$where.') and `pnum` is null group by `setid`','`setid`,min(sort),`num`');
+			$atypea = array();
+			foreach($wrows as $k1=>$rs1){
+				$nus = $rs1['setid'];
+				if(!isset($atypea[$nus]))$atypea[$nus] = $rs1['num'];
+			}
+			foreach($row as $lx=>$rowaa){
+				foreach($rowaa as $k2=>$rs2){
+					$row[$lx][$k2]['atype'] = $this->rock->arrvalue($atypea, $rs2['id']);
+				}
+			}
+		}
+		$this->returnjson(array('rows'=>$row));
+	}
 	
 	
 	

@@ -30,7 +30,7 @@ $(document).ready(function(){
 			text:'操作人',dataIndex:'optname'
 		}],
 		itemdblclick:function(d){
-			openxiangs('考勤信息','leavehr',d.id);
+			openxiangs(d.modename,d.modenum,d.id);
 		}
 	});
 	var c = {
@@ -42,7 +42,7 @@ $(document).ready(function(){
 			$(o1).rockdatepicker({initshow:true,view:'month',inputid:'dt'+lx+'_{rand}'});
 		},
 		daochu:function(){
-			a.exceldown('考勤信息');
+			a.exceldown();
 		},
 		clickwin:function(){
 			openinput('考勤信息','leavehr');

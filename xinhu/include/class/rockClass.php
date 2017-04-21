@@ -537,4 +537,19 @@ URL：'.$_SERVER['QUERY_STRING'].'
 		if(isset($_SERVER['REQUEST_URI']))$url.= $_SERVER['REQUEST_URI'];
 		return $url;
 	}
+	
+	/**
+	*	匹配
+	*/
+	public function matcharr($str, $lx=0)
+	{
+		$match	= '/\{(.*?)\}/';
+		if($lx==1)$match	= '/\[(.*?)\]/';
+		preg_match_all($match, $str, $list);
+		$barr = array();
+		foreach($list[1] as $k=>$nrs){
+			$barr[] = $nrs;
+		}
+		return $barr;
+	}
 }

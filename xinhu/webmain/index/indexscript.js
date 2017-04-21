@@ -74,6 +74,12 @@
 			}
 		}
 	});
+	//禁止后退
+	$(document.body).keydown(function(e){
+		var lxs = e.target.nodeName.toLowerCase();
+		var bo  = (lxs=='input' || lxs=='textarea');
+		if(e.keyCode==8 && !bo)return false;
+	});
 }
 
 
@@ -135,7 +141,7 @@ function clickhome(){
 function resizewh(){
 	var _lw = 0;
 	if(get('indexmenu')){
-		_lw = $('#indexmenu').width();
+		_lw = $('#indexmenu').width()+5;
 		if(get('indexmenu').style.display=='none'){
 			_lw = $('#indexmenuss').width()+5;
 		}
@@ -257,6 +263,39 @@ function addiframe(a){
 	addtabs(a);
 }
 
+
+//选择卡右键
+function tabsright(num,e){
+	function _closeother(nu){
+		var nus,d1;
+		for(nus in tabsarr){
+			d1 = tabsarr[nus];
+			if(d1 && !d1.hideclose && nus!=nu)closetabs(nus);
+		}
+	}
+	if(typeof(tabsrights)=='undefined')tabsrights=$.rockmenu({
+		width:150,
+		data:[],
+		itemsclick:function(d){
+			var lx = d.lx,num=d.num;
+			if(lx==0)closetabs(num);
+			if(lx==1){
+				var d1 = tabsarr[num];
+				js.alert('['+d1.name+']页面地址是：<div style="word-wrap:break-word;">'+PROJECT+'/'+d1.urlpath+'，在[系统→菜单管理]设置URL地址为：'+d1.url+'</div>');
+			}
+			if(lx==2)_closeother(num);
+			if(lx==3)location.reload();
+		}
+	});
+	var to= tabsarr[num],d = [];
+	if(!to.hideclose)d.push({'name':'关闭','num':num,lx:0});
+	if(num==nowtabs.num)d.push({'name':'关闭其它页面','num':num,lx:2});
+	if(adminid=='1')d.push({'name':'查看页面地址','num':num,lx:1});
+	d.push({'name':'全部刷新','num':num,lx:3});
+	tabsrights.setData(d);
+	tabsrights.showAt(e.clientX,e.clientY+5);
+}
+
 /**
 *	添加选择卡
 */
@@ -270,7 +309,7 @@ function addtabs(a){
 	nowtabs = a;
 	if(changetabs(num))return true;
 
-	var s = '<td temp="tabs" nowrap onclick="changetabs(\''+num+'\',1)" id="tabs_'+num+'" class="accive"><font>';
+	var s = '<td temp="tabs" oncontextmenu="tabsright(\''+num+'\',event);return false;"; nowrap onclick="changetabs(\''+num+'\',1)" id="tabs_'+num+'" class="accive"><font>';
 	if(a.icons)s+='<i class="icon-'+a.icons+'"></i>  ';
 	s+=a.name+'</font>';
 	if(!a.hideclose)s+='<span onclick="closetabs(\''+num+'\')" class="icon-remove"></span>';
@@ -298,7 +337,7 @@ function addtabs(a){
 	if(urlpms!='')urlpms = urlpms.substr(1);
 	var bgs = '<div id="mainloaddiv" style="width:'+viewwidth+'px;height:'+viewheight+'px;overflow:hidden;background:#000000;color:white;filter:Alpha(opacity=20);opacity:0.2;z-index:3;position:absolute;left:0px;line-height:'+viewheight+'px;top:0px;" align="center"><img src="images/mloading.gif"  align="absmiddle">&nbsp;加载中...</div>';
 	$('#indexcontent').append(bgs);
-	
+	a.urlpath = url+'.php';
 	objcont.append('<div temp="content" id="content_'+num+'"></div>');
 	$.ajax({
 		url:'?m=index&a=getshtml&surl='+jm.base64encode(url)+'',

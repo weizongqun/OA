@@ -63,6 +63,7 @@ class agentModel extends Model
 		$this->user_id 	= $uid;
 		$this->event 	= $lx;
 		$narr 	= $this->agentdata($uid, $lx);
+		$lx		= $this->event;
 		if(!$narr)$narr = $this->getdatalimit($uid, $lx);
 		$arr 	= array(
 			'wdtotal' 	=> 0,

@@ -41,10 +41,13 @@
 			var fids = 'form_'+this.inputfile+'';
 			if(document[fids])document[fids].reset();
 		};
-		this.click=function(ars){
-			if(this.upbool)return;
+		this.setparams=function(ars){
 			this.oparams = js.apply({uptype:'*'}, ars);
 			this.uptype=this.oparams.uptype;
+		};
+		this.click=function(ars){
+			if(this.upbool)return;
+			this.setparams(ars);
 			get(this.inputfile).click();
 		};
 		this.change=function(o1){
@@ -52,6 +55,7 @@
 				js.msg('msg','当前浏览器不支持上传1');
 				return;
 			}
+			
 			var f = o1.files[0];
 			if(!f)return;
 			var a = {filename:f.name,filesize:f.size,filesizecn:js.formatsize(f.size)};
