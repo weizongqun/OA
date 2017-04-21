@@ -41,7 +41,7 @@ class publicClassAction extends Action{
 			//exit('文件类型为['.$type.']，不支持在线预览');
 		}
 		$str = 'mode/pdfjs/web/viewer.css';
-		if(!file_exists($str))exit('未安装预览pdf插件，不能预览该文件，可到信呼官网下查看安装方法，<a target="_blank" href="http://xxxxxxxx.com/view_topdf.html">查看帮助?</a>。');
+		if(!file_exists($str))exit('未安装预览pdf插件，不能预览该文件，可到LEGEND官网下查看安装方法，<a target="_blank" href="http://xxxxxxxx.com/view_topdf.html">查看帮助?</a>。');
 		$this->smartydata['filepath'] = $this->jm->base64encode($filepath);
 	}
 	

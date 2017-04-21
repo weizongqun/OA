@@ -1,7 +1,7 @@
 <?php
 /**
 *	对外开发接口文件
-*	createname：信呼
+*	createname：LEGEND
 *	homeurl：http://xxxxxxxx.com/
 *	Copyright (c) 2016 rainrock (xxxxxxxx.com)
 *	Date:2016-11-01
