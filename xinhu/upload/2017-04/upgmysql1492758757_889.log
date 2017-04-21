@@ -1,0 +1,1 @@
+[2017-04-21 15:12:34]:alter table `xinhu_flow_set` add `isscl` tinyint(1) DEFAULT '0' COMMENT '是否生成列表页'

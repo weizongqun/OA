@@ -1,0 +1,1 @@
+[2017-04-21 15:12:34]:alter table `xinhu_project` add `status` tinyint(1) DEFAULT '0'
