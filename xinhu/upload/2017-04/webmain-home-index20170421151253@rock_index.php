@@ -305,7 +305,6 @@ $(document).ready(function(){
 					官网：<a href="http://xxxxxxxx.com/" target="_blank">http://xxxxxxxx.com/</a><br>
 					版本：V<span id="banben">1.0</span><br>
 					下载：服务端，PC客户端，APP<a href="http://xxxxxxxx.com/view_down.html" target="_blank">[去下载]</a><br>
-					声明：我们是开源的，请遵守我们的<a href="http://xxxxxxxx.com/view_version.html" target="_blank">开源协议</a>，谢谢！<br>
 					帮助：提供开发帮助使用文档<a href="http://xxxxxxxx.com/help.html" target="_blank">[查看]，<a href="http://xxxxxxxx.com/view_bidu.html" target="_blank">[必读]</a>
 					</div>
 	
@@ -326,19 +325,7 @@ $(document).ready(function(){
 	<div align="left" style="padding:0px 10px">
 		<table  border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
-			
-			<td>
-				
-				
-				
-				<div class="tishi">&nbsp;本页面路径：webmain/home/index/rock_index.php，快捷键F2可查看相关帮助。</div>
-				
-				
-			
-			</td>
-			
-	
-			
+
 			
 			<td style="padding-left:20px">
 			

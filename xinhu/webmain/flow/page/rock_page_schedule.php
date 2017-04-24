@@ -118,7 +118,7 @@ $(document).ready(function(){
 		fanye:true,modenum:modenum,modename:modename,
 		url:c.storeurl(),storeafteraction:'storeaftershow',storebeforeaction:'storebeforeshow',
 		params:{atype:atype},
-		columns:[{text:"标题",dataIndex:"title",align:"left"},{text:"时间",dataIndex:"startdt",sortable:true},{text:"重复",dataIndex:"rate"},{text:"说明",dataIndex:"explain"},{text:"记事人",dataIndex:"optname",sortable:true},{text:"截止时间",dataIndex:"enddt"},{text:"提醒",dataIndex:"txsj",sortable:true},{text:"提醒给",dataIndex:"recename"},{
+		columns:[{text:"标题",dataIndex:"title"},{text:"时间",dataIndex:"startdt"},{text:"重复",dataIndex:"rate"},{text:"重复值",dataIndex:"rateval"},{text:"说明",dataIndex:"explain"},{text:"记事人",dataIndex:"optname"},{text:"截止时间",dataIndex:"enddt"},{text:"提醒",dataIndex:"txsj"},{text:"提醒给",dataIndex:"recename"},{
 			text:'',dataIndex:'caozuo',callback:'opegs{rand}'
 		}],
 		itemdblclick:function(){

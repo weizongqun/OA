@@ -118,7 +118,7 @@ $(document).ready(function(){
 		fanye:true,modenum:modenum,modename:modename,
 		url:c.storeurl(),storeafteraction:'storeaftershow',storebeforeaction:'storebeforeshow',
 		params:{atype:atype},
-		columns:[{text:"名称",dataIndex:"title",align:"left"},{text:"编号",dataIndex:"num",sortable:true},{text:"项目类型",dataIndex:"type",sortable:true},{text:"开始时间",dataIndex:"startdt",sortable:true},{text:"预计结束时间",dataIndex:"enddt"},{text:"负责人",dataIndex:"fuze",sortable:true},{text:"执行人",dataIndex:"runuser"},{text:"进度(%)",dataIndex:"progress"},{text:"任务数",dataIndex:"workshu"},{text:"状态",dataIndex:"status",sortable:true},{
+		columns:[{text:"项目类型",dataIndex:"type"},{text:"编号",dataIndex:"num"},{text:"名称",dataIndex:"title"},{text:"开始时间",dataIndex:"startdt"},{text:"预计结束时间",dataIndex:"enddt"},{text:"负责人",dataIndex:"fuze"},{text:"执行人",dataIndex:"runuser"},{text:"进度(%)",dataIndex:"progress"},{text:"状态",dataIndex:"state"},{
 			text:'',dataIndex:'caozuo',callback:'opegs{rand}'
 		}],
 		itemdblclick:function(){
@@ -185,7 +185,7 @@ viespere{rand}=function(id){
 		<td>
 			<input class="form-control" style="width:160px" id="key_{rand}" placeholder="搜索关键词">
 		</td>
-		<td style="padding-left:10px"><select class="form-control" style="width:120px" id="selstatus_{rand}"><option value="">-全部状态-</option><option style="color:blue" value="0">待执行</option><option style="color:green" value="1">已完成</option><option style="color:#888888" value="2">结束</option><option style="color:#ff6600" value="3">执行中</option><option style="color:#888888" value="5">已作废</option></select></td>
+		
 		<td style="padding-left:10px">
 			<div style="width:81px" class="btn-group">
 			<button class="btn btn-default" click="searchbtn" type="button">搜索</button><button class="btn btn-default" id="downbtn_{rand}" type="button" style="padding-left:8px;padding-right:8px"><i class="icon-angle-down"></i></button> 

@@ -118,7 +118,7 @@ $(document).ready(function(){
 		fanye:true,modenum:modenum,modename:modename,
 		url:c.storeurl(),storeafteraction:'storeaftershow',storebeforeaction:'storebeforeshow',
 		params:{atype:atype},
-		columns:[{text:"标题",dataIndex:"title",align:"left"},{text:"类型",dataIndex:"type"},{text:"等级",dataIndex:"grade",sortable:true},{text:"分配给",dataIndex:"dist"},{text:"开始时间",dataIndex:"startdt"},{text:"截止时间",dataIndex:"enddt"},{text:"督导人",dataIndex:"ddname"},{text:"任务分值",dataIndex:"score"},{text:"创建人",dataIndex:"optname"},{text:"创建时间",dataIndex:"optdt"},{text:"状态",dataIndex:"statustext"},{
+		columns:[{text:"类型",dataIndex:"type"},{text:"等级",dataIndex:"grade"},{text:"标题",dataIndex:"title"},{text:"分配给",dataIndex:"dist"},{text:"所属项目",dataIndex:"projectid"},{text:"说明",dataIndex:"explain"},{text:"开始时间",dataIndex:"startdt"},{text:"截止时间",dataIndex:"enddt"},{text:"督导人",dataIndex:"ddname"},{text:"任务分值",dataIndex:"score"},{text:"创建人",dataIndex:"optname"},{text:"创建时间",dataIndex:"optdt"},{text:"状态",dataIndex:"statustext"},{
 			text:'',dataIndex:'caozuo',callback:'opegs{rand}'
 		}],
 		itemdblclick:function(){
