@@ -1,1 +1,0 @@
-[2017-04-21 15:12:34]:alter table `xinhu_flow_where` add `pnum` varchar(30) DEFAULT NULL COMMENT '编号分组',add `syrid` varchar(200) DEFAULT NULL,add `syrname` varchar(200) DEFAULT NULL COMMENT '此条件可适用对象'
