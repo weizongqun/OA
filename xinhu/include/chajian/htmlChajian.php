@@ -140,7 +140,7 @@ class htmlChajian extends Chajian{
 		$s.='</body></html>';
 		$mkdir 	= ''.UPDIR.'/'.date('Y-m').'';
 		if(!is_dir($mkdir))mkdir($mkdir);
-		
+        $title= 'excel';
 		$filename 	= ''.$title.'_'.time().'.'.$lx.'';
 		$filename	= str_replace('/','',$filename);
 		$url 		= ''.$mkdir.'/'.$filename.'';
