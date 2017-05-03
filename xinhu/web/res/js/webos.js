@@ -186,7 +186,7 @@ var im={
 		date = js.now();
 		$(window).focus(function(){windowfocus=true});
 		$(window).blur(function(){windowfocus=false});
-		systemtitle = js.getoption('systemtitle','LEGEND');
+		systemtitle = js.getoption('systemtitle','信呼');
 		document.title=systemtitle;
 		notifyobj=new notifyClass({
 			title:'系统提醒',
@@ -1883,7 +1883,7 @@ function agentclass(opts){
 			js.changeuser(clx,'yy', this.num, d.name);
 			return;
 		}
-		if(lx==1 || lx==9 || lx==10 || lx==13){
+		if(lx==1 || lx==9 || lx==10){
 			var bts = (d.issm==1)?'必填':'选填';
 			js.prompt(d.name,'请输入['+d.name+']说明('+bts+')：',function(index, text){
 				if(index=='yes'){

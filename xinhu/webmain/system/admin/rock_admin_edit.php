@@ -5,7 +5,7 @@ $(document).ready(function(){
 	var id = params.id;
 	if(!id)id = 0;
 	var submitfields = 'status,sort,user,name,pingyin,pass,superid,superman,deptname,mobile,num,sex,tel,deptid,ranking,email,workdate,weixinid';
-	if(admintype=='1')submitfields+=',type';
+	if(adminid=='1')submitfields+=',type';
 	var h = $.bootsform({
 		window:false,rand:'{rand}',tablename:'admin',
 		url:js.getajaxurl('publicsave','admin','system'),
@@ -24,7 +24,7 @@ $(document).ready(function(){
 	});
 	h.forminit();
 	h.load(js.getajaxurl('loadadmin','admin','system',{id:id}));
-	if(admintype!='1')h.form.type.disabled=true;
+	if(adminid!='1')h.form.type.disabled=true;
 	var c = {
 		getdept:function(){
 			js.getuser({

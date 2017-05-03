@@ -129,17 +129,10 @@ function optmenuclass(o1,num,id,obj,mname,oi, cola){
 		var nwsh = 'showfielsv_'+js.getrand()+'';
 		var uostr= '<div align="left" style="padding:10px"><div id="'+nwsh+'" style="height:60px;overflow:auto" class="input"></div><input style="width:180px" id="'+nwsh+'_input" type="file"></div>';
 		var bts = (d.issm==1)?'必填':'选填';
-		if(lx==1 || lx==9 || lx==10 || lx==13 || lx==14){
-			if(lx==9 || lx==13)uostr='';
-			if(!d.smcont)d.smcont='';
-			if(lx==14)uostr='<div align="left" style="padding:10px"><input style="width:200px" placeholder="提醒时间" onclick="js.datechange(this,\'datetime\')" id="tantxdt" type="text" readonly class="input datesss"></div>';
+		if(lx==1 || lx==9 || lx==10){
+			if(lx==9)uostr='';
 			js.prompt(d.name,'请输入['+d.name+']说明('+bts+')：',function(index, text){
 				if(index=='yes'){
-					if(lx==14 && get('tantxdt').value==''){
-						js.msg('msg','提醒时间不能为空');
-						return true;
-					}
-					if(lx==14)d.txdt = get('tantxdt').value;
 					if(!text && d.issm==1){
 						js.msg('msg','没有输入['+d.name+']说明');
 					}else{
@@ -147,7 +140,7 @@ function optmenuclass(o1,num,id,obj,mname,oi, cola){
 					}
 					return true;
 				}
-			},d.smcont,'', uostr);
+			},'','', uostr);
 			this._uosschange(nwsh);
 			return;
 		}

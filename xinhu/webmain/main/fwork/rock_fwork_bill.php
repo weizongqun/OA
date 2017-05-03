@@ -82,7 +82,7 @@ $(document).ready(function(){
 			if(this.plbool)return;
 			var d = a.getcheckdata();
 			if(d.length<=0){
-				js.msg('msg','请先用复选框选中行');
+				js.msg('msg','没有选中行记录');
 				return;
 			}
 			this.checkd = d;
@@ -135,7 +135,6 @@ $(document).ready(function(){
 	if(atype=='mywtg'){
 		$('#stewwews{rand}').hide();
 	}
-	if(atype!='daib')$('#tdleft_{rand}').hide();
 });
 </script>
 <div>

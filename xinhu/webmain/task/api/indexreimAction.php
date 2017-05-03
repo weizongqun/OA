@@ -90,7 +90,7 @@ class indexreimClassAction extends apiAction
 	
 	public function showmyinfoAction()
 	{
-		$arr = m('admin')->getone($this->adminid,'`id`,`deptallname`,`ranking`,`face`,`name`,`user`,`mobile`');
+		$arr = m('admin')->getone($this->adminid,'`id`,`deptallname`,`ranking`,`face`,`name`');
 		if(!$arr)$this->showreturn('','not user', 201);
 		if(isempt($arr['face']))$arr['face']='images/noface.png';
 		$this->showreturn($arr);

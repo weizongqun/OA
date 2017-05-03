@@ -290,7 +290,7 @@ function tabsright(num,e){
 	var to= tabsarr[num],d = [];
 	if(!to.hideclose)d.push({'name':'关闭','num':num,lx:0});
 	if(num==nowtabs.num)d.push({'name':'关闭其它页面','num':num,lx:2});
-	if(adminid=='1')d.push({'name':'查看页面地址','num':num,lx:1});
+	if(admintype==1)d.push({'name':'查看页面地址','num':num,lx:1});
 	d.push({'name':'全部刷新','num':num,lx:3});
 	tabsrights.setData(d);
 	tabsrights.showAt(e.clientX,e.clientY+5);

@@ -11,15 +11,9 @@ class flow_userinfoClassModel extends flowModel
 
 	public function flowrsreplace($rs)
 	{
-		if($rs['state']==5)$rs['ishui']=1;
-		$rs['state']		= $this->getuserstate($rs['state']);
+		$rs['state']		= $this->statearr[$rs['state']];
 		$rs['birtype']		= $this->birtypearr[$rs['birtype']];
 		return $rs;
-	}
-	
-	public function getuserstate($zt)
-	{
-		return $this->rock->arrvalue($this->statearr,$zt,'未知');
 	}
 	
 	protected function flowbillwhere($uid, $lx)

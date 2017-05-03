@@ -216,9 +216,6 @@ $(document).ready(function(){
 				}
 			},'get',false, '移动中...,移动成功');
 			c.movedata=false;
-		},
-		floadshate:function(){
-			
 		}
 	};
 	js.initbtn(c);
@@ -233,14 +230,12 @@ $(document).ready(function(){
 	<div style="border:1px #cccccc solid">
 	  <div id="optionview_{rand}" style="height:400px;overflow:auto;"></div>
 	  <div  class="panel-footer">
-		<a href="javascript:" title="新增" click="clicktypewin,0" onclick="return false"><i class="icon-plus"></i></a>&nbsp; &nbsp;
-		<a href="javascript:" title="编辑" click="clicktypeeidt" onclick="return false"><i class="icon-edit"></i></a>&nbsp; &nbsp;
-		<a href="javascript:" title="删除" click="typedel" onclick="return false"><i class="icon-trash"></i></a>&nbsp; &nbsp;
-		<a href="javascript:" title="刷新" click="reload" onclick="return false"><i class="icon-refresh"></i></a>&nbsp; &nbsp;
-		<a href="javascript:" title="移动" click="move" onclick="return false"><i class="icon-move"></i></a>&nbsp; &nbsp;
-		<a href="javascript:" title="移动到顶级" click="moveto" onclick="return false"><i class="icon-arrow-up"></i></a><!--
-		&nbsp; 
-		<a href="javascript:" title="共享/取消共享" click="floadshate" onclick="return false"><i class="icon-share-alt"></i></a>-->
+		<a href="javascript:" title="新增" click="clicktypewin,0" onclick="return false"><i class="icon-plus"></i></a>&nbsp; &nbsp; 
+		<a href="javascript:" title="编辑" click="clicktypeeidt" onclick="return false"><i class="icon-edit"></i></a>&nbsp; &nbsp; 
+		<a href="javascript:" title="删除" click="typedel" onclick="return false"><i class="icon-trash"></i></a>&nbsp; &nbsp; 
+		<a href="javascript:" title="刷新" click="reload" onclick="return false"><i class="icon-refresh"></i></a>&nbsp; &nbsp; 
+		<a href="javascript:" title="移动" click="move" onclick="return false"><i class="icon-move"></i></a>&nbsp; &nbsp; 
+		<a href="javascript:" title="移动到顶级" click="moveto" onclick="return false"><i class="icon-arrow-up"></i></a>
 	  </div>
 	</div>  
 </td>

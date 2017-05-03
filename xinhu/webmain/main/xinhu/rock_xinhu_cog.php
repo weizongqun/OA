@@ -90,7 +90,7 @@ $(document).ready(function(){
 		
 		<tr>
 			<td  align="right" width="200"><font color=red>*</font> 服务端推送地址：</td>
-			<td class="tdinput"><input id="push_{rand}"  style="width:300px" readonly class="form-control"><br><font color=#888888>用于推送到LEGEND客户端,http://开头</font></td>
+			<td class="tdinput"><input id="push_{rand}"  style="width:300px" readonly class="form-control"><br><font color=#888888>用于推送到信呼客户端,http://开头</font></td>
 		</tr>
 		
 		<tr>

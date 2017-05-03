@@ -216,7 +216,7 @@ var myScroll=false,yy={
 			});
 			return;
 		}
-		if(lx==1 || lx==9 || lx==10 || lx==13){
+		if(lx==1 || lx==9 || lx==10){
 			var bts = (d.issm==1)?'必填':'选填';
 			js.wx.prompt(d.name,'请输入['+d.name+']说明('+bts+')：',function(text){
 				if(!text && d.issm==1){

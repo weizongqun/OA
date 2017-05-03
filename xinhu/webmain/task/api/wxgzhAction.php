@@ -1,7 +1,7 @@
 <?php 
 /**
 *	微信公众号接口
-*	来源：LEGEND开发团队，xxxxxxxx.com
+*	来源：信呼开发团队，xh829.com
 *	禁止抄袭盗版	
 */
 class wxgzhClassAction extends apiAction{

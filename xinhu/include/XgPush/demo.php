@@ -1,5 +1,5 @@
 <?php
-require_once('XingeApp.php');
+require_once ('XingeApp.php');
 
 var_dump(DemoPushSingleDeviceNotification());
 // var_dump(DemoPushSingleDeviceMessage());

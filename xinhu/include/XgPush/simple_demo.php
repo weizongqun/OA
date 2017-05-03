@@ -1,5 +1,5 @@
 <?php
-require_once('XingeApp.php');
+require_once ('XingeApp.php');
 
 //Android 版
 //给单个设备下发通知

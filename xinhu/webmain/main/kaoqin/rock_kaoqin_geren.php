@@ -2,9 +2,8 @@
 <script >
 $(document).ready(function(){
 	{params}
-	var month=params.month,uid=params.uid;
+	var month,uid=params.uid;
 	if(!uid)uid=''+adminid;
-	if(!month)month='';
 	var c = {
 		change:function(o1, lx){
 			mobj.fanmonth(lx);
@@ -39,7 +38,6 @@ $(document).ready(function(){
 	};
 	var mobj = $('#veiw_{rand}').rockcalendar({
 		height:viewheight-105,
-		month:month,
 		changemonth:function(y, m){
 			$('#nowmonth_{rand}').html(''+y+'年'+xy10(m)+'月的考勤表');
 			month	= ''+y+'-'+xy10(m)+'';

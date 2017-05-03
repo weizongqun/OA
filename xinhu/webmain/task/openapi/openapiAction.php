@@ -1,7 +1,7 @@
 <?php
 /**
 *	对外开发接口文件
-*	createname：LEGEND
+*	createname：信呼
 *	homeurl：http://xh829.com/
 *	Copyright (c) 2016 rainrock (xh829.com)
 *	Date:2016-11-01

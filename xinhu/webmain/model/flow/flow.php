@@ -1,6 +1,6 @@
 <?php
 /**
-*	来自：LEGEND开发团队
+*	来自：信呼开发团队
 *	作者：磐石(rainrock)
 *	网址：http://xh829.com/
 *	系统的核心文件之一，处理工作流程模块的。
@@ -183,7 +183,7 @@ class flowModel extends Model
 		return $to;
 	}
 	
-	public function isreadqx($glx=0)
+	public function isreadqx()
 	{
 		$bo = false;
 		if($this->uid==$this->adminid && $this->adminid>0)$bo=true;
@@ -202,7 +202,6 @@ class flowModel extends Model
 			$tos 	= $this->rows("`id`='$this->id'  $where ");
 			if($tos>0)$bo=true;
 		}
-		if($glx==1)return $bo;
 		if(!$bo)$this->echomsg('无权限查看模块['.$this->modenum.'.'.$this->modename.']'.$this->uname.'的数据，'.c('xinhu')->helpstr('cxqx').'');
 	}
 	
@@ -755,21 +754,6 @@ class flowModel extends Model
 	}
 	
 	/**
-	*	催办
-	*/
-	public function chuiban($sm='')
-	{
-		$this->addlog(array(
-			'explain' 	=> $sm,
-			'name'		=> '催办',
-			'status'	=> 1,
-		));
-		$farr = $this->getflow(true);
-		$this->nexttodo($farr['nowcheckid'],'cuiban', $sm);
-		$this->gettodosend('cuiban','', $sm);
-	}
-	
-	/**
 	*	匹配流程读取
 	*/
 	public function getflowpipei($uid=0)
@@ -1115,7 +1099,7 @@ class flowModel extends Model
 	{
 		$cont	= '';
 		$gname	= '流程待办';
-		if($type=='submit' || $type=='next' || $type == 'cuiban'){
+		if($type=='submit' || $type=='next'){
 			$cont = '你有['.$this->uname.']的['.$this->modename.',单号:'.$this->sericnum.']需要处理';
 			if($sm!='')$cont.='，说明:'.$sm.'';
 		}
@@ -1510,23 +1494,6 @@ class flowModel extends Model
 		return 'ok';
 	}
 	
-	/**
-	*	加入日程提醒
-	*/
-	public function addschedule($sm='')
-	{
-		$txdt = $this->rock->post('txdt');
-		if(isempt($sm))return '说明不能为空';
-		if(isempt($txdt))return '提醒时间不能为空';
-		$barr['title'] 		= $sm;
-		$barr['startdt'] 	= $txdt;
-		$barr['uid'] 	= $this->adminid;
-		$barr['optdt'] 	= $this->rock->now;
-		$barr['optname']= $this->adminname;
-		$barr['txsj'] 	= 1;
-		m('schedule')->insert($barr);
-		return 'ok';
-	}
 	
 	/*
 	*	获取操作菜单
@@ -1556,13 +1523,10 @@ class flowModel extends Model
 			unset($rs['id']);unset($rs['num']);unset($rs['wherestr']);unset($rs['type']);unset($rs['statuscolor']);
 			if($bo)$arr[] = $rs;
 		}
-		$status 	= $this->rs['status'];
+		
 		if($this->isflow==1){
-			if(!in_array($status, array(1,2,5)) &&$this->uid == $this->adminid){
+			if(($this->rs['status'] == 0 || $this->rs['status'] == 1) && $this->uid == $this->adminid){
 				$arr[] = array('name'=>'追加说明...','lx'=>1,'optmenuid'=>-12);
-			}
-			if(!in_array($status, array(1,2,5)) && $this->uid == $this->adminid){
-				$arr[] = array('name'=>'催办...','lx'=>13,'issm'=>1,'optmenuid'=>-13);
 			}
 			$chearr = $this->getflowinfor();
 			if($chearr['ischeck']==1){
@@ -1577,10 +1541,6 @@ class flowModel extends Model
 			}
 		}
 		
-		if($this->isreadqx(1)){
-			$smcont= ''.$this->modename.'：'.$this->rock->reparr($this->moders['summary'], $this->rs);
-			$arr[] = array('name'=>'＋加入日程提醒','smcont'=>$smcont,'issm'=>1,'optnum'=>'tixing','lx'=>'14','optmenuid'=>-14);
-		}
 		if($this->iseditqx()==1){
 			$arr[] = array('name'=>'编辑','optnum'=>'edit','lx'=>'11','optmenuid'=>-11);
 		}
@@ -1608,10 +1568,6 @@ class flowModel extends Model
 			if(contain($msg,'成功'))$msg = 'ok';
 		}else if($czid==-12){
 			$this->zhuijiaexplain($sm);
-		}else if($czid==-13){
-			$this->chuiban($sm);
-		}else if($czid==-14){
-			$msg = $this->addschedule($sm);	
 		}else{
 			$ors 	 = m('flow_menu')->getone("`id`='$czid' and `setid`='$this->modeid' and `status`=1");
 			if(!$ors)return '菜单不存在';

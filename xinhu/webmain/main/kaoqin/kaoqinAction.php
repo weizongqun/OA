@@ -316,23 +316,72 @@ class kaoqinClassAction extends Action
 			$s = 'and id='.$this->adminid.'';
 		}
 		
-		if(!isempt($key))$s.=" and (`name` like '%$key%' or `ranking` like '%$key%' or `deptname` like '%$key%')";
+		if(!isempt($key))$s.=" and (`name` like '%$key%' or `deptallname` like '%$key%')";
 		
-		$fields = 'id,name,deptname,ranking,workdate,state';
-		return array('where'=>$s,'fields'=>$fields,'order'=>'`id`');
+		$fields = 'id,name,deptname,ranking,workdate';
+		return array('where'=>$s,'fields'=>$fields,'order'=>'`sort`');
 	}
 	
 	public function kqtotalaftershow($table, $rows)
 	{
-		$zta 	= m('flow:userinfo');
-		foreach($rows as $k=>$rs){
-			if($rs['state']==5)$rows[$k]['ishui']=1;
-			$rows[$k]['state'] = $zta->getuserstate($rs['state']);
-		}
 		return m('kaoqin')->alltotalrows($this->months, $rows);
 	}
 	
-	
+	//弃用了
+	public function kqtotalaftershowdd($table, $rows)
+	{
+		$dtobj 	= c('date');
+		$uids 	= '0';
+		foreach($rows as $k=>$rs)$uids.=','.$rs['id'].'';
+		$farrs	= $columns = array();
+		//获取考勤状态数组{'正常':'state0'}
+		if($rows){
+			$fuid 	= $rows[0]['id'];
+			$farrs 	= m('kaoqin')->getkqztarr($fuid, $this->months.'-01');
+			$columns= $farrs;
+		}
+		
+		$darr	= $this->db->getall("SELECT uid,state,states FROM `[Q]kqanay` where iswork=1 and dt like '$this->months%' and `uid` in($uids)");
+		$sarr 	= array();
+		foreach($darr as $k=>$rs){
+			$state 	= $rs['state'];
+			$uid 	= $rs['uid'];
+			if(!isempt($rs['states']))$state='正常';
+			if(!isset($sarr[$uid]))$sarr[$uid]=array();
+			if(!isset($sarr[$uid][$state]))$sarr[$uid][$state]=0;
+			$sarr[$uid][$state]++;
+		}
+		
+		$farrs['未打卡'] 	= 'weidk';
+		$farrs['请假'] 		= 'qingjia';
+		$farrs['加班'] 		= 'jiaban';
+		
+		$kqarr	= $this->db->getall("select sum(totals)as totals,kind,uid from `[Q]kqinfo` where `status`=1 and `uid` in($uids) and `stime` like '$this->months%' and `kind` in('请假','加班') group by `uid`,`kind`");
+		foreach($kqarr as $k=>$rs){
+			$uid 	= $rs['uid'];
+			if(!isset($sarr[$uid]))$sarr[$uid]=array();
+			$sarr[$uid][$rs['kind']] = $rs['totals'];
+		}
+		
+		foreach($rows as $k=>$rs){
+			$uid 	= $rs['id'];
+			if(isset($sarr[$uid])){
+				foreach($sarr[$uid] as $zt=>$v){
+					if(isset($farrs[$zt])){
+						$rows[$k][$farrs[$zt]] = $v;
+					}
+				}
+			}
+			$outci	= $this->db->rows('[Q]kqout',"`status`=1 and `uid`=$uid and `outtime` like '$this->months%'");
+			if($outci==0)$outci='';
+			$rows[$k]['outci'] = $outci;
+			
+			$errci	= $this->db->rows('[Q]kqerr',"`status`=1 and `uid`=$uid and `dt` like '$this->months%'");
+			if($errci==0)$errci='';
+			$rows[$k]['errci'] = $errci;
+		}
+		return array('rows'=>$rows,'columns'=>$columns);
+	}
 	
 	/**
 	*	批量导入打卡记录

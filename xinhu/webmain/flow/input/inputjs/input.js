@@ -462,7 +462,7 @@ var c={
 			narrs.push(nna);
 		}
 		form('sub_totals'+xu+'').value=(oj+1);
-		str=str.replace(/rockdatepickerbool=\"true\"/gi,'');
+		str=str.replace('rockdatepickerbool="true"','');
 		o.append('<tr>'+str+'</tr>');
 		d=js.apply({sid:'0'},d);
 		for(d1 in d){

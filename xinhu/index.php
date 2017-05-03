@@ -2,7 +2,7 @@
 /**
 *	系统主要入口
 *	主页：http://xh829.com/
-*	软件：LEGEND
+*	软件：信呼
 *	作者：雨中磐石(rainrock)
 */
 include_once('config/config.php');
