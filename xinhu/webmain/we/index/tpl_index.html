@@ -53,6 +53,7 @@ function initbody(){
 	if(adminface)get('myface').src=adminface;
 	$('#myname').html(adminame);
 	$('#myshow_name').html(adminame);
+	$('#myshow_id').html(js.getoption('adminid'));
 	$('#myshow_deptname').html(js.getoption('deptallname'));
 	$('#myshow_ranking').html(js.getoption('ranking'));
 	
@@ -484,9 +485,11 @@ var im={
 			js.setoption('adminid',ret.id);
 			adminid 	= ret.id;
 			get('myface').src=adminface;
+			$('#myshow_id').html(adminid);
 			$('#myname').html(adminame);
-			$('#myshow_name').html(adminame);
+			$('#myshow_name').html(adminame+'('+ret.user+')');
 			$('#myshow_deptname').html(ret.deptallname);
+			$('#myshow_mobile').html(ret.mobile);
 			$('#myshow_ranking').html(ret.ranking);
 		},'none');
 	},
@@ -506,6 +509,15 @@ var im={
 			}
 			js.msg('success','同步成功');
 		},'wait');
+	},
+	bangdwex:function(){
+		if(!js.iswxbo()){
+			js.wx.alert('请使用微信客户端访问才可以绑定');
+			return;
+		}
+		js.wx.alert('官网暂无认证的微信公众号，无法开发');return;
+		js.wx.load('处理中...');
+		js.location('?m=login&d=we&a=oauthto&state=bang');
 	}
 };
 </script>
@@ -575,33 +587,51 @@ var im={
 	</div>
 
 	<div index="main" style="display:none"  id="main_index3">
-		<div class="hd">
-			<div><img id="myface" onclick="location.reload();" src="images/logo.png"></div>
+		
+		<div style="margin-top:20px" class="weui_panel weui_panel_access">
+			<div class="weui_panel_bd">
+				<a href="javascript:;" onclick="im.openuinfo(adminid)" class="weui_media_box weui_media_appmsg">
+					<div class="weui_media_hd">
+						<img class="weui_media_appmsg_thumb" id="myface" src="images/logo.png">
+					</div>
+					<div class="weui_media_bd">
+						<h4 class="weui_media_title" id="myshow_name"></h4>
+						<p class="weui_media_desc">部门：<label id="myshow_deptname"></label></p>
+					</div>
+				</a>
+			</div>
 		</div>
+			
+
 		
 		<div class="weui_cells weui_cells_access">
-			<a class="weui_cell" href="javascript:;">
-				<div class="weui_cell_bd weui_cell_primary">
-					<p style="color:#888888">部门</p>
-				</div>
-				<span id="myshow_deptname" class="weui_cell_right"></span>
-			</a>
-			<a class="weui_cell" href="javascript:;">
+			<div class="weui_cell">
 				<div class="weui_cell_bd weui_cell_primary">
 					<p style="color:#888888">职位</p>
 				</div>
 				<span id="myshow_ranking" class="weui_cell_right"></span>
-			</a>
-			<a class="weui_cell" href="javascript:;">
-
+			</div>
+			<div class="weui_cell">
 				<div class="weui_cell_bd weui_cell_primary">
-					<p style="color:#888888">姓名</p>
+					<p style="color:#888888">用户Id</p>
 				</div>
-				<span id="myshow_name" class="weui_cell_right"></span>
-			</a>
+				<span id="myshow_id" class="weui_cell_right"></span>
+			</div>
+			<div class="weui_cell">
+				<div class="weui_cell_bd weui_cell_primary">
+					<p style="color:#888888">我手机号</p>
+				</div>
+				<span id="myshow_mobile" class="weui_cell_right">15800000000</span>
+			</div>
 		</div>
 		
-		<div class="weui_cells weui_cells_access">
+		<div id="weixllq" class="weui_cells weui_cells_access">
+			<div onclick="im.bangdwex()" class="weui_cell">
+				<div class="weui_cell_bd weui_cell_primary">
+					绑定微信
+				</div>
+				<span class="weui_cell_ft">未绑定,点击绑定</span>
+			</div>
 			<div onclick="im.tongbuface()" class="weui_cell">
 				<div class="weui_cell_bd weui_cell_primary">
 					同步微信头像

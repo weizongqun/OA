@@ -9,6 +9,8 @@ $(document).ready(function(){
 		text:'姓名',dataIndex:'name',sortable:true
 	},{
 		text:'职位',dataIndex:'ranking'
+	},{
+		text:'人员状态',dataIndex:'state'
 	}];
 	var col2 = [{
 		text:'正常',dataIndex:'state0'
@@ -18,19 +20,17 @@ $(document).ready(function(){
 		text:'早退',dataIndex:'state2'
 	}];
 	var col3 = [{
+		text:'加班(时)',dataIndex:'jiaban'
+	},{
+		text:'外出(次)',dataIndex:'outci'
+	},{
+		text:'异常(次)',dataIndex:'errci'
+	},{
 		text:'应上班(天)',dataIndex:'sbday'
 	},{
 		text:'已上班(天)',dataIndex:'ysbday'
 	},{
 		text:'未打卡',dataIndex:'weidk'
-	},{
-		text:'请假(小时)',dataIndex:'qingjia'
-	},{
-		text:'加班(小时)',dataIndex:'jiaban'
-	},{
-		text:'外出(次数)',dataIndex:'outci'
-	},{
-		text:'异常(次数)',dataIndex:'errci'
 	}];
 	function getcolumns(a1,a2,a3){
 		var a4 = [].concat(a1,a2,a3);
@@ -38,7 +38,7 @@ $(document).ready(function(){
 	}
 	var colemsn = getcolumns(col1, col2, col3);
 	var a = $('#view_{rand}').bootstable({
-		tablename:'admin',celleditor:true,fanye:true,params:{'atype':atype},modedir:'{mode}:{dir}',storeafteraction:'kqtotalaftershow',storebeforeaction:'kqtotalbeforeshow',
+		tablename:'userinfo',celleditor:true,fanye:true,params:{'atype':atype},modedir:'{mode}:{dir}',storeafteraction:'kqtotalaftershow',storebeforeaction:'kqtotalbeforeshow',
 		columns:colemsn,
 		itemclick:function(){
 			get('xqkaoqb_{rand}').disabled=false;
@@ -74,7 +74,8 @@ $(document).ready(function(){
 		},
 		xqkaoqb:function(){
 			var d=a.changedata;
-			addtabs({num:'adminkaoqin'+d.id+'',url:'main,kaoqin,geren,uid='+d.id+'',icons:'time',name:''+d.name+'的考勤'});
+			var dt = get('dt1_{rand}').value;
+			addtabs({num:'adminkaoqin'+d.id+'',url:'main,kaoqin,geren,uid='+d.id+',month='+dt+'',icons:'time',name:''+d.name+''+dt+'的考勤'});
 		},
 		daochu:function(){
 			a.exceldown('考勤统计('+get('dt1_{rand}').value+')');
@@ -116,4 +117,4 @@ $(document).ready(function(){
 </div>
 <div class="blank10"></div>
 <div id="view_{rand}"></div>
-<div class="tishi">如考勤异常有申请请假外出视为正常，统计已审核完成的。</div>
+<div class="tishi">人员是从档案表里读取的，如考勤异常有申请请假外出视为正常，统计已审核完成的。</div>

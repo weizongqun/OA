@@ -1883,7 +1883,7 @@ function agentclass(opts){
 			js.changeuser(clx,'yy', this.num, d.name);
 			return;
 		}
-		if(lx==1 || lx==9 || lx==10){
+		if(lx==1 || lx==9 || lx==10 || lx==13){
 			var bts = (d.issm==1)?'必填':'选填';
 			js.prompt(d.name,'请输入['+d.name+']说明('+bts+')：',function(index, text){
 				if(index=='yes'){
