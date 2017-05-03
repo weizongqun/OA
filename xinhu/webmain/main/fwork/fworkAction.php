@@ -29,7 +29,7 @@ class fworkClassAction extends Action
 		$mid  = '0';
 		foreach($rows as $k=>$rs){
 			$path = ''.P.'/flow/page/rock_page_'.$rs['num'].'.php';
-			if(!file_exists($path))continue;
+			if(!file_exists($path) || $rs['isscl']==0)continue;
 			$lx = $rs['type'];
 			$mid.=','.$rs['id'].'';
 			$row[$lx][] = $rs;

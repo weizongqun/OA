@@ -8,8 +8,8 @@ $(document).ready(function(){
 	}
 
 	var a = $('#view_{rand}').bootstable({
-		tablename:'flow_where',storeafteraction:'flowwhereafter',storebeforeaction:'flowwherebefore',celleditor:true,defaultorder:'setid,sort,id desc',
-		url:publicstore('{mode}','{dir}'),fanye:true,pageSize:10,
+		tablename:'flow_where',storeafteraction:'flowwhereafter',storebeforeaction:'flowwherebefore',celleditor:true,defaultorder:'id desc',
+		url:publicstore('{mode}','{dir}'),fanye:true,
 		columns:[{
 			text:'模块名称',dataIndex:'modename'
 		},{
@@ -21,7 +21,7 @@ $(document).ready(function(){
 		},{
 			text:'编号',dataIndex:'num',editor:true
 		},{
-			text:'主表条件',dataIndex:'wheresstr',align:'left',renderer:function(v){
+			text:'主表条件(SQL条件)',dataIndex:'wheresstr',align:'left',renderer:function(v){
 				var s='&nbsp;';
 				if(!isempt(v))s=jm.base64decode(v);
 				return s;

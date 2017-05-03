@@ -1,8 +1,8 @@
 /**
-*	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¶ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¯)
-*	ï¿½ï¿½Ò³ï¿½ï¿½http://xxxxxxxx.com/
-*	docï¿½Ä¼ï¿½×ªpdfï¿½ï¿½ï¿½ï¿½
-*	Ê¹ï¿½Ã£ï¿½cscript //nologo doc.js //T:500 D:\a.doc
+*	´´½¨£ºÐÅºô¿ª·¢ÍÅ¶Ó(ÓêÖÐÅÍÊ¯)
+*	Ö÷Ò³£»http://xh829.com/
+*	docÎÄ¼þ×ªpdf³ÌÐò
+*	Ê¹ÓÃ£ºcscript //nologo doc.js //T:500 D:\a.doc
 *	var fso 	= new ActiveXObject("Scripting.FileSystemObject"); 
 */
 WScript.Echo("start...");

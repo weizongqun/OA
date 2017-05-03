@@ -1,12 +1,10 @@
 <?php 
 /**
 *	系统主要入口
-*	主页：http://xxxxxxxx.com/
+*	主页：http://xh829.com/
 *	软件：LEGEND
 *	作者：雨中磐石(rainrock)
 */
-
-//echo $_GET['echostr'];
 include_once('config/config.php');
 $_uurl 		= $rock->get('rewriteurl');
 $d 			= '';

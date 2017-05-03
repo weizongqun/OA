@@ -161,7 +161,7 @@ $(document).ready(function(){
 	
 	
 	
-	<td width="80%">&nbsp;&nbsp;<a href="javascipt:;" onclick="openanzwwwew()">[查看计划任务安装]</a>&nbsp;&nbsp;<a href="http://xxxxxxxx.com/view_taskrun.html"target="_blank">[帮助]</a></td>
+	<td width="80%">&nbsp;&nbsp;<a href="javascipt:;" onclick="openanzwwwew()">[查看计划任务安装]</a>&nbsp;&nbsp;<a href="http://xh829.com/view_taskrun.html"target="_blank">[帮助]</a></td>
 	<td align="right" nowrap>
 		
 		<button class="btn btn-default" id="yun_{rand}" click="yunx" disabled type="button">运行</button> &nbsp; 

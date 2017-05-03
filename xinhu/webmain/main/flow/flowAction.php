@@ -718,4 +718,15 @@ class mode_'.$modenum.'ClassAction extends inputAction{
 		echo $msg;
 	}
 	
+	public function savecolunmsAjax()
+	{
+		$num 	= $this->post('num');
+		$modeid = (int)$this->post('modeid');
+		$str 	= $this->post('str');
+		$this->option->setval($num.'@'.(-1*$modeid-1000), $str);
+		$path 	= m('mode')->createlistpage($modeid);
+		$msg 	= 'ok';
+		if($path=='')$msg='已保存,但无法从新生成列表页,自定义列将不能生效';
+		echo $msg;
+	}
 }

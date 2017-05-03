@@ -11,7 +11,7 @@ class wxgzhModel extends Model
 	
 	public $appid 		= '';
 	public $backarr 	= array();
-	private $secret 	= '';
+	protected $secret 	= '';
 	public function initWxgzh(){}
 	
 	public function initModel()

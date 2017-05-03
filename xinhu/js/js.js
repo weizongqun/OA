@@ -55,7 +55,7 @@ js.getcan = function(i,dev){
 js.gethost=function(){
 	var url = location.href,sau='';
 	try{sau = url.split('//')[1].split('/')[0];}catch(e){}
-	if(sau.indexOf('xxxxxxxx.com')>0)ISDEMO=true;
+	if(sau.indexOf('xh829.com')>0)ISDEMO=true;
 	return sau;
 }
 function winHb(){

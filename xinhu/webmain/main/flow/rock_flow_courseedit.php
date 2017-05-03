@@ -189,7 +189,7 @@ $(document).ready(function(){
 		</tr>
 		
 		<tr>
-			<td  align="right" nowrap ><a href="http://xxxxxxxx.com/view_checklx.html" target="_blank">?审核人员类型</a>：</td>
+			<td  align="right" nowrap ><a href="http://xh829.com/view_checklx.html" target="_blank">?审核人员类型</a>：</td>
 			<td class="tdinput"><select class="form-control" name="checktype"><option value="">-类型-</option><option value="super">直属上级</option><option value="rank">职位</option><option value="user">指定人员</option><option value="dept">部门负责人</option><option value="auto">自定义(写代码上)</option><option value="apply">申请人</option><option value="opt">操作人</option><option value="change">由上步指定</option></select></td>
 			
 			<td align="right" id="checktext_{rand}" nowrap></td>
@@ -254,7 +254,7 @@ $(document).ready(function(){
 		
 		<tr>
 			<td  align="right"></td>
-			<td style="padding:15px 0px" colspan="3" align="left"><button disabled class="btn btn-success" id="save_{rand}" type="button"><i class="icon-save"></i>&nbsp;保存</button>&nbsp; <span id="msgview_{rand}"></span>&nbsp;<a href="http://xxxxxxxx.com/view_course.html" target="_blank">[看帮助]</a>
+			<td style="padding:15px 0px" colspan="3" align="left"><button disabled class="btn btn-success" id="save_{rand}" type="button"><i class="icon-save"></i>&nbsp;保存</button>&nbsp; <span id="msgview_{rand}"></span>&nbsp;<a href="http://xh829.com/view_course.html" target="_blank">[看帮助]</a>
 		</td>
 		</tr>
 		

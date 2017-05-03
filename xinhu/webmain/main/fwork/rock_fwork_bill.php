@@ -7,7 +7,7 @@ $(document).ready(function(){
 	var bools=false;
 	var a = $('#view_{rand}').bootstable({
 		tablename:'flow_bill',params:{'atype':atype,'zt':zt},fanye:true,
-		url:publicstore('{mode}','{dir}'),
+		url:publicstore('{mode}','{dir}'),checked:atype=='daib',
 		storeafteraction:'flowbillafter',storebeforeaction:'flowbillbefore',
 		columns:[{
 			text:'',dataIndex:'caozuo',callback:'opegs{rand}'
@@ -77,6 +77,49 @@ $(document).ready(function(){
 			$('#state{rand}_'+lx+'').addClass('active');
 			a.setparams({zt:lx});
 			this.search();
+		},
+		plliang:function(){
+			if(this.plbool)return;
+			var d = a.getcheckdata();
+			if(d.length<=0){
+				js.msg('msg','请先用复选框选中行');
+				return;
+			}
+			this.checkd = d;
+			js.prompt('批量处理通过','请输入通过说明(选填)',function(lxbd,msg){
+				if(lxbd=='yes'){
+					setTimeout(function(){c.plliangso(msg);},10);
+				}
+			});
+		},
+		plliangso:function(sm){
+			this.plbool = true;
+			this.plchusm = sm;
+			this.cgshu = 0;
+			this.sbshu = 0;
+			js.wait('<span id="plchushumm"></span>');
+			this.plliangsos(0);
+		},
+		plliangsos:function(oi){
+			var len = this.checkd.length;
+			$('#plchushumm').html('批量处理中('+len+'/'+(oi+1)+')...');
+			if(oi>=len){
+				$('#plchushumm').html('处理完成，成功<font color=green>'+this.cgshu+'</font>条，失败<font color=red>'+this.sbshu+'</font>条');
+				this.reload();
+				this.plbool=false;
+				return;
+			}
+			var d = this.checkd[oi];
+			var cns= {sm:this.plchusm,zt:1,modenum:d.modenum,mid:d.id};
+			js.ajax(js.getajaxurl('check','flowopt','flow'),cns, function(ret){
+				if(ret.success){
+					c.cgshu++;
+				}else{
+					c.sbshu++;
+					js.msg('msg','['+d.modename+']'+ret.msg+'，不能使用批量来处理，请打开详情去处理。');
+				}
+				c.plliangsos(oi+1);
+			},'post,json');
 		}
 	};
 	js.initbtn(c);
@@ -92,11 +135,13 @@ $(document).ready(function(){
 	if(atype=='mywtg'){
 		$('#stewwews{rand}').hide();
 	}
+	if(atype!='daib')$('#tdleft_{rand}').hide();
 });
 </script>
 <div>
 	<table width="100%">
 	<tr>
+	<td style="padding-right:10px;" id="tdleft_{rand}" nowrap><button class="btn btn-primary" click="plliang,0" type="button">批量处理通过</button></td>
 	<td nowrap>
 		<select style="width:150px" id="mode_{rand}" class="form-control" ><option value="0">-选择模块-</option></select>	
 	</td>

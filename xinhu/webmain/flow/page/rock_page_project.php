@@ -2,7 +2,7 @@
 /**
 *	模块：project.项目，
 *	说明：自定义区域内可写您想要的代码，模块列表页面，生成分为2块
-*	来源：http://xxxxxxxx.com/
+*	来源：http://xh829.com/
 */
 defined('HOST') or die ('not access');
 ?>
@@ -11,6 +11,8 @@ $(document).ready(function(){
 	{params}
 	var modenum = 'project',modename='项目',isflow=0,modeid='22',atype = params.atype,pnum=params.pnum;
 	if(!atype)atype='';if(!pnum)pnum='';
+	var fieldsarr = [{"fields":"title","name":"\u540d\u79f0","fieldstype":"text","ispx":"0","isalign":"1","islb":"1"},{"fields":"num","name":"\u7f16\u53f7","fieldstype":"text","ispx":"1","isalign":"0","islb":"1"},{"fields":"type","name":"\u9879\u76ee\u7c7b\u578b","fieldstype":"rockcombo","ispx":"1","isalign":"0","islb":"1"},{"fields":"startdt","name":"\u5f00\u59cb\u65f6\u95f4","fieldstype":"datetime","ispx":"1","isalign":"0","islb":"1"},{"fields":"enddt","name":"\u9884\u8ba1\u7ed3\u675f\u65f6\u95f4","fieldstype":"datetime","ispx":"0","isalign":"0","islb":"1"},{"fields":"fuze","name":"\u8d1f\u8d23\u4eba","fieldstype":"changeuser","ispx":"1","isalign":"0","islb":"1"},{"fields":"runuser","name":"\u6267\u884c\u4eba","fieldstype":"changedeptusercheck","ispx":"0","isalign":"0","islb":"1"},{"fields":"progress","name":"\u8fdb\u5ea6(%)","fieldstype":"select","ispx":"0","isalign":"0","islb":"1"},{"fields":"content","name":"\u5185\u5bb9","fieldstype":"htmlediter","ispx":"0","isalign":"0","islb":"0"},{"fields":"workshu","name":"\u4efb\u52a1\u6570","fieldstype":"number","ispx":"0","isalign":"0","islb":"1"},{"fields":"status","name":"\u72b6\u6001","fieldstype":"select","ispx":"1","isalign":"0","islb":"1"}],fieldsselarr= [];
+	
 	//常用操作c方法
 	var c = {
 		//刷新
@@ -100,6 +102,33 @@ $(document).ready(function(){
 				bootparams.columns[oi]=d;
 			}
 		},
+		initcolumns:function(bots){
+			var num = 'columns_'+modenum+'_'+pnum+'',d=[],d1,d2={},i,len=fieldsarr.length,bok;
+			var nstr= fieldsselarr[num];if(!nstr)nstr='';
+			if(nstr)nstr=','+nstr+',';
+			for(i=0;i<len;i++){
+				d1 = fieldsarr[i];
+				bok= false;
+				if(nstr==''){
+					if(d1['islb']=='1')bok=true;
+				}else{
+					if(nstr.indexOf(','+d1.fields+',')>=0)bok=true;
+				}
+				if(bok){
+					d2={text:d1.name,dataIndex:d1.fields};
+					if(d1.ispx=='1')d2.sortable=true;
+					if(d1.isalign=='1')d2.align='left';
+					if(d1.isalign=='2')d2.align='right';
+					d.push(d2);
+				}
+			}
+			if(nstr=='' || nstr.indexOf(',caozuo,')>=0)d.push({text:'',dataIndex:'caozuo',callback:'opegs{rand}'});
+			if(!bots){
+				bootparams.columns=d;
+			}else{
+				a.setColumns(d);
+			}
+		},
 		setparams:function(cs){
 			var ds = js.apply({},cs);
 			a.setparams(ds);
@@ -110,6 +139,26 @@ $(document).ready(function(){
 		},
 		printlist:function(){
 			js.msg('success','可使用导出，然后打开在打印');
+		},
+		getbtnstr:function(txt, click, ys, ots){
+			if(!ys)ys='default';
+			if(!ots)ots='';
+			return '<button class="btn btn-'+ys+'" id="btn'+click+'_{rand}" click="'+click+'" '+ots+' type="button">'+txt+'</button>';
+		},
+		setfieldslist:function(){
+			new highsearchclass({
+				modenum:modenum,
+				modeid:modeid,
+				type:1,
+				pnum:pnum,atype:atype,
+				fieldsarr:fieldsarr,
+				fieldsselarr:fieldsselarr,
+				oncallback:function(str){
+					fieldsselarr[this.columnsnum]=str;
+					c.initcolumns(true);
+					c.reload();
+				}
+			});
 		}
 	};	
 	
@@ -118,23 +167,17 @@ $(document).ready(function(){
 		fanye:true,modenum:modenum,modename:modename,
 		url:c.storeurl(),storeafteraction:'storeaftershow',storebeforeaction:'storebeforeshow',
 		params:{atype:atype},
-		columns:[{text:"项目类型",dataIndex:"type"},{text:"编号",dataIndex:"num"},{text:"名称",dataIndex:"title"},{text:"开始时间",dataIndex:"startdt"},{text:"预计结束时间",dataIndex:"enddt"},{text:"负责人",dataIndex:"fuze"},{text:"执行人",dataIndex:"runuser"},{text:"进度(%)",dataIndex:"progress"},{text:"状态",dataIndex:"state"},{
+		columns:[{text:"名称",dataIndex:"title",align:"left"},{text:"编号",dataIndex:"num",sortable:true},{text:"项目类型",dataIndex:"type",sortable:true},{text:"开始时间",dataIndex:"startdt",sortable:true},{text:"预计结束时间",dataIndex:"enddt"},{text:"负责人",dataIndex:"fuze",sortable:true},{text:"执行人",dataIndex:"runuser"},{text:"进度(%)",dataIndex:"progress"},{text:"任务数",dataIndex:"workshu"},{text:"状态",dataIndex:"status",sortable:true},{
 			text:'',dataIndex:'caozuo',callback:'opegs{rand}'
 		}],
 		itemdblclick:function(){
 			c.view();
 		},
-		itemclick:function(){
-			get('xiang_{rand}').disabled=false;
-		},
-		beforeload:function(){
-			get('xiang_{rand}').disabled=true;
-		},
 		load:function(d){
 			c.loaddata(d);
 		}
 	};
-	
+	c.initcolumns(false);
 	opegs{rand}=function(){
 		c.reload();
 	}
@@ -159,19 +202,19 @@ viespere{rand}=function(id){
 
 //[自定义区域end]
 
-	js.initbtn(c);//初始化绑定按钮方法
-	var a = $('#viewproject_{rand}').bootstable(bootparams);//加载表格
+	js.initbtn(c);
+	var a = $('#viewproject_{rand}').bootstable(bootparams);
 	c.init();
+	var ddata = [{name:'高级搜索',lx:0}];
+	if(admintype==1)ddata.push({name:'自定义列显示',lx:2});
+	ddata.push({name:'打印',lx:1});
 	$('#downbtn_{rand}').rockmenu({
-		width:110,top:35,donghua:false,
-		data:[{
-			name:'高级搜索',lx:0
-		},{
-			name:'打印',lx:1
-		}],
+		width:120,top:35,donghua:false,
+		data:ddata,
 		itemsclick:function(d, i){
 			if(d.lx==0)c.searchhigh();
 			if(d.lx==1)c.printlist();
+			if(d.lx==2)c.setfieldslist();
 		}
 	});
 });
@@ -181,11 +224,11 @@ viespere{rand}=function(id){
 <div>
 	<table width="100%">
 	<tr>
-		<td style="padding-right:10px;"><button class="btn btn-primary" click="clickwin,0" type="button"><i class="icon-plus"></i> 新增</button></td>
+		<td style="padding-right:10px;" id="tdleft_{rand}" nowrap><button class="btn btn-primary" click="clickwin,0" type="button"><i class="icon-plus"></i> 新增</button></td>
 		<td>
 			<input class="form-control" style="width:160px" id="key_{rand}" placeholder="搜索关键词">
 		</td>
-		
+		<td style="padding-left:10px"><select class="form-control" style="width:120px" id="selstatus_{rand}"><option value="">-全部状态-</option><option style="color:blue" value="0">待执行</option><option style="color:green" value="1">已完成</option><option style="color:#888888" value="2">结束</option><option style="color:#ff6600" value="3">执行中</option><option style="color:#888888" value="5">已作废</option></select></td>
 		<td style="padding-left:10px">
 			<div style="width:81px" class="btn-group">
 			<button class="btn btn-default" click="searchbtn" type="button">搜索</button><button class="btn btn-default" id="downbtn_{rand}" type="button" style="padding-left:8px;padding-right:8px"><i class="icon-angle-down"></i></button> 
@@ -193,8 +236,7 @@ viespere{rand}=function(id){
 		</td>
 		<td  width="90%" style="padding-left:10px"><div id="changatype{rand}" class="btn-group"></div></td>
 	
-		<td align="right" nowrap>
-			<button class="btn btn-default" id="xiang_{rand}" click="view" disabled type="button">详情</button> &nbsp; 
+		<td align="right" id="tdright_{rand}" nowrap>
 			<button class="btn btn-default" click="daochu,1" type="button">导出</button> 
 		</td>
 	</tr>

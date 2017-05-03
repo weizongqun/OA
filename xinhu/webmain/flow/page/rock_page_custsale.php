@@ -1,6 +1,6 @@
 <?php
 /**
-*	模块：daily.工作日报，
+*	模块：custsale.销售机会，
 *	说明：自定义区域内可写您想要的代码，模块列表页面，生成分为2块
 *	来源：http://xh829.com/
 */
@@ -9,9 +9,9 @@ defined('HOST') or die ('not access');
 <script>
 $(document).ready(function(){
 	{params}
-	var modenum = 'daily',modename='工作日报',isflow=0,modeid='3',atype = params.atype,pnum=params.pnum;
+	var modenum = 'custsale',modename='销售机会',isflow=0,modeid='8',atype = params.atype,pnum=params.pnum;
 	if(!atype)atype='';if(!pnum)pnum='';
-	var fieldsarr = [{"fields":"deptname","name":"\u90e8\u95e8","fieldstype":"text","ispx":"0","isalign":"0","islb":"1"},{"fields":"optname","name":"\u4eba\u5458","fieldstype":"text","ispx":"0","isalign":"0","islb":"1"},{"fields":"type","name":"\u65e5\u62a5\u7c7b\u578b","fieldstype":"select","ispx":"1","isalign":"0","islb":"1"},{"fields":"dt","name":"\u65e5\u671f","fieldstype":"date","ispx":"1","isalign":"0","islb":"1"},{"fields":"enddt","name":"\u622a\u6b62\u65e5\u671f","fieldstype":"date","ispx":"0","isalign":"0","islb":"0"},{"fields":"content","name":"\u5185\u5bb9","fieldstype":"textarea","ispx":"0","isalign":"1","islb":"1"},{"fields":"plan","name":"\u660e\u65e5\u8ba1\u5212","fieldstype":"textarea","ispx":"0","isalign":"0","islb":"0"},{"fields":"adddt","name":"\u65b0\u589e\u65f6\u95f4","fieldstype":"hidden","ispx":"0","isalign":"0","islb":"1"},{"fields":"mark","name":"\u8bc4\u5206\u5206\u6570","fieldstype":"text","ispx":"0","isalign":"0","islb":"0"},{"fields":"optdt","name":"\u64cd\u4f5c\u65f6\u95f4","fieldstype":"datetime","ispx":"1","isalign":"0","islb":"1"}],fieldsselarr= {"columns_daily_":"deptname,optname,type,dt,content,adddt,optdt,caozuo"};
+	var fieldsarr = [{"fields":"custid","name":"\u5ba2\u6237","fieldstype":"hidden","ispx":"0","isalign":"0","islb":"0"},{"fields":"custname","name":"\u5ba2\u6237","fieldstype":"selectdatafalse","ispx":"0","isalign":"0","islb":"1"},{"fields":"applydt","name":"\u7533\u8bf7\u65e5\u671f","fieldstype":"date","ispx":"1","isalign":"0","islb":"1"},{"fields":"laiyuan","name":"\u6765\u6e90","fieldstype":"rockcombo","ispx":"0","isalign":"0","islb":"1"},{"fields":"money","name":"\u91d1\u989d","fieldstype":"number","ispx":"1","isalign":"0","islb":"1"},{"fields":"adddt","name":"\u6dfb\u52a0\u65f6\u95f4","fieldstype":"datetime","ispx":"0","isalign":"0","islb":"1"},{"fields":"createname","name":"\u521b\u5efa\u4eba","fieldstype":"text","ispx":"0","isalign":"0","islb":"1"},{"fields":"optname","name":"\u9500\u552e\u4eba\u5458","fieldstype":"text","ispx":"1","isalign":"0","islb":"1"},{"fields":"state","name":"\u72b6\u6001","fieldstype":"rockcombo","ispx":"1","isalign":"0","islb":"1"},{"fields":"explain","name":"\u8bf4\u660e","fieldstype":"textarea","ispx":"0","isalign":"0","islb":"1"}],fieldsselarr= [];
 	
 	//常用操作c方法
 	var c = {
@@ -60,7 +60,7 @@ $(document).ready(function(){
 		},
 		//对应控制器返回rul
 		getacturl:function(act){
-			return js.getajaxurl(act,'mode_daily|input','flow',{'modeid':modeid});
+			return js.getajaxurl(act,'mode_custsale|input','flow',{'modeid':modeid});
 		},
 		//查看切换
 		changatype:function(o1,lx){
@@ -167,7 +167,7 @@ $(document).ready(function(){
 		fanye:true,modenum:modenum,modename:modename,
 		url:c.storeurl(),storeafteraction:'storeaftershow',storebeforeaction:'storebeforeshow',
 		params:{atype:atype},
-		columns:[{text:"部门",dataIndex:"deptname"},{text:"人员",dataIndex:"optname"},{text:"日报类型",dataIndex:"type",sortable:true},{text:"日期",dataIndex:"dt",sortable:true},{text:"内容",dataIndex:"content",align:"left"},{text:"新增时间",dataIndex:"adddt"},{text:"操作时间",dataIndex:"optdt",sortable:true},{
+		columns:[{text:"客户",dataIndex:"custname"},{text:"申请日期",dataIndex:"applydt",sortable:true},{text:"来源",dataIndex:"laiyuan"},{text:"金额",dataIndex:"money",sortable:true},{text:"添加时间",dataIndex:"adddt"},{text:"创建人",dataIndex:"createname"},{text:"销售人员",dataIndex:"optname",sortable:true},{text:"状态",dataIndex:"state",sortable:true},{text:"说明",dataIndex:"explain"},{
 			text:'',dataIndex:'caozuo',callback:'opegs{rand}'
 		}],
 		itemdblclick:function(){
@@ -189,7 +189,7 @@ $(document).ready(function(){
 //[自定义区域end]
 
 	js.initbtn(c);
-	var a = $('#viewdaily_{rand}').bootstable(bootparams);
+	var a = $('#viewcustsale_{rand}').bootstable(bootparams);
 	c.init();
 	var ddata = [{name:'高级搜索',lx:0}];
 	if(admintype==1)ddata.push({name:'自定义列显示',lx:2});
@@ -229,5 +229,5 @@ $(document).ready(function(){
 	</table>
 </div>
 <div class="blank10"></div>
-<div id="viewdaily_{rand}"></div>
+<div id="viewcustsale_{rand}"></div>
 <!--HTMLend-->

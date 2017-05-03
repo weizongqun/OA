@@ -249,13 +249,17 @@ class upgradeClassAction extends Action
 				$modeid = $db->insert($flow_set);
 				$isadd	= true;
 			}else{
+				$db->update($flow_set, $modeid);
+				/*
 				$db->update(array(
+					'where' 	=> $flow_set['where'],
 					'summary' 	=> $flow_set['summary'],
 					'summarx' 	=> $flow_set['summarx'],
 					'tables' 	=> $flow_set['tables'],
 					'names' 	=> $flow_set['names'],
+					'names' 	=> $flow_set['names'],
 					'statusstr' => $flow_set['statusstr']
-				), $modeid);
+				), $modeid);*/
 			}
 			
 			//字段

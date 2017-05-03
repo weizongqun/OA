@@ -2,7 +2,7 @@
 /**
 *	来自：LEGEND开发团队
 *	作者：磐石(rainrock)
-*	网址：http://xxxxxxxx.com/
+*	网址：http://xh829.com/
 *	系统的核心文件之一，处理工作流程模块的。
 */
 class flowModel extends Model
@@ -85,6 +85,8 @@ class flowModel extends Model
 	protected $flowweixinarr	= array();
 	protected $flowviewufieds	= 'uid';
 	
+	protected $flowfieldstype	= 0; //获取字段类型0默认*，1根据字段元素设置得到字段
+	
 	//初始化单据可替换其他属性
 	public function flowrsreplace($rs){return $rs;}
 	
@@ -120,7 +122,7 @@ class flowModel extends Model
 	
 	private function tfieldsarra()
 	{
-		$rows	= m('flow_element')->getrows("`mid`='$this->modeid' and `iszb`=0",'`name`,`fields`,`isbt`,`fieldstype`,`savewhere`,`data`,`iszb`,`issou`,`islu`','`sort`');
+		$rows	= m('flow_element')->getrows("`mid`='$this->modeid' and `iszb`=0",'`name`,`fields`,`isbt`,`fieldstype`,`savewhere`,`data`,`iszb`,`issou`,`islu`,`islb`','`sort`');
 		$this->fieldsarr = array();
 		if($rows)foreach($rows as $k=>$rs){
 			if($rs['islu']==1)$this->fieldsarr[] = $rs;
@@ -181,7 +183,7 @@ class flowModel extends Model
 		return $to;
 	}
 	
-	public function isreadqx()
+	public function isreadqx($glx=0)
 	{
 		$bo = false;
 		if($this->uid==$this->adminid && $this->adminid>0)$bo=true;
@@ -200,6 +202,7 @@ class flowModel extends Model
 			$tos 	= $this->rows("`id`='$this->id'  $where ");
 			if($tos>0)$bo=true;
 		}
+		if($glx==1)return $bo;
 		if(!$bo)$this->echomsg('无权限查看模块['.$this->modenum.'.'.$this->modename.']'.$this->uname.'的数据，'.c('xinhu')->helpstr('cxqx').'');
 	}
 	
@@ -752,6 +755,21 @@ class flowModel extends Model
 	}
 	
 	/**
+	*	催办
+	*/
+	public function chuiban($sm='')
+	{
+		$this->addlog(array(
+			'explain' 	=> $sm,
+			'name'		=> '催办',
+			'status'	=> 1,
+		));
+		$farr = $this->getflow(true);
+		$this->nexttodo($farr['nowcheckid'],'cuiban', $sm);
+		$this->gettodosend('cuiban','', $sm);
+	}
+	
+	/**
 	*	匹配流程读取
 	*/
 	public function getflowpipei($uid=0)
@@ -1097,8 +1115,8 @@ class flowModel extends Model
 	{
 		$cont	= '';
 		$gname	= '流程待办';
-		if($type=='submit' || $type=='next'){
-			$cont = '你有['.$this->adminname.']的['.$this->modename.',单号:'.$this->sericnum.']需要处理';
+		if($type=='submit' || $type=='next' || $type == 'cuiban'){
+			$cont = '你有['.$this->uname.']的['.$this->modename.',单号:'.$this->sericnum.']需要处理';
 			if($sm!='')$cont.='，说明:'.$sm.'';
 		}
 		//审核不通过
@@ -1110,7 +1128,7 @@ class flowModel extends Model
 			$cont = '你提交的['.$this->modename.',单号:'.$this->sericnum.']已全部处理完成';
 		}
 		if($type == 'zhui'){
-			$cont = '你有['.$this->adminname.']的['.$this->modename.',单号:'.$this->sericnum.']需要处理，追加说明:['.$sm.']';
+			$cont = ''.$this->adminname.'追加单据说明['.$this->modename.',单号:'.$this->sericnum.']，说明:['.$sm.']';
 		}
 		//退回
 		if($type == 'tui'){
@@ -1492,6 +1510,23 @@ class flowModel extends Model
 		return 'ok';
 	}
 	
+	/**
+	*	加入日程提醒
+	*/
+	public function addschedule($sm='')
+	{
+		$txdt = $this->rock->post('txdt');
+		if(isempt($sm))return '说明不能为空';
+		if(isempt($txdt))return '提醒时间不能为空';
+		$barr['title'] 		= $sm;
+		$barr['startdt'] 	= $txdt;
+		$barr['uid'] 	= $this->adminid;
+		$barr['optdt'] 	= $this->rock->now;
+		$barr['optname']= $this->adminname;
+		$barr['txsj'] 	= 1;
+		m('schedule')->insert($barr);
+		return 'ok';
+	}
 	
 	/*
 	*	获取操作菜单
@@ -1521,10 +1556,13 @@ class flowModel extends Model
 			unset($rs['id']);unset($rs['num']);unset($rs['wherestr']);unset($rs['type']);unset($rs['statuscolor']);
 			if($bo)$arr[] = $rs;
 		}
-		
+		$status 	= $this->rs['status'];
 		if($this->isflow==1){
-			if(($this->rs['status'] == 0 || $this->rs['status'] == 1) && $this->uid == $this->adminid){
+			if(!in_array($status, array(1,2,5)) &&$this->uid == $this->adminid){
 				$arr[] = array('name'=>'追加说明...','lx'=>1,'optmenuid'=>-12);
+			}
+			if(!in_array($status, array(1,2,5)) && $this->uid == $this->adminid){
+				$arr[] = array('name'=>'催办...','lx'=>13,'issm'=>1,'optmenuid'=>-13);
 			}
 			$chearr = $this->getflowinfor();
 			if($chearr['ischeck']==1){
@@ -1539,6 +1577,10 @@ class flowModel extends Model
 			}
 		}
 		
+		if($this->isreadqx(1)){
+			$smcont= ''.$this->modename.'：'.$this->rock->reparr($this->moders['summary'], $this->rs);
+			$arr[] = array('name'=>'＋加入日程提醒','smcont'=>$smcont,'issm'=>1,'optnum'=>'tixing','lx'=>'14','optmenuid'=>-14);
+		}
 		if($this->iseditqx()==1){
 			$arr[] = array('name'=>'编辑','optnum'=>'edit','lx'=>'11','optmenuid'=>-11);
 		}
@@ -1566,6 +1608,10 @@ class flowModel extends Model
 			if(contain($msg,'成功'))$msg = 'ok';
 		}else if($czid==-12){
 			$this->zhuijiaexplain($sm);
+		}else if($czid==-13){
+			$this->chuiban($sm);
+		}else if($czid==-14){
+			$msg = $this->addschedule($sm);	
 		}else{
 			$ors 	 = m('flow_menu')->getone("`id`='$czid' and `setid`='$this->modeid' and `status`=1");
 			if(!$ors)return '菜单不存在';
@@ -1643,6 +1689,7 @@ class flowModel extends Model
 		$fwhere			= $this->getflowwhere($uid, $lx);//流程模块上条件
 		$path 			= ''.P.'/flow/page/rock_page_'.$this->modenum.'.php';
 		
+		
 		if(isempt($fwhere) && isempt($inwhere) && $this->moders['isscl']==1){
 			$fwhere	 	= 'and 1=2';
 		}
@@ -1659,11 +1706,12 @@ class flowModel extends Model
 		
 		//关键词搜索
 		$key 			= $this->rock->post('key');
+		$pnum 			= $this->rock->post('pnum');
 		$status 		= $this->rock->post('keystatus');
 		if(!isempt($status))$where .= ' and {asqom}`status`='.$status.'';
 		if(!isempt($key) && isempt($arr['keywhere'])){
 			$_kearr = array();
-			$skeay 	= array('text','textarea','htmlediter','changeuser','changeusercheck','changedept','changedeptusercheck');
+			$skeay 	= array('text','textarea','htmlediter','changeuser','changeusercheck','changedept','changedeptusercheck','selectdatafalse','selectdatatrue');
 			foreach($this->fieldsarra as $k=>$rs){
 				if($rs['issou']==1 && in_array($rs['fieldstype'], $skeay)){
 					$_kearr[] = "{asqom}`".$rs['fields']."` like '%".$key."%'";
@@ -1675,6 +1723,34 @@ class flowModel extends Model
 
 		if($highwhere!='')$where .= ' '.$highwhere;
 		$where 			= str_replace('{asqom}', $arr['asqom'], $where);
+		
+		//字段显示
+		$fields 		= $arr['fields'];
+		if($this->flowfieldstype==1 && (isempt($fields) || $fields=='*') && $this->moders['isscl']==1){
+			$allfields = $this->db->getallfields('[Q]'.$this->mtable.'');
+			$fields	= '{asqom}`id`';
+			$odlvs	= m('option')->getval('columns_'.$this->modenum.'_'.$pnum.'');
+			if(isempt($odlvs)){
+				foreach($this->fieldsarra as $k=>$rs){
+					if($rs['islb']==1 && in_array($rs['fields'],$allfields)){
+						$fields.=',{asqom}`'.$rs['fields'].'`';
+					}
+				}
+			}else{
+				$odlvsa = explode(',', $odlvs);
+				foreach($odlvsa as $odlvs1){
+					if(in_array($odlvs1, $allfields)){
+						$fields.=',{asqom}`'.$odlvs1.'`';
+					}
+				}
+			}
+			if($this->isflow==1){
+				if(!contain($fields,'`status`'))$fields.=',{asqom}`status`';
+			}
+			$fields = str_replace('{asqom}', $arr['asqom'], $fields);
+			$arr['fields'] = $fields;
+		}
+		
 		$arr['where'] 	= $where;
 		return $arr;
 	}
@@ -1733,6 +1809,7 @@ class flowModel extends Model
 		$nas 	= $this->billwhere($uid, $lx);
 		$table 	= $nas['table'];
 		if(!contain($table,' '))$table='[Q]'.$table.'';
+		if(isempt($nas['fields']))$nas['fields'] = '*';
 		$rows 	= $this->db->getrows($table, '1=1 '.$nas['where'].'', $nas['fields'], $nas['order'], $limit);
 		return $rows;
 	}

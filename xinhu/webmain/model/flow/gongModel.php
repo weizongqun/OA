@@ -1,6 +1,7 @@
 <?php
 class flow_gongClassModel extends flowModel
 {
+	
 	public function initModel()
 	{
 		$this->logobj = m('log');
@@ -80,11 +81,8 @@ class flow_gongClassModel extends flowModel
 	
 	protected function flowbillwhere($uid, $lx)
 	{
-		$s 		= m('admin')->getjoinstr('receid', $uid);
 		$key 	= $this->rock->post('key');
 		$keywere= '';
-	
-		
 		if(!isempt($key))$keywere.=" and (`title` like '%$key%' or `typename`='$key')";
 		
 		return array(

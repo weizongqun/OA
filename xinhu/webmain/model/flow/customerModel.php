@@ -4,30 +4,35 @@ class flow_customerClassModel extends flowModel
 	public function initModel()
 	{
 		$this->statearr		 = c('array')->strtoarray('停用|#888888,启用|green');
+		$this->statarr		 = c('array')->strtoarray('否|#888888,是|#ff6600');
 	}
 	
 
 	
-	public function flowrsreplace($rs)
+	public function flowrsreplace($rs, $lx=0)
 	{
-		$zt = $this->statearr[$rs['status']];
-		if($rs['status']==0)$rs['ishui'] = 1;
-		$rs['status']	= '<font color="'.$zt[1].'">'.$zt[0].'</font>';
-		if($rs['htshu']==0)$rs['htshu']='';
-		if($rs['moneyz']==0)$rs['moneyz']='';
-		if($rs['moneyd']==0)$rs['moneyd']='';
+		if(isset($rs['status'])){
+			if($rs['status']==0)$rs['ishui'] = 1;
+			$zt 	= $this->statearr[$rs['status']];
+			$rs['status']	= '<font color="'.$zt[1].'">'.$zt[0].'</font>';
+		}
+		
+		if(isset($rs['isstat'])){
+			$stat 	= $this->statarr[$rs['isstat']];
+			$rs['isstat']	= '<font color="'.$stat[1].'">'.$stat[0].'</font>';
+		}
+		
+		if(isset($rs['isgys'])){
+			$gys 	= $this->statarr[$rs['isgys']];
+			$rs['isgys']	= '<font color="'.$gys[1].'">'.$gys[0].'</font>';
+		}
+		if($this->rock->arrvalue($rs,'htshu','0')==0)$rs['htshu']='';
+		if($this->rock->arrvalue($rs,'moneyz','0')==0)$rs['moneyz']='';
+		if($this->rock->arrvalue($rs,'moneyd','0')==0)$rs['moneyd']='';
 		return $rs;
 	}
 	
 	
-	protected function flowprintrows($rows)
-	{
-		foreach($rows as $k=>$rs){
-			$zt = $this->statearr[$rs['status']];
-			$rows[$k]['status']		= '<font color="'.$zt[1].'">'.$zt[0].'</font>';;
-		}
-		return $rows;
-	}
 	
 	//是否有查看权限
 	protected function flowisreadqx()
@@ -38,7 +43,7 @@ class flow_customerClassModel extends flowModel
 		return $bo;
 	}
 	
-	protected function flowgetfields($lx)
+	protected function flowgetfields_qiyong($lx)
 	{
 		$arr = array();
 		if($this->uid==$this->adminid){
@@ -81,68 +86,7 @@ class flow_customerClassModel extends flowModel
 	
 	protected function flowbillwhere($uid, $lx)
 	{
-		$where 	= '`uid`='.$uid.' and `status`=1';
-		$key 	= $this->rock->post('key');
-		$lxa 	= explode('_', $lx);
-		$lxs 	= $lxa[0];
-		if(isset($lxa[1]))$lx = $lxa[1];
-		
-		if($lxs=='my'){
-			$where = '`uid`='.$uid.'';
-		}
-		if($lxs=='shatemy'){
-			$where	= $this->rock->dbinstr('shateid', $uid);
-		}
-		if($lxs=='down'){
-			$where = m('admin')->getdownwheres('uid', $uid, 0);
-		}
-		if($lxs=='dist'){
-			$ss1 	= m('admin')->getdownwheres('uid', $uid, 0);
-			$ss2 	= m('admin')->getdownwheres('createid', $uid, 0);
-			$where 	= '`id` >0 and ((`fzid`='.$uid.') or (`uid`='.$uid.') or (`createid`='.$uid.') or ('.$ss1.') or ('.$ss2.'))';
-		}
-		if($lx=='qy'){
-			$where.=' and `status`=1';
-		}
-		if($lx=='ting'){
-			$where.=' and `status`=0';
-		}
-		if($lx=='stat'){
-			$where.=' and `isstat`=1';
-		}
-		if($lx=='yfp'){
-			$where.=' and `uid`>0';
-		}
-		if($lx=='wfp'){
-			$where.=' and `uid`=0';
-		}
-		
-		if($lx=='myty'){
-			$where 	= '`uid`='.$uid.' and `status`=0';
-		}
-		
-		if($lx=='all'){
-			$where 	= '`uid`='.$uid.'';
-		}
-		//共享给我
-		if($lx=='gxgw'){
-			$where	= $this->rock->dbinstr('shateid', $uid);
-		}
-		//我共享
-		if($lx=='mygx'){
-			$where 	= '`uid`='.$uid.' and `shateid` is not null';
-		}
-		
-		//客户统计一览
-		if($lx=='totolall'){
-			$where = '1=1';
-		}
-		
-		if(!isempt($key))$where.=" and (`name` like '%$key%' or `unitname` like '%$key%' or `optname`='$key')";
-	
 		return array(
-			'where' => 'and '.$where,
-			'fields'=> 'id,name,status,laiyuan,isgys,createname,optname,unitname,shate,tel,type,adddt,moneyz,moneyd,htshu',
 			'order' => 'status desc,optdt desc'
 		);
 	}

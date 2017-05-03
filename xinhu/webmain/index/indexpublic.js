@@ -38,7 +38,7 @@ function _addbodykey(){
 		//弹出帮助
 		if(code==113){
 			js.confirm('是否打开查看关于['+nowtabs.name+']的帮助信息？',function(jg){
-				if(jg=='yes')window.open('http://xxxxxxxx.com/view_'+nowtabs.num+'.html?title='+jm.base64encode(nowtabs.name)+'');
+				if(jg=='yes')window.open('http://xh829.com/view_'+nowtabs.num+'.html?title='+jm.base64encode(nowtabs.name)+'');
 			});
 			return false;
 		}
@@ -129,10 +129,17 @@ function optmenuclass(o1,num,id,obj,mname,oi, cola){
 		var nwsh = 'showfielsv_'+js.getrand()+'';
 		var uostr= '<div align="left" style="padding:10px"><div id="'+nwsh+'" style="height:60px;overflow:auto" class="input"></div><input style="width:180px" id="'+nwsh+'_input" type="file"></div>';
 		var bts = (d.issm==1)?'必填':'选填';
-		if(lx==1 || lx==9 || lx==10){
-			if(lx==9)uostr='';
+		if(lx==1 || lx==9 || lx==10 || lx==13 || lx==14){
+			if(lx==9 || lx==13)uostr='';
+			if(!d.smcont)d.smcont='';
+			if(lx==14)uostr='<div align="left" style="padding:10px"><input style="width:200px" placeholder="提醒时间" onclick="js.datechange(this,\'datetime\')" id="tantxdt" type="text" readonly class="input datesss"></div>';
 			js.prompt(d.name,'请输入['+d.name+']说明('+bts+')：',function(index, text){
 				if(index=='yes'){
+					if(lx==14 && get('tantxdt').value==''){
+						js.msg('msg','提醒时间不能为空');
+						return true;
+					}
+					if(lx==14)d.txdt = get('tantxdt').value;
 					if(!text && d.issm==1){
 						js.msg('msg','没有输入['+d.name+']说明');
 					}else{
@@ -140,7 +147,7 @@ function optmenuclass(o1,num,id,obj,mname,oi, cola){
 					}
 					return true;
 				}
-			},'','', uostr);
+			},d.smcont,'', uostr);
 			this._uosschange(nwsh);
 			return;
 		}
@@ -228,29 +235,54 @@ js.getuser = function(cans){
 }
 
 /**
-*	高级搜索使用
+*	type=0高级搜索使用,1设置自定义字段
 */
 var highdata={};
 function highsearchclass(options){
 	var me 		= this;
-	var cans 	= js.apply({'oncallback':function(){},'modenum':''}, options);
+	var cans 	= js.apply({'oncallback':function(){},'modenum':'','type':0}, options);
 	for(var a in cans)this[a]=cans[a];
 	this.init 	= function(){
 		if(!this.modenum)return;
-		js.tanbody('searchhigh','高级搜索', 450,300,{
-			html:'<div id="searchhighhtml" style="height:200px;overflow:auto;"></div>',
-			btn:[{text:'搜索'}],
-			msg:'<a id="searchhigh_cz" href="javascript:;">[重置]</a> &nbsp; '
-		});
+		if(this.type==0){
+			js.tanbody('searchhigh','高级搜索', 450,300,{
+				html:'<div id="searchhighhtml" style="height:200px;overflow:auto;"></div>',
+				btn:[{text:'搜索'}],
+				msg:'<a id="searchhigh_cz" href="javascript:;">[重置]</a> &nbsp; '
+			});
+			this.initfields();
+		}
+		if(this.type==1){
+			js.tanbody('searchhigh','自定义列显示', 300,350,{
+				html:'<div id="searchhighhtml" class="select-list" style="height:300px;overflow:auto;"></div>',
+				btn:[{text:'确定'}]
+			});
+			this.initfields();
+		}
 		$('#searchhigh_btn0').click(function(){
 			me.queding();
 		});
 		$('#searchhigh_cz').click(function(){
 			me.chongzhi();
 		});
-		this.initfields();
 	};
 	this.initfields=function(){
+		if(this.type==1){
+			var i,a=this.fieldsarr,b=this.fieldsselarr,len=a.length,str='',fid='columns_'+this.modenum+'_'+this.pnum+'',selstr='caozuo';
+			for(i=0;i<len;i++){
+				str+='<div class="div01"><label><input name="selfields" type="checkbox" value="'+a[i].fields+'">&nbsp;'+a[i].name+'('+a[i].fields+')</label></div>';
+				if(a[i].islb==1)selstr+=','+a[i].fields+'';
+			}
+			str+='<div class="div01"><label><input name="selfields" type="checkbox" value="caozuo">&nbsp;操作列</label></div>';
+			$('#searchhighhtml').html(str);
+			if(b[fid])selstr=b[fid];
+			selstr	= ','+selstr+',';
+			$('input[name=selfields]').each(function(){
+				if(selstr.indexOf(','+this.value+',')>=0)this.checked=true;
+			});
+			this.columnsnum = fid;
+			return;
+		}
 		$('#searchhighhtml').html('<div align="center" style="padding:10px">'+js.getmsg('加载中...')+'</div>');
 		var fieldsat = this.getinitdata('fields');
 		if(!fieldsat){
@@ -322,10 +354,32 @@ function highsearchclass(options){
 		}
 		return s;
 	};
+	this.setmsg=function(str){
+		js.setmsg(str,'', 'msgview_searchhigh');
+	};
 	this.queding=function(){
-		var d = this.saveformdata();
-		this.oncallback(d);
-		js.tanclose('searchhigh');
+		var d = '';
+		if(this.type==0){
+			d = this.saveformdata();
+			this.oncallback(d);
+			js.tanclose('searchhigh');
+		}
+		if(this.type==1){
+			$('input[name=selfields]').each(function(){
+				if(this.checked)d+=','+this.value+'';
+			});
+			if(d!='')d=d.substr(1);
+			this.setmsg('保存中...');
+			js.ajax(js.getajaxurl('savecolunms','flow','main'),{num:this.columnsnum,str:d,modeid:this.modeid},function(s){
+				if(s=='ok'){
+					js.msg('success','保存成功');
+					me.oncallback(d);
+					js.tanclose('searchhigh');
+				}else{
+					me.setmsg(s);
+				}
+			},'post');
+		}
 	};
 	this.saveformdata=function(){
 		var d = js.getformdata('highform');

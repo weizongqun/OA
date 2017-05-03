@@ -20,7 +20,7 @@ $(document).ready(function(){;
 		},{
 			text:'职位',dataIndex:'ranking',editor:true
 		},{
-			text:'状态',dataIndex:'status',type:'checkbox',editor:(HOST.indexOf('xxxxxxxx.com')==-1),sortable:true
+			text:'状态',dataIndex:'status',type:'checkbox',editor:!ISDEMO,sortable:true
 		},{
 			text:'管理员',dataIndex:'type',type:'checkbox',sortable:true
 		},{

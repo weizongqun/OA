@@ -6,7 +6,7 @@ $(document).ready(function(){
 	if(!id)id = 0;
 	var h = $.bootsform({
 		window:false,rand:'{rand}',tablename:'flow_where',url:publicsave('{mode}','{dir}'),
-		submitfields:'setid,name,wheresstr,whereustr,wheredstr,explain,recename,status,islb,receid,nrecename,nreceid,num,sort',requiredfields:'name',
+		submitfields:'setid,name,wheresstr,whereustr,wheredstr,pnum,explain,recename,status,islb,receid,nrecename,nreceid,num,sort',requiredfields:'name',
 		success:function(){
 			closenowtabs();
 			try{guanflowwherelist.reload();}catch(e){}
@@ -93,6 +93,12 @@ $(document).ready(function(){
 			<td class="tdinput" width="30%"><input name="num"  maxlength="30" class="form-control"></td>
 		</tr>
 		
+		<tr>
+			<td  align="right" ></td>
+			<td class="tdinput" ></td>
+			<td  align="right" >分组编号：</td>
+			<td class="tdinput"><input name="pnum"  maxlength="30" class="form-control"></td>
+		</tr>
 		
 
 		<tr>

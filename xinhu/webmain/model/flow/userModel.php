@@ -35,7 +35,7 @@ class flow_userClassModel extends flowModel
 	//替换
 	public function flowrsreplace($rs, $lx=0)
 	{
-		if($lx==2){
+		if($this->rock->ismobile()){
 			if(isset($rs['mobile']) && !isempt($rs['mobile']))$rs['mobile']='<a href="tel:'.$rs['mobile'].'">'.$rs['mobile'].'</a>';
 			if(isset($rs['tel']) && !isempt($rs['tel']))$rs['tel']='<a href="tel:'.$rs['tel'].'">'.$rs['tel'].'</a>';
 		}

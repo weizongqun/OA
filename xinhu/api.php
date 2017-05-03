@@ -1,7 +1,7 @@
 <?php 
 /**
 *	api的入口地址请求访问，访问方法：http://我的域名/api.php?m=index&a=方法
-*	主页：http://xxxxxxxx.com/
+*	主页：http://xh829.com/
 *	软件：LEGEND
 *	作者：雨中磐石(rainrock)
 */

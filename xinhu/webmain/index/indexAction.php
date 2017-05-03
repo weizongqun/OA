@@ -27,6 +27,7 @@ class indexClassAction extends Action{
 		$this->smartydata['showkey']	= $showkey;
 		$this->smartydata['homeurl']	= $homeurl;
 		$this->smartydata['homename']	= $homename;
+		$this->smartydata['admintype']	= $isadmin;
 		$this->smartydata['my']			= $my;
 		$this->smartydata['afrom']		= $afrom;
 		$this->smartydata['face']		= $this->rock->repempt($my['face'], 'images/noface.png');

@@ -5,22 +5,29 @@ class adminClassModel extends Model
 	
 	public function gjoin($joinid, $glx='ud', $blx='bxl')
 	{
-		$uid 	= $did = '0';
-		if($this->rock->isempt($joinid))return '';
-		if($this->rock->contain($joinid, 'all'))return 'all';
+		$uid 	= $did = $gid = '0';
+		if(isempt($joinid))return '';
+		$joinid 	= strtolower($joinid);
+		if(contain($joinid, 'all'))return 'all';
 		$narr 	= explode(',', $joinid);
 		$dwhe	= array();
 		foreach($narr as $sid){
 			$lx 	= substr($sid, 0, 1);
-			$ssid 	= str_replace(array('u','d','U','D'), array('','','',''), $sid);
+			$ssid 	= str_replace(array('u','d','g'), array('','',''), $sid);
 			if($lx == 'd' || $glx=='d'){
 				$did.=','.$ssid.'';
 				$dwhe[] = "instr(`deptpath`, '[$ssid]')>0";
+			}else if($lx=='g'){
+				$gid.=','.$ssid.'';
 			}else{
 				$uid.=','.$ssid.'';
 			}
 		}
 		$where = '';
+		if($gid!='0'){
+			$uids = $this->getgrouptouid($gid);
+			if($uids!='')$uid.=','.$uids.'';
+		}
 		if($did != '0'){
 			$where = join(' or ', $dwhe);
 			if($uid!='0')$where.=" or `id` in($uid)";
@@ -35,6 +42,23 @@ class adminClassModel extends Model
 			if($guid !='')$guid = substr($guid, 1);
 		}
 		return $guid;
+	}
+	
+	/**
+	*	根据组获取底下人员Id
+	*/
+	public function getgrouptouid($gid)
+	{
+		if(isempt($gid))return '';
+		$where 	= "1=1 and ((`type`='gu' and `mid` in($gid)) or (`type`='ug' and `sid` in($gid)))";
+		$rows  	= $this->db->getall("select `type`,`mid`,`sid` from `[Q]sjoin` where $where");
+		$uids 	= '';
+		foreach($rows as $k=>$rs){
+			if($rs['type']=='gu')$uids.=','.$rs['sid'].'';
+			if($rs['type']=='ug')$uids.=','.$rs['mid'].'';
+		}
+		if($uids!='')$uids= substr($uids, 1);
+		return $uids;
 	}
 	
 	/**
@@ -317,9 +341,11 @@ class adminClassModel extends Model
 		$rows = $this->getall("`status`=1 and ((1 $where) or (`id`='$uid'))",$fields,'sort,name');
 		$py   = c('pingyin');
 		foreach($rows as $k=>$rs){
-			$rows[$k]['face'] = $this->getface($rs['face']);
+			$rows[$k]['face'] = $rs['face'] = $this->getface($rs['face']);
 			if($lx==1){
-				if(isempt($rs['pingyin']))$rows[$k]['pingyin'] = $py->get($rs['name'],1);
+				if(isempt($rs['pingyin'])){
+					$rows[$k]['pingyin'] = $rs['pingyin'] = $py->get($rs['name'],1);
+				}
 			}
 			foreach($rs as $k1=>$v1)if($v1==null)$rows[$k][$k1]='';
 		}

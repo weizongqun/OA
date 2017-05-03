@@ -22,7 +22,7 @@ class optionClassModel extends Model
 	{
 		if(!is_numeric($num)){
 			$id  = (int)$this->getmou('id', "`num`='$num'");
-			if($id == 0)$id = -1;
+			if($id == 0)$id = -829;
 		}else{
 			$id = $num;
 		}

@@ -28,4 +28,17 @@ class loginClassAction extends ActionNot{
 			m('weixin:oauth')->logincode();
 		}
 	}
+	
+	
+	/**
+	*	微信授权
+	*/
+	public function oauthtoAction()
+	{
+		m('wxgzh:oauth')->oauthto();
+	}
+	public function oauthbackAction()
+	{
+		m('wxgzh:oauth')->oauthback();
+	}
 }

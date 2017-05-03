@@ -8,7 +8,10 @@ class adminClassAction extends Action
 		if($data){
 			$data['pass']='';
 		}
-		$arr['data'] = $data;
+		$arr['data'] 		= $data;
+		$dbs 				= m('sjoin');
+		$arr['grouparr'] 	= $dbs->getgrouparr();
+		$arr['groupid'] 	= $dbs->getgroupid($id);
 		
 		$this->returnjson($arr);
 	}
@@ -93,6 +96,8 @@ class adminClassAction extends Action
 		if(getconfig('systype')=='demo'){
 			m('weixin:user')->optuserwx($id);
 		}
+		$mygroup = $this->post('mygroup');
+		m('sjoin')->addgroupuid($id, $mygroup);
 		$this->updatess('and a.id='.$id.'');
 	}
 	

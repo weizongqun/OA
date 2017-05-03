@@ -3,7 +3,7 @@
 *	caratename：chenxihu
 *	caratetime：2014-04-06 21:40:00
 *	email:qqqq2900@126.com
-*	homepage:www.xxxxxxxx.com
+*	homepage:www.xh829.com
 */
 
 (function ($) {
@@ -398,7 +398,7 @@
 			if(this.bool)return;
 			var excelfields='',excelheader='',i,a=can.columns;
 			var das = this._loaddata(1, true);
-			das.limit = 2000;
+			das.limit = 10000;
 			das.execldown 	= 'true';if(!bt)bt=nowtabs.name;
 			das.exceltitle	= jm.encrypt(bt);
 			this.bool = true;

@@ -71,6 +71,7 @@ $(document).ready(function(){
 		},
 		refresh:function(){
 			a.reload();
+			if(gid>0)at.reload();
 		},
 		addguser:function(){
 			var cans = {
@@ -128,7 +129,8 @@ $(document).ready(function(){
 	<div>
 	<ul class="floats">
 		<li class="floats50">
-			<button class="btn btn-primary" click="clickwin,0" type="button"><i class="icon-plus"></i> 新增组</button>
+			<button class="btn btn-primary" click="clickwin,0" type="button"><i class="icon-plus"></i> 新增组</button>&nbsp; 
+			<button class="btn btn-default" click="refresh,0" type="button">刷新</button>
 		</li>
 		<li class="floats50" style="text-align:right">
 			<button class="btn btn-danger" id="del_{rand}" click="del" disabled type="button"><i class="icon-trash"></i> 删除</button> &nbsp; 

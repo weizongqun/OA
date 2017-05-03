@@ -5,7 +5,7 @@ $(document).ready(function(){
 	var id = params.id;
 	if(!id)id = 0;
 	var submitfields = 'status,sort,user,name,pingyin,pass,superid,superman,deptname,mobile,num,sex,tel,deptid,ranking,email,workdate,weixinid';
-	if(adminid=='1')submitfields+=',type';
+	if(admintype=='1')submitfields+=',type';
 	var h = $.bootsform({
 		window:false,rand:'{rand}',tablename:'admin',
 		url:js.getajaxurl('publicsave','admin','system'),
@@ -19,12 +19,12 @@ $(document).ready(function(){
 			try{adminusermanage.reload();}catch(e){}
 		},
 		load:function(a){
-			
+			c.showgroup(a);
 		}
 	});
 	h.forminit();
 	h.load(js.getajaxurl('loadadmin','admin','system',{id:id}));
-	if(adminid!='1')h.form.type.disabled=true;
+	if(admintype!='1')h.form.type.disabled=true;
 	var c = {
 		getdept:function(){
 			js.getuser({
@@ -50,6 +50,14 @@ $(document).ready(function(){
 		},
 		clickdt:function(o1, lx){
 			$(o1).rockdatepicker({initshow:true,view:'date',inputid:'dt'+lx+'_{rand}'});
+		},
+		showgroup:function(a){
+			var s = '',d=a.grouparr,guid=','+a.groupid+',';
+			for(var i=0;i<d.length;i++){
+				var chek = guid.indexOf(','+d[i].id+',')>=0 ? 'checked' : '';
+				s+='&nbsp;<label><input type="checkbox" '+chek+' name="mygroup[]" value="'+d[i].id+'">&nbsp;'+d[i].name+'</label>&nbsp; &nbsp; ';
+			}
+			$('#grouplist_{rand}').html(s);
 		}
 	}
 	
@@ -167,7 +175,8 @@ $(document).ready(function(){
 		
 		
 		<tr>
-			
+			<td align="right">所在的组：</td>
+			<td class="tdinput" id="grouplist_{rand}"></td>
 		</tr>
 	
 		

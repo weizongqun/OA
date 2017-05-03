@@ -3,7 +3,7 @@
 	caratename：chenxihu
 	caratetime：214-04-06 21:40:00
 	email:qqqq2900@126.com
-	homepage:www.xxxxxxxx.com
+	homepage:www.xh829.com
 */
 var rockmenuobj	= null;
 (function ($) {

@@ -1,6 +1,6 @@
 <?php
 /**
-*	模块：daily.工作日报，
+*	模块：customer.客户，
 *	说明：自定义区域内可写您想要的代码，模块列表页面，生成分为2块
 *	来源：http://xh829.com/
 */
@@ -9,9 +9,9 @@ defined('HOST') or die ('not access');
 <script>
 $(document).ready(function(){
 	{params}
-	var modenum = 'daily',modename='工作日报',isflow=0,modeid='3',atype = params.atype,pnum=params.pnum;
+	var modenum = 'customer',modename='客户',isflow=0,modeid='7',atype = params.atype,pnum=params.pnum;
 	if(!atype)atype='';if(!pnum)pnum='';
-	var fieldsarr = [{"fields":"deptname","name":"\u90e8\u95e8","fieldstype":"text","ispx":"0","isalign":"0","islb":"1"},{"fields":"optname","name":"\u4eba\u5458","fieldstype":"text","ispx":"0","isalign":"0","islb":"1"},{"fields":"type","name":"\u65e5\u62a5\u7c7b\u578b","fieldstype":"select","ispx":"1","isalign":"0","islb":"1"},{"fields":"dt","name":"\u65e5\u671f","fieldstype":"date","ispx":"1","isalign":"0","islb":"1"},{"fields":"enddt","name":"\u622a\u6b62\u65e5\u671f","fieldstype":"date","ispx":"0","isalign":"0","islb":"0"},{"fields":"content","name":"\u5185\u5bb9","fieldstype":"textarea","ispx":"0","isalign":"1","islb":"1"},{"fields":"plan","name":"\u660e\u65e5\u8ba1\u5212","fieldstype":"textarea","ispx":"0","isalign":"0","islb":"0"},{"fields":"adddt","name":"\u65b0\u589e\u65f6\u95f4","fieldstype":"hidden","ispx":"0","isalign":"0","islb":"1"},{"fields":"mark","name":"\u8bc4\u5206\u5206\u6570","fieldstype":"text","ispx":"0","isalign":"0","islb":"0"},{"fields":"optdt","name":"\u64cd\u4f5c\u65f6\u95f4","fieldstype":"datetime","ispx":"1","isalign":"0","islb":"1"}],fieldsselarr= {"columns_daily_":"deptname,optname,type,dt,content,adddt,optdt,caozuo"};
+	var fieldsarr = [{"fields":"name","name":"\u5ba2\u6237\u540d\u79f0","fieldstype":"text","ispx":"0","isalign":"0","islb":"1"},{"fields":"optname","name":"\u6240\u5c5e\u4eba","fieldstype":"text","ispx":"1","isalign":"0","islb":"1"},{"fields":"type","name":"\u5ba2\u6237\u7c7b\u578b","fieldstype":"rockcombo","ispx":"1","isalign":"0","islb":"1"},{"fields":"laiyuan","name":"\u6765\u6e90","fieldstype":"rockcombo","ispx":"0","isalign":"0","islb":"0"},{"fields":"unitname","name":"\u5ba2\u6237\u5355\u4f4d","fieldstype":"text","ispx":"0","isalign":"0","islb":"1"},{"fields":"tel","name":"\u8054\u7cfb\u7535\u8bdd","fieldstype":"text","ispx":"0","isalign":"0","islb":"0"},{"fields":"mobile","name":"\u8054\u7cfb\u624b\u673a","fieldstype":"text","ispx":"0","isalign":"0","islb":"0"},{"fields":"email","name":"\u90ae\u7bb1","fieldstype":"text","ispx":"0","isalign":"0","islb":"0"},{"fields":"address","name":"\u5730\u5740","fieldstype":"text","ispx":"0","isalign":"0","islb":"0"},{"fields":"routeline","name":"\u4ea4\u901a\u8def\u7ebf","fieldstype":"textarea","ispx":"0","isalign":"0","islb":"0"},{"fields":"status","name":"\u72b6\u6001","fieldstype":"select","ispx":"0","isalign":"0","islb":"0"},{"fields":"isstat","name":"\u662f\u5426\u6807\u2605","fieldstype":"select","ispx":"1","isalign":"0","islb":"1"},{"fields":"isgys","name":"\u4f9b\u5e94\u5546","fieldstype":"checkbox","ispx":"0","isalign":"0","islb":"0"},{"fields":"linkname","name":"\u8054\u7cfb\u4eba","fieldstype":"text","ispx":"0","isalign":"0","islb":"0"},{"fields":"explain","name":"\u8bf4\u660e","fieldstype":"textarea","ispx":"0","isalign":"0","islb":"0"},{"fields":"htshu","name":"\u5408\u540c\u6570","fieldstype":"number","ispx":"1","isalign":"0","islb":"1"},{"fields":"moneyz","name":"\u9500\u552e\u603b\u989d","fieldstype":"number","ispx":"1","isalign":"0","islb":"1"},{"fields":"moneyd","name":"\u5f85\u6536\u91d1\u989d","fieldstype":"number","ispx":"1","isalign":"0","islb":"1"}],fieldsselarr= {"columns_customer_":"name,optname,type,unitname,tel,mobile,address,isstat,htshu,moneyz,moneyd,caozuo","columns_customer_dist":"name,optname,type,laiyuan,unitname,isgys,linkname","columns_customer_shate":"name,optname,type,laiyuan,unitname,isstat"};
 	
 	//常用操作c方法
 	var c = {
@@ -60,7 +60,7 @@ $(document).ready(function(){
 		},
 		//对应控制器返回rul
 		getacturl:function(act){
-			return js.getajaxurl(act,'mode_daily|input','flow',{'modeid':modeid});
+			return js.getajaxurl(act,'mode_customer|input','flow',{'modeid':modeid});
 		},
 		//查看切换
 		changatype:function(o1,lx){
@@ -167,7 +167,7 @@ $(document).ready(function(){
 		fanye:true,modenum:modenum,modename:modename,
 		url:c.storeurl(),storeafteraction:'storeaftershow',storebeforeaction:'storebeforeshow',
 		params:{atype:atype},
-		columns:[{text:"部门",dataIndex:"deptname"},{text:"人员",dataIndex:"optname"},{text:"日报类型",dataIndex:"type",sortable:true},{text:"日期",dataIndex:"dt",sortable:true},{text:"内容",dataIndex:"content",align:"left"},{text:"新增时间",dataIndex:"adddt"},{text:"操作时间",dataIndex:"optdt",sortable:true},{
+		columns:[{text:"客户名称",dataIndex:"name"},{text:"所属人",dataIndex:"optname",sortable:true},{text:"客户类型",dataIndex:"type",sortable:true},{text:"客户单位",dataIndex:"unitname"},{text:"是否标★",dataIndex:"isstat",sortable:true},{text:"合同数",dataIndex:"htshu",sortable:true},{text:"销售总额",dataIndex:"moneyz",sortable:true},{text:"待收金额",dataIndex:"moneyd",sortable:true},{
 			text:'',dataIndex:'caozuo',callback:'opegs{rand}'
 		}],
 		itemdblclick:function(){
@@ -184,12 +184,87 @@ $(document).ready(function(){
 	
 //[自定义区域start]
 
+var chengsuid = '';
+if(pnum==''){
+	bootparams.checked = true;
+	c.daoru=function(){
+		custmanagesss = a;
+		addtabs({num:'customeraddpl',url:'main,customer,addpl',name:'导入客户'});
+	}
+	c.move=function(){
+		var s= a.getchecked();
+		if(s==''){js.msg('msg','没有选择记录');return;}
+		chengsuid=s;
+		js.confirm('是否客户转移给其他人，并客户下的合同和待收付款单和销售机会同时转移？', function(jg){
+			if(jg=='yes')c.moveto();
+		});
+	}
+	c.movetoss=function(sna,toid){
+		js.ajax(js.getajaxurl('movecust',modenum,'main'),{'toid':toid,'sid':chengsuid},function(s){
+			a.reload();
+		},'post',false,'转移给:'+sna+'...,转移成功');
+	}
+	c.moveto=function(sid){
+		var cans = {
+			type:'user',
+			title:'转移给...',
+			callback:function(sna,sid){
+				if(sid)c.movetoss(sna,sid);
+			}
+		}
+		setTimeout(function(){js.getuser(cans);},10);
+	}
+	$('#tdright_{rand}').append('&nbsp; '+c.getbtnstr('客户转移','move'));
+	$('#tdright_{rand}').append('&nbsp; '+c.getbtnstr('导入','daoru'));
+}else{
+	$('#tdleft_{rand}').hide();
+	if(pnum=='dist'){
+		bootparams.checked = true;
+		c.distss=function(o1,lx){
+			var s = a.getchecked();
+			if(s==''){js.msg('msg','没有选中行');return;}
+			if(lx==0){
+				js.confirm('确定要将选中标为未分配吗？',function(jg){
+					if(jg=='yes')c.distssok(s, '','', 0);
+				});
+				return;
+			}
+			var cans = {
+				type:'user',
+				title:'选中分配给...',
+				callback:function(sna,sid){
+					if(sna=='')return;
+					setTimeout(function(){
+						js.confirm('确定要将选中记录分配给：['+sna+']吗？',function(jg){
+							if(jg=='yes')c.distssok(s, sna,sid,1);
+						});
+					},10);
+				}
+			};
+			js.getuser(cans);
+		}
+		c.distssok=function(s, sna,sid, lx){
+			js.ajax(js.getajaxurl('distcust',modenum,'main'),{sid:s,sname:sna,snid:sid,lx:lx},function(s){
+				a.reload();
+			},'post','','处理中...,处理成功');
+		}
+		$('#tdright_{rand}').prepend(c.getbtnstr('标为未分配','distss,0')+'&nbsp;');
+		$('#tdright_{rand}').prepend(c.getbtnstr('选中分配给','distss,1')+'&nbsp;&nbsp;');
+	}
+}
 
+$('#tdright_{rand}').prepend(c.getbtnstr('重新统计金额','retotal')+'&nbsp;');
+
+c.retotal=function(){
+	js.ajax(js.getajaxurl('retotal',modenum,'main'),{},function(s){
+		a.reload();
+	},'get',false,'统计中...,统计完成')
+}
 
 //[自定义区域end]
 
 	js.initbtn(c);
-	var a = $('#viewdaily_{rand}').bootstable(bootparams);
+	var a = $('#viewcustomer_{rand}').bootstable(bootparams);
 	c.init();
 	var ddata = [{name:'高级搜索',lx:0}];
 	if(admintype==1)ddata.push({name:'自定义列显示',lx:2});
@@ -229,5 +304,5 @@ $(document).ready(function(){
 	</table>
 </div>
 <div class="blank10"></div>
-<div id="viewdaily_{rand}"></div>
+<div id="viewcustomer_{rand}"></div>
 <!--HTMLend-->

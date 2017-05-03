@@ -8,7 +8,7 @@ $(document).ready(function(){
 		window:false,rand:'{rand}',tablename:'flow_set',
 		url:publicsave('{mode}','{dir}'),url:publicsave('{mode}','{dir}'),
 		params:{otherfields:'optdt={now}'},aftersaveaction:'flowsetsaveafter',beforesaveaction:'flowsetsavebefore',
-		submitfields:'name,tables,type,num,table,sort,status,where,summary,summarx,pctx,mctx,wxtx,emtx,isflow,sericnum,receid,recename,names,statusstr,isgbjl,isgbcy',
+		submitfields:'name,tables,type,num,table,sort,isscl,status,where,summary,summarx,pctx,mctx,wxtx,emtx,isflow,sericnum,receid,recename,names,statusstr,isgbjl,isgbcy',
 		requiredfields:'name,type,num,table',
 		success:function(){
 			closenowtabs();
@@ -175,7 +175,8 @@ cont:
 			<td  align="right" >单据详情上：</td>
 			<td class="tdinput" colspan="3">
 				<label><input name="isgbjl" value="1" type="checkbox"> 不显示操作记录</label>&nbsp; &nbsp; 
-				<label><input name="isgbcy" value="1" type="checkbox"> 不显示查阅记录</label>
+				<label><input name="isgbcy" value="1" type="checkbox"> 不显示查阅记录</label>&nbsp; 
+				<label><input name="isscl" value="1" type="checkbox"> 标识已生成列表页</label>
 			</td>
 		</tr>
 		
@@ -183,7 +184,7 @@ cont:
 		
 		<tr>
 			<td  align="right"></td>
-			<td style="padding:15px 0px" colspan="3" align="left"><button disabled class="btn btn-success" id="save_{rand}" type="button"><i class="icon-save"></i>&nbsp;保存</button>&nbsp; <span id="msgview_{rand}"></span>&nbsp;<a href="http://xxxxxxxx.com/view_flowset.html" target="_blank">[看帮助]</a>查看各个字段说明
+			<td style="padding:15px 0px" colspan="3" align="left"><button disabled class="btn btn-success" id="save_{rand}" type="button"><i class="icon-save"></i>&nbsp;保存</button>&nbsp; <span id="msgview_{rand}"></span>&nbsp;<a href="http://xh829.com/view_flowset.html" target="_blank">[看帮助]</a>查看各个字段说明
 		</td>
 		</tr>
 		

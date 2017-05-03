@@ -28,7 +28,7 @@ class xinhuChajian extends Chajian{
 	{
 		$url 	= $this->geturlstr($act, $can);
 		$cont 	= c('curl')->getfilecont($url);
-		$data  	= array('code'=>199,'msg'=>'你浏览器['.$this->rock->web.']访问不到官网xxxxxxxx.com,换个浏览器试试');
+		$data  	= array('code'=>199,'msg'=>'你浏览器['.$this->rock->web.']访问不到官网xh829.com,换个浏览器试试');
 		if($cont!=''){
 			$data  	= json_decode($cont, true);
 		}

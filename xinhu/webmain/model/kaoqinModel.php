@@ -391,7 +391,7 @@ class kaoqinClassModel extends Model
 	public function leavepan($uid, $qjkind, $start, $end, $totals, $id=0)
 	{
 		$msg 	= '';
-		$sdf 	= $this->db->rows('[Q]kqinfo',"`uid`='$uid' and ((`stime`<='$start' and `etime`>='$start') or (`stime`<='$end' and `etime`>='$end') or (`stime`>='$start' and `etime`<='$end')) and `kind`='请假' and `id`<>'$id' ");
+		$sdf 	= $this->db->rows('[Q]kqinfo',"`uid`='$uid' and `status`<>5 and ((`stime`<='$start' and `etime`>='$start') or (`stime`<='$end' and `etime`>='$end') or (`stime`>='$start' and `etime`<='$end')) and `kind`='请假' and `id`<>'$id' ");
 		if($sdf > 0){
 			$msg = '该时间段已申请过了';
 		}
@@ -581,13 +581,26 @@ class kaoqinClassModel extends Model
 		
 		$farrs['未打卡'] 	= 'weidk';
 		$farrs['请假'] 		= 'qingjia';
+		$farrs['事假'] 		= 'shijia';
 		$farrs['加班'] 		= 'jiaban';
+		$lxarr 				= m('option')->getmnum('kqqjkind');
+		foreach($lxarr as $k=>$rs){
+			$tev 				= 'qingjia'.$rs['id'].'';
+			$farrs[$rs['name']] = $tev;
+			//$columns[$rs['name']]		= $tev;
+		}
 		
-		$kqarr	= $this->db->getall("select sum(totals)as totals,kind,uid from `[Q]kqinfo` where `status`=1 and `uid` in($uids) and `stime` like '$month%' and `kind` in('请假','加班') group by `uid`,`kind`");
+		$kqarr	= $this->db->getall("select sum(totals)as totals,kind,qjkind,uid from `[Q]kqinfo` where `status`=1 and `uid` in($uids) and `stime` like '$month%' and `kind` in('请假','加班') group by `uid`,`qjkind`");
 		foreach($kqarr as $k=>$rs){
 			$uid 	= $rs['uid'];
+			$kind	= $rs['qjkind'];
+			if(isempt($kind))$kind = '加班';
 			if(!isset($sarr[$uid]))$sarr[$uid]=array();
-			$sarr[$uid][$rs['kind']] = $rs['totals'];
+			$sarr[$uid][$kind] = $rs['totals'];
+			$kinds = $kind.'(时)';
+			if($rs['kind']=='请假' && !isset($columns[$kinds])){
+				$columns[$kinds] = $farrs[$kind];
+			}
 		}
 		
 		foreach($rows as $k=>$rs){

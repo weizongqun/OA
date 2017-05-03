@@ -8,6 +8,7 @@ ul,li{padding:0px;margin:0px}
 .relative{position:relative}
 .zhu{ color:#ffffff}
 img{border:0}
+label{font-weight:normal}
 
 .wrap{word-wrap:break-word;word-break:break-all;white-space:normal;}
 

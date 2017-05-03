@@ -3,7 +3,7 @@
 $(document).ready(function(){
 	var obj=[];
 	obj[0] = $('#view0_{rand}').bootstable({
-		tablename:'custsale',params:{'atype':'my','zt':0},fanye:false,modenum:'custsale',modename:'销售机会',limit:5,moreurl:'main,customer,sale,atype=my',morenum:'num110',
+		tablename:'custsale',params:{'atype':'mygx'},fanye:false,modenum:'custsale',modename:'销售机会',limit:5,moreurl:'flow,page,custsale,atype=mygx',morenum:'num110',
 		columns:[{
 			text:'客户',dataIndex:'custname',align:'left'
 		},{

@@ -17,7 +17,7 @@ class modeClassModel extends Model
 	public function getmoderows($uid, $sww='')
 	{
 		$where	= m('admin')->getjoinstr('receid', $uid);
-		$arr 	= $this->getall("`status`=1 and `type`<>'系统' $sww $where",'`id`,`num`,`name`,`table`,`type`,`isflow`','`sort`');
+		$arr 	= $this->getall("`status`=1 and `type`<>'系统' $sww $where",'`id`,`num`,`name`,`table`,`type`,`isflow`,`isscl`','`sort`');
 		return $arr;
 	}
 	
@@ -48,8 +48,9 @@ class modeClassModel extends Model
 		$columnsstr = '';
 		$showzt	= false;
 		
-		$farr 	= m('flow_element')->getall("`mid`='$modeid' and `iszb`=0 and `islb`=1",'`fields`,`name`,`fieldstype`,`ispx`,`isalign`','`sort`');
+		$farr 	= m('flow_element')->getall("`mid`='$modeid' and `iszb`=0",'`fields`,`name`,`fieldstype`,`ispx`,`isalign`,`islb`','`sort`');
 		foreach($farr as $k=>$rs){
+			if($rs['islb']==0)continue;
 			$columnsstr.='{text:"'.$rs['name'].'",dataIndex:"'.$rs['fields'].'"';
 			if($rs['ispx']==1)$columnsstr.=',sortable:true';
 			if($rs['isalign']==1)$columnsstr.=',align:"left"';
@@ -78,12 +79,16 @@ class modeClassModel extends Model
 			}
 			$zthtml .= '</select></td>';
 		}
+		$fselarr	= array();
+		$bear		= $this->db->getrows('[Q]option',"`num` like 'columns_".$num."_%'",'`num`,`value`');
+		foreach($bear as $k2=>$rs2)$fselarr[$rs2['num']]=$rs2['value'];
+		
 		
 $html= "".$hstart."
 <div>
 	<table width=\"100%\">
 	<tr>
-		<td style=\"padding-right:10px;\"><button class=\"btn btn-primary\" click=\"clickwin,0\" type=\"button\"><i class=\"icon-plus\"></i> 新增</button></td>
+		<td style=\"padding-right:10px;\" id=\"tdleft_{rand}\" nowrap><button class=\"btn btn-primary\" click=\"clickwin,0\" type=\"button\"><i class=\"icon-plus\"></i> 新增</button></td>
 		<td>
 			<input class=\"form-control\" style=\"width:160px\" id=\"key_{rand}\" placeholder=\"搜索关键词\">
 		</td>
@@ -95,8 +100,7 @@ $html= "".$hstart."
 		</td>
 		<td  width=\"90%\" style=\"padding-left:10px\">$whtml</td>
 	
-		<td align=\"right\" nowrap>
-			<button class=\"btn btn-default\" id=\"xiang_{rand}\" click=\"view\" disabled type=\"button\">详情</button> &nbsp; 
+		<td align=\"right\" id=\"tdright_{rand}\" nowrap>
 			<button class=\"btn btn-default\" click=\"daochu,1\" type=\"button\">导出</button> 
 		</td>
 	</tr>
@@ -109,7 +113,7 @@ $str = "<?php
 /**
 *	模块：".$num.".".$name."，
 *	说明：自定义区域内可写您想要的代码，模块列表页面，生成分为2块
-*	来源：http://xxxxxxxx.com/
+*	来源：http://xh829.com/
 */
 defined('HOST') or die ('not access');
 ?>
@@ -118,6 +122,8 @@ $(document).ready(function(){
 	{params}
 	var modenum = '".$num."',modename='".$name."',isflow=".$isflow.",modeid='".$modeid."',atype = params.atype,pnum=params.pnum;
 	if(!atype)atype='';if(!pnum)pnum='';
+	var fieldsarr = ".json_encode($farr).",fieldsselarr= ".json_encode($fselarr).";
+	
 	//常用操作c方法
 	var c = {
 		//刷新
@@ -207,6 +213,33 @@ $(document).ready(function(){
 				bootparams.columns[oi]=d;
 			}
 		},
+		initcolumns:function(bots){
+			var num = 'columns_'+modenum+'_'+pnum+'',d=[],d1,d2={},i,len=fieldsarr.length,bok;
+			var nstr= fieldsselarr[num];if(!nstr)nstr='';
+			if(nstr)nstr=','+nstr+',';
+			for(i=0;i<len;i++){
+				d1 = fieldsarr[i];
+				bok= false;
+				if(nstr==''){
+					if(d1['islb']=='1')bok=true;
+				}else{
+					if(nstr.indexOf(','+d1.fields+',')>=0)bok=true;
+				}
+				if(bok){
+					d2={text:d1.name,dataIndex:d1.fields};
+					if(d1.ispx=='1')d2.sortable=true;
+					if(d1.isalign=='1')d2.align='left';
+					if(d1.isalign=='2')d2.align='right';
+					d.push(d2);
+				}
+			}
+			if(nstr=='' || nstr.indexOf(',caozuo,')>=0)d.push({text:'',dataIndex:'caozuo',callback:'opegs{rand}'});
+			if(!bots){
+				bootparams.columns=d;
+			}else{
+				a.setColumns(d);
+			}
+		},
 		setparams:function(cs){
 			var ds = js.apply({},cs);
 			a.setparams(ds);
@@ -217,6 +250,26 @@ $(document).ready(function(){
 		},
 		printlist:function(){
 			js.msg('success','可使用导出，然后打开在打印');
+		},
+		getbtnstr:function(txt, click, ys, ots){
+			if(!ys)ys='default';
+			if(!ots)ots='';
+			return '<button class=\"btn btn-'+ys+'\" id=\"btn'+click+'_{rand}\" click=\"'+click+'\" '+ots+' type=\"button\">'+txt+'</button>';
+		},
+		setfieldslist:function(){
+			new highsearchclass({
+				modenum:modenum,
+				modeid:modeid,
+				type:1,
+				pnum:pnum,atype:atype,
+				fieldsarr:fieldsarr,
+				fieldsselarr:fieldsselarr,
+				oncallback:function(str){
+					fieldsselarr[this.columnsnum]=str;
+					c.initcolumns(true);
+					c.reload();
+				}
+			});
 		}
 	};	
 	
@@ -231,17 +284,11 @@ $(document).ready(function(){
 		itemdblclick:function(){
 			c.view();
 		},
-		itemclick:function(){
-			get('xiang_{rand}').disabled=false;
-		},
-		beforeload:function(){
-			get('xiang_{rand}').disabled=true;
-		},
 		load:function(d){
 			c.loaddata(d);
 		}
 	};
-	
+	c.initcolumns(false);
 	opegs{rand}=function(){
 		c.reload();
 	}
@@ -252,19 +299,19 @@ $autoquye
 
 //[自定义区域end]
 
-	js.initbtn(c);//初始化绑定按钮方法
-	var a = $('#view".$num."_{rand}').bootstable(bootparams);//加载表格
+	js.initbtn(c);
+	var a = $('#view".$num."_{rand}').bootstable(bootparams);
 	c.init();
+	var ddata = [{name:'高级搜索',lx:0}];
+	if(admintype==1)ddata.push({name:'自定义列显示',lx:2});
+	ddata.push({name:'打印',lx:1});
 	$('#downbtn_{rand}').rockmenu({
-		width:110,top:35,donghua:false,
-		data:[{
-			name:'高级搜索',lx:0
-		},{
-			name:'打印',lx:1
-		}],
+		width:120,top:35,donghua:false,
+		data:ddata,
 		itemsclick:function(d, i){
 			if(d.lx==0)c.searchhigh();
 			if(d.lx==1)c.printlist();
+			if(d.lx==2)c.setfieldslist();
 		}
 	});
 });
@@ -286,7 +333,6 @@ $rstr 	= "".$hstart."
 		}
 		$bo = $this->rock->createtxt($path, $str);
 		if(!$bo)$path='';
-		if($bo)$this->update('isscl=1', $modeid);
 		return $path;
 	}
 }

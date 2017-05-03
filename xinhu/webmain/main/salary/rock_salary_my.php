@@ -4,7 +4,7 @@ $(document).ready(function(){
 	{params}
 	var modenum = 'hrsalary';
 	var a = $('#view_{rand}').bootstable({
-		tablename:modenum,params:{'atype':'faf'},fanye:true,modenum:modenum,modedir:'{mode}:{dir}',statuschange:false,checked:true,storeafteraction:'xinzlfafter',
+		params:{'atype':'my'},fanye:true,modenum:modenum,modedir:'{mode}:{dir}',statuschange:false,
 		columns:[{
 			text:'部门',dataIndex:'udeptname',sortable:true
 		},{
@@ -14,15 +14,13 @@ $(document).ready(function(){
 		},{
 			text:'月份',dataIndex:'month',sortable:true
 		},{
-			text:'开户行',dataIndex:'bankname'
-		},{
-			text:'工资卡号',dataIndex:'banknum'
-		},{
 			text:'基本工资',dataIndex:'base',sortable:true
 		},{
 			text:'实发工资',dataIndex:'money',sortable:true
 		},{
-			text:'状态',dataIndex:'ispay',sortable:true
+			text:'状态',dataIndex:'statustext',renderer:function(v,d){
+				return v+','+d.ispay;
+			}
 		},{
 			text:'核算人',dataIndex:'optname'
 		},{
@@ -30,6 +28,9 @@ $(document).ready(function(){
 		}],
 		itemclick:function(){
 			btn(false);
+		},
+		itemdblclick:function(){
+			c.view();
 		},
 		beforeload:function(){
 			btn(true);
@@ -50,7 +51,6 @@ $(document).ready(function(){
 		},
 		search:function(){
 			a.setparams({
-				key:get('key_{rand}').value,
 				dt:get('dt2_{rand}').value
 			},true);
 		},
@@ -64,30 +64,6 @@ $(document).ready(function(){
 		},
 		clickdt:function(o1, lx){
 			$(o1).rockdatepicker({initshow:true,view:'month',inputid:'dt'+lx+'_{rand}'});
-		},
-		changlx:function(o1,lx){
-			$("button[id^='state{rand}']").removeClass('active');
-			$('#state{rand}_'+lx+'').addClass('active');
-			a.setparams({ispay:lx});
-			this.search();
-		},
-		biaoshi:function(){
-			var sid = a.getchecked();
-			if(sid==''){
-				js.msg('msg','没有选中行');
-				return;
-			}
-			js.confirm('确定要将未发放标识已发放嘛？',function(slx){
-				if(slx=='yes')c.biaoshis();
-			});
-		},
-		biaoshis:function(){
-			var sid = a.getchecked();
-			js.msg('wait','标识中...');
-			js.ajax(js.getajaxurl('biaoshiff','{mode}','{dir}'),{sid:sid},function(s){
-				js.msg('success','标识成功');
-				a.reload();
-			},'post');
 		}
 	};
 	js.initbtn(c);
@@ -96,13 +72,7 @@ $(document).ready(function(){
 <div>
 	<table width="100%">
 	<tr>
-	<td style="padding-right:10px">
-		<button class="btn btn-primary" click="biaoshi" type="button">选中标为已发放</button>
-	</td>
 	<td>
-		<input class="form-control" style="width:180px" id="key_{rand}"  placeholder="部门/姓名/职位">
-	</td>
-	<td  style="padding-left:10px">
 		<div style="width:140px"  class="input-group">
 			<input placeholder="月份" readonly class="form-control" id="dt2_{rand}" >
 			<span class="input-group-btn">
@@ -114,11 +84,7 @@ $(document).ready(function(){
 		<button class="btn btn-default" click="search" type="button">搜索</button> 
 	</td>
 	<td width="80%" style="padding-left:10px">
-		<div id="stewwews{rand}" class="btn-group">
-		<button class="btn btn-default active" id="state{rand}_" click="changlx," type="button">全部</button>
-		<button class="btn btn-default" id="state{rand}_0" style="color:red" click="changlx,0" type="button">未发放</button>
-		<button class="btn btn-default" id="state{rand}_1" style="color:green" click="changlx,1" type="button">已发放</button>
-		</div>	
+		
 	</td>
 	<td align="right" nowrap>
 		<button class="btn btn-default" id="xiang_{rand}" click="view" disabled type="button">详情</button> &nbsp; 

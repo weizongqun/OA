@@ -23,7 +23,7 @@ class flow_hrsalaryClassModel extends flowModel
 		if($dt!='')$where.=" and `month`='$dt'";
 		return array(
 			'where' => $where,
-			'fields'=> 'id,status,udeptname,uname,ranking,optdt,month,optname,base,money,isturn,ispay',
+			'fields'=> 'id,status,xuid,udeptname,uname,ranking,optdt,month,optname,base,money,isturn,ispay',
 			'order' => '`optdt` desc'
 		);
 	}
