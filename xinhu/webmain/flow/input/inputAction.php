@@ -27,6 +27,12 @@ class inputAction extends Action
 	//保存后处理，主要用于判断是否可以保存
 	protected function saveafter($table,$arr, $id, $addbo){}
 	
+	//生成列表页，数据读取前处理
+	protected function storebefore($table){}
+	
+	//生成列表页，数据读取后处理
+	protected function storeafter($table, $rows){}
+	
 	//过滤html代码
 	private function xxsstolt($uaarr)
 	{
@@ -196,6 +202,7 @@ class inputAction extends Action
 			$uaarr['id'] = $sid;
 			foreach($farr as $k=>$rs){
 				$fid= $rs['fields'];
+				if(substr($fid,0,5)=='temp_')continue;
 				$na = ''.$fid.''.$xu.'_'.$i.'';
 				$val= $this->post($na);
 				if($rs['isbt']==1&&$this->isempt($val))$bos=false;
@@ -468,6 +475,7 @@ class inputAction extends Action
 		if((int)$this->post('loadci')==1){
 			$this->atypearr = m('where')->getmywhere((int)$this->get('modeid'), $this->adminid, $this->get('pnum'));
 		}
+		$this->storebefore($table);
 	}
 	
 	
@@ -476,6 +484,8 @@ class inputAction extends Action
 	{
 		$barr['rows'] 		= $rows;
 		$barr['atypearr'] 	= $this->atypearr;
+		$scarr 				= $this->storeafter($table, $rows);
+		if(is_array($scarr))foreach($scarr as $k=>$v)$barr[$k]=$v;
 		return $barr;
 	}
 	

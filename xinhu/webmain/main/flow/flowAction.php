@@ -480,10 +480,10 @@ class mode_'.$modenum.'ClassAction extends inputAction{
 			$zt 	= '';
 			if(isset($rs['status']))$zt = $rs['status'];
 			$narr['id'] 		= $rs['id'];
-			$narr['optname'] 	= @$rs['optname'];
+			$narr['optname'] 	= arrvalue($rs,'optname');
 			$narr['modenum'] 	= $this->moders['num'];
 			$narr['modename'] 	= $this->moders['name'];
-			$narr['optdt'] 		= $rs['optdt'];
+			$narr['optdt'] 		= arrvalue($rs,'optdt');
 			$narr['summary'] 	= $this->rock->reparr($this->moders['summary'], $rs);
 			$narr['status']		= $flow->getstatus($rs,'','',1);
 			$arr[] = $narr;

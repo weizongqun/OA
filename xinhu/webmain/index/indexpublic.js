@@ -217,7 +217,7 @@ function optmenuclass(o1,num,id,obj,mname,oi, cola){
 		},'post,json');	
 	};
 	this.loadoptnum=function(){
-		js.ajax(js.getajaxurl('getoptnum','flowopt','flow'),{num:this.modenum,mid:this.id},function(ret){
+		js.ajax(js.getajaxurl('getoptnum','flowopt','flow'),{num:this.modenum,mid:this.id,bfrom:'hou'},function(ret){
 			if(ret.code == 200){
 				optmenudatas[''+me.modenum+'_'+me.id+''] = ret.data;
 				me._init();

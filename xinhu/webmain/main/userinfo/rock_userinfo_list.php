@@ -28,6 +28,8 @@ $(document).ready(function(){
 		},{
 			text:'离职日期',dataIndex:'quitdt',sortable:true,editor:true,type:'date'
 		},{
+			text:'生日日期',dataIndex:'shengri'
+		},{
 			text:'ID',dataIndex:'id',sortable:true
 		}],
 		itemclick:function(){

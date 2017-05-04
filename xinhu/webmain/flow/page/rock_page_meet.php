@@ -122,6 +122,7 @@ $(document).ready(function(){
 					d.push(d2);
 				}
 			}
+			if(isflow==1)d.push({text:'状态',dataIndex:'statustext'});
 			if(nstr=='' || nstr.indexOf(',caozuo,')>=0)d.push({text:'',dataIndex:'caozuo',callback:'opegs{rand}'});
 			if(!bots){
 				bootparams.columns=d;
@@ -164,7 +165,7 @@ $(document).ready(function(){
 	
 	//表格参数设定
 	var bootparams = {
-		fanye:true,modenum:modenum,modename:modename,
+		fanye:true,modenum:modenum,modename:modename,statuschange:false,
 		url:c.storeurl(),storeafteraction:'storeaftershow',storebeforeaction:'storebeforeshow',
 		params:{atype:atype},
 		columns:[{text:"会议室",dataIndex:"hyname",sortable:true},{text:"会议纪要人",dataIndex:"jyname"},{text:"状态",dataIndex:"state",sortable:true},{text:"发起人",dataIndex:"optname",sortable:true},{text:"说明",dataIndex:"explain"},{text:"参会人",dataIndex:"joinname"},{text:"结束时间",dataIndex:"enddt"},{text:"开始时间",dataIndex:"startdt"},{text:"主题",dataIndex:"title",align:"left"},{

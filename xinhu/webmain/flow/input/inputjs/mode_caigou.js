@@ -17,6 +17,10 @@ function addchengesss(){
 		changeaidtssk(this);
 		cchangtongss();
 	});
+	$("[name^='temp_aid0_']").unbind('blur').blur(function(){
+		changeaidtssk(this);
+		cchangtongss();
+	});
 	$("[name^='count0_']").unbind('change').change(function(){
 		cchangtongss();
 	});
@@ -46,8 +50,8 @@ function cchangtongss(){
 	form('money').value=js.float(to)+'';
 }
 function changeaidtssk(o1){
-	var val=o1.value;
-	var nam = o1.name.replace('aid','').split('_');
+	var nam = c.getxuandoi(o1.name);
+	var val = form('aid'+nam[2]+'').value;
 	js.ajax(geturlact('getgoods'),{aid:val},function(d){
 		c.setrowdata(nam[0],nam[1],d);
 		cchangtongss();

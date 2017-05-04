@@ -122,6 +122,7 @@ $(document).ready(function(){
 					d.push(d2);
 				}
 			}
+			if(isflow==1)d.push({text:'状态',dataIndex:'statustext'});
 			if(nstr=='' || nstr.indexOf(',caozuo,')>=0)d.push({text:'',dataIndex:'caozuo',callback:'opegs{rand}'});
 			if(!bots){
 				bootparams.columns=d;
@@ -164,7 +165,7 @@ $(document).ready(function(){
 	
 	//表格参数设定
 	var bootparams = {
-		fanye:true,modenum:modenum,modename:modename,
+		fanye:true,modenum:modenum,modename:modename,statuschange:false,
 		url:c.storeurl(),storeafteraction:'storeaftershow',storebeforeaction:'storebeforeshow',
 		params:{atype:atype},
 		columns:[{text:"部门",dataIndex:"deptname"},{text:"人员",dataIndex:"optname"},{text:"日报类型",dataIndex:"type",sortable:true},{text:"日期",dataIndex:"dt",sortable:true},{text:"内容",dataIndex:"content",align:"left"},{text:"新增时间",dataIndex:"adddt"},{text:"操作时间",dataIndex:"optdt",sortable:true},{

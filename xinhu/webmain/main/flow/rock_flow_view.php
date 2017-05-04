@@ -4,7 +4,7 @@ $(document).ready(function(){
 
 	var modeid = 0;
 	var a = $('#view_{rand}').bootstable({
-		tablename:'flow_set',celleditor:true,fanye:true,params:{modeid:0},autoLoad:false,dir:'desc',sort:'optdt',statuschange:false,
+		tablename:'flow_set',celleditor:true,fanye:true,params:{modeid:0},autoLoad:false,dir:'desc',sort:'id',statuschange:false,
 		url:publicstore('{mode}','{dir}'),storebeforeaction:'viewshowbefore',storeafteraction:'viewshowafter',
 		columns:[{
 			text:'操作人',dataIndex:'optname',sortable:true

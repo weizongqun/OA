@@ -77,7 +77,7 @@ class flowModel extends Model
 	protected function flowprintrows($r){return $r;}
 	
 	//子表数据替换处理
-	protected function flowsubdata($r){return $r;}
+	protected function flowsubdata($r, $lx=0){return $r;}
 	
 	//单据判断条件从写$lx类型，$uid用户Id
 	protected function flowbillwhere($lx, $uid){return '';}
@@ -1535,6 +1535,7 @@ class flowModel extends Model
 	{
 		$rows 	= $this->db->getrows('[Q]flow_menu',"`setid`='$this->modeid' and `status`=1",'id,wherestr,name,statuscolor,statusvalue,num,islog,issm,type','`sort`');
 		$arr 	= array();
+		$bfrom	= $this->rock->post('bfrom');
 		foreach($rows as $k=>$rs){
 			$wherestr 	= $rs['wherestr'];
 			$bo 		= false;
@@ -1577,7 +1578,7 @@ class flowModel extends Model
 			}
 		}
 		
-		if($this->isreadqx(1)){
+		if($bfrom=='hou' && $this->isreadqx(1)){
 			$smcont= ''.$this->modename.'：'.$this->rock->reparr($this->moders['summary'], $this->rs);
 			$arr[] = array('name'=>'＋加入日程提醒','smcont'=>$smcont,'issm'=>1,'optnum'=>'tixing','lx'=>'14','optmenuid'=>-14);
 		}
@@ -1668,6 +1669,7 @@ class flowModel extends Model
 		$arr['table'] 	= $this->mtable;
 		$arr['fields'] 	= '';
 		$arr['order'] 	= '';
+		$arr['group'] 	= '';
 		$arr['keywhere']= '';
 		$arr['asqom'] 	= ''; //主表别名
 		$nas 			= $this->flowbillwhere($uid, $lx);
@@ -1682,6 +1684,7 @@ class flowModel extends Model
 			if(isset($nas['order']))$arr['order']  = $nas['order'];
 			if(isset($nas['fields']))$arr['fields']= $nas['fields'];
 			if(isset($nas['table']))$arr['table']  = $nas['table'];
+			if(isset($nas['group']))$arr['group']  = $nas['group'];
 			if(isset($nas['keywhere']))$arr['keywhere']  = $nas['keywhere'];
 		}else{
 			$_wehs	= $nas;
@@ -1689,6 +1692,13 @@ class flowModel extends Model
 		$fwhere			= $this->getflowwhere($uid, $lx);//流程模块上条件
 		$path 			= ''.P.'/flow/page/rock_page_'.$this->modenum.'.php';
 		
+		
+		if($this->rock->arrvalue($nas, 'leftbill')==1){
+			$arr['table'] = '`[Q]'.$this->mtable.'` a left join `[Q]flow_bill` b on a.`id`=b.`mid` and b.`table`=\''.$this->mtable.'\'';
+			$arr['asqom'] = 'a.';
+			$arr['fields']= 'a.*,b.`uname`,b.`udeptname`';
+			$arr['order'] = 'a.`optdt` desc';
+		}
 		
 		if(isempt($fwhere) && isempt($inwhere) && $this->moders['isscl']==1){
 			$fwhere	 	= 'and 1=2';
@@ -1703,17 +1713,18 @@ class flowModel extends Model
 		if($fwhere!='')$where .= ' '.$fwhere; 
 		if($_wehs!='')$where .= ' '.$_wehs;
 		$highwhere		= $this->gethighwhere();//高级搜索
-		
+		$allfields		= array();
 		//关键词搜索
 		$key 			= $this->rock->post('key');
 		$pnum 			= $this->rock->post('pnum');
 		$status 		= $this->rock->post('keystatus');
 		if(!isempt($status))$where .= ' and {asqom}`status`='.$status.'';
 		if(!isempt($key) && isempt($arr['keywhere'])){
+			$allfields = $this->db->getallfields('[Q]'.$this->mtable.'');
 			$_kearr = array();
 			$skeay 	= array('text','textarea','htmlediter','changeuser','changeusercheck','changedept','changedeptusercheck','selectdatafalse','selectdatatrue');
 			foreach($this->fieldsarra as $k=>$rs){
-				if($rs['issou']==1 && in_array($rs['fieldstype'], $skeay)){
+				if($rs['issou']==1 && in_array($rs['fieldstype'], $skeay) && in_array($rs['fields'], $allfields)){
 					$_kearr[] = "{asqom}`".$rs['fields']."` like '%".$key."%'";
 				}
 			}
@@ -1723,11 +1734,12 @@ class flowModel extends Model
 
 		if($highwhere!='')$where .= ' '.$highwhere;
 		$where 			= str_replace('{asqom}', $arr['asqom'], $where);
+		$where 			= str_replace('[A]', $arr['asqom'], $where);
 		
 		//字段显示
 		$fields 		= $arr['fields'];
 		if($this->flowfieldstype==1 && (isempt($fields) || $fields=='*') && $this->moders['isscl']==1){
-			$allfields = $this->db->getallfields('[Q]'.$this->mtable.'');
+			if(!$allfields)$allfields = $this->db->getallfields('[Q]'.$this->mtable.'');
 			$fields	= '{asqom}`id`';
 			$odlvs	= m('option')->getval('columns_'.$this->modenum.'_'.$pnum.'');
 			if(isempt($odlvs)){
@@ -1749,6 +1761,21 @@ class flowModel extends Model
 			}
 			$fields = str_replace('{asqom}', $arr['asqom'], $fields);
 			$arr['fields'] = $fields;
+		}
+		
+		//字段添加上``
+		$fields 		= $arr['fields'];
+		if(!isempt($fields) && $fields!='*'){
+			$fieldsa 	= explode(',', $fields);
+			$fieldss	= '';
+			foreach($fieldsa as $fieldsas){
+				if(contain($fieldsas,'`') || contain($fieldsas,'.') || contain($fieldsas,' ') || contain($fieldsas,'(')){
+					$fieldss.=','.$fieldsas.'';
+				}else{
+					$fieldss.=',`'.$fieldsas.'`';
+				}
+			}
+			$arr['fields'] = substr($fieldss, 1);
 		}
 		
 		$arr['where'] 	= $where;
@@ -1859,11 +1886,12 @@ class flowModel extends Model
 				$whes	= '';
 				if($cis>1)$whes=' and `sslx`='.$zbx.'';
 				$data 	= m($tables)->getall('mid='.$this->id.''.$whes.'','*','`sort`');
+				$data 	= $this->flowsubdata($data, $lx);
 				if($lx == 0){
 					$subdata['subdata'.$zbx.''] 	 = $data;
 				}else{
 					$subdata[$zbx] = array(
-						'data' 	=> $this->flowsubdata($data, $lx),
+						'data' 	=> $data,
 						'fields'=> 'subdata'.$zbx.'',
 						'name'	=> $this->rock->arrvalue($namessa, $zbx)
 					);

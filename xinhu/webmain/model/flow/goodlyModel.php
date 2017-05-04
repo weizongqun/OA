@@ -14,13 +14,14 @@ class flow_goodlyClassModel extends flowModel
 	
 	
 	//子表数据替换处理
-	protected function flowsubdata($rows){
+	protected function flowsubdata($rows, $lx=0){
 		$db = m('goods');
 		foreach($rows as $k=>$rs){
 			$one = $db->getone($rs['aid']);
 			if($one){
-				$rows[$k]['aid'] 	= $one['name'];
+				if($lx==1)$rows[$k]['aid'] 	= $one['name'];
 				$rows[$k]['unit'] 	= $one['unit'];
+				$rows[$k]['temp_aid'] = $one['name'];
 			}
 		}
 		return $rows;

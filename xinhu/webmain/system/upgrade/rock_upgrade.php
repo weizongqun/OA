@@ -7,7 +7,7 @@ $(document).ready(function(){
 		columns:[{
 			text:'名称',dataIndex:'name'
 		},{
-			text:'说明',dataIndex:'explain',align:'left'
+			text:'说明',dataIndex:'explain',align:'left',width:'45%'
 		},{
 			text:'更新时间',dataIndex:'updatedt'
 		},{

@@ -1,10 +1,10 @@
 <?php 
 /**
 	*****************************************************************
-	* 联系QQ： 290802026/1073744729									*
+	* 联系QQ： 290802026											*
 	* 版  本： V2.0													*
 	* 开发者：雨中磐石工作室										*
-	* 邮  箱： qqqq2900@126.com										*
+	* 邮  箱： admin@rockoa.com/									*
 	* 网  址： http://www.xh829.com/								*
 	* 说  明: 定义常用的方法										*
 	* 备  注: 未经允许不得商业出售，代码欢迎参考纠正				*
@@ -14,8 +14,8 @@
 
 
 /**
-	m 读取数据模型，操作数据库的
-	$name 表名
+*	m 读取数据模型，操作数据库的
+*	$name 表名/文件名
 */
 $GLOBALS['rockModelImport']	= array();
 function m($name)
@@ -52,10 +52,10 @@ function m($name)
 }
 
 /**
-	引入插件
-	$name 插件名称
-	$inbo 是否初始化
-	$param1,2,参数 
+*	引入插件
+*	$name 插件名称
+*	$inbo 是否初始化
+*	$param1,2,参数 
 */
 function c($name, $inbo=true, $param1='', $param2='')
 {
@@ -70,7 +70,7 @@ function c($name, $inbo=true, $param1='', $param2='')
 }
 
 /**
-	引入class文件
+*	引入class文件
 */
 function import($name, $inbo=true)
 {
@@ -87,7 +87,7 @@ function import($name, $inbo=true)
 }
 
 /**
-	读取配置
+*	读取配置
 */
 function getconfig($key, $dev='')
 {
@@ -99,12 +99,21 @@ function getconfig($key, $dev='')
 	return $s;
 }
 
+/**
+*	判断变量是否为空
+*	@return boolean
+*/
 function isempt($str)
 {
 	$bool=false;
 	if( ($str==''||$str==NULL||empty($str)) && (!is_numeric($str)) )$bool=true;
 	return $bool;
 }
+
+/**
+*	判断变量是否包含在另一变量里面
+*	@return boolean
+*/
 function contain($str,$a)
 {
 	$bool=false;
@@ -114,6 +123,11 @@ function contain($str,$a)
 	}
 	return $bool;
 }
+
+/**
+*	是否ajax请求
+*	@return boolean
+*/
 function isajax()
 {
 	if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH'])=='xmlhttprequest'){ 
@@ -150,4 +164,23 @@ function showreturn($arr='', $msg='', $code=200)
 		echo $result;
 	}
 	exit();
+}
+
+/**
+*	错误处理
+*/
+function rockerror($errno, $errstr,$err_file = '', $err_line = 0){
+	$str = "File:".$err_file." Line:[$err_line] Error: [$errno] $errstr";
+	echo $str;exit();
+}
+
+/**
+*	在数组里读取变量
+*	@return value
+*/
+function arrvalue($arr, $k, $dev='')
+{
+	$val  = $dev;
+	if(isset($arr[$k]))$val= $arr[$k];
+	return $val;
 }

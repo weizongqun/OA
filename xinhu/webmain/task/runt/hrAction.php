@@ -7,7 +7,8 @@ class hrClassAction extends runtAction
 	public function httodoAction()
 	{
 		m('hr')->hrrun(); //人事每天调动/离职等运行
-
+	
+		//员工合同到期提醒
 		$flow 	= m('flow')->initflow('userract');
 		$flow->updatestate();
 		$dtobj  = c('date');
@@ -26,6 +27,12 @@ class hrClassAction extends runtAction
 			$flow->push($todoid,'员工合同',$str,'员工合同到期提醒');
 			m('todo')->add($todoid, '员工合同到期提醒', $str);
 		}
+		
+		//生日提醒
+		m('flow')->initflow('userinfo')->birthdaytodo();
+		
+		
+		
 		echo 'success';
 	}
 	

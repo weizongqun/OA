@@ -122,6 +122,7 @@ $(document).ready(function(){
 					d.push(d2);
 				}
 			}
+			if(isflow==1)d.push({text:'状态',dataIndex:'statustext'});
 			if(nstr=='' || nstr.indexOf(',caozuo,')>=0)d.push({text:'',dataIndex:'caozuo',callback:'opegs{rand}'});
 			if(!bots){
 				bootparams.columns=d;
@@ -164,7 +165,7 @@ $(document).ready(function(){
 	
 	//表格参数设定
 	var bootparams = {
-		fanye:true,modenum:modenum,modename:modename,
+		fanye:true,modenum:modenum,modename:modename,statuschange:false,
 		url:c.storeurl(),storeafteraction:'storeaftershow',storebeforeaction:'storebeforeshow',
 		params:{atype:atype},
 		columns:[{text:"客户",dataIndex:"custname"},{text:"申请日期",dataIndex:"applydt",sortable:true},{text:"来源",dataIndex:"laiyuan"},{text:"金额",dataIndex:"money",sortable:true},{text:"添加时间",dataIndex:"adddt"},{text:"创建人",dataIndex:"createname"},{text:"销售人员",dataIndex:"optname",sortable:true},{text:"状态",dataIndex:"state",sortable:true},{text:"说明",dataIndex:"explain"},{

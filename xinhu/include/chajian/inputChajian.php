@@ -76,7 +76,7 @@ class inputChajian extends Chajian
 		$val 	= $a['dev'];
 		if(isset($a['value']))$val=$a['value'];
 		$attr 	= $a['attr'];
-		$fnams 	= @$a['name'];$fieldname = $fnams;
+		$fnams 	= $this->rock->arrvalue($a,'name');$fieldname = $fnams;
 		if($a['isbt']==1)$fnams='*'.$fnams.'';
 		$val	= $this->rock->get('def_'.$fname.'', $val);
 		if(isempt($val))$val='';
@@ -152,7 +152,7 @@ class inputChajian extends Chajian
 		}
 		if($type=='selectdatafalse' || $type=='selectdatatrue'){
 			$str 	= '<table width="98%" cellpadding="0" border="0"><tr><td width="100%"><input '.$attr.' class="inputs" style="width:99%" value="'.$val.'" readonly type="text" name="'.$fname.'"></td>';
-			$str   .= '<td nowrap><a href="javascript:;" onclick="c.selectdata(\''.$data.'\','.substr($type,10).',\''.$fname.'\',\''.$fieldname.'\')" class="webbtn">选择</a></td></tr></table>';
+			$str   .= '<td nowrap><a href="javascript:;" onclick="c.selectdata(\''.$data.'\','.substr($type,10).',\''.$fname.'\',\''.$fieldname.'\','.$iszb.')" class="webbtn">选择</a></td></tr></table>';
 		}
 		if($type=='htmlediter'){
 			$str = '<textarea class="textarea" style="height:130px" '.$attr.' name="'.$fname.'">'.$val.'</textarea>';

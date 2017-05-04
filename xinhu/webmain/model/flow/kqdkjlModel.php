@@ -4,7 +4,7 @@ class flow_kqdkjlClassModel extends flowModel
 	public function initModel()
 	{
 		$this->dateobj = c('date');
-		$this->typearr = explode(',','在线打卡,考勤机,手机定位,手动添加,异常添加,数据导入,接口导入');
+		$this->typearr = explode(',','在线打卡,考勤机,手机定位,手动添加,异常添加,数据导入,接口导入,企业微信打卡');
 	}
 	
 	/**

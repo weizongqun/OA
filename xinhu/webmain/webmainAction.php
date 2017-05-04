@@ -92,7 +92,7 @@ class Action extends mainAction
 		$wherea	   = $this->db->filterstr($wherea);
 		$order	   = $this->getOrder($order);
 		$group	   = '';
-		if(isset($arr['group']))$group=" group by ".$arr['group']." ";
+		if(isset($arr['group']) && !isempt($arr['group']))$group="GROUP BY ".$arr['group']." ";
 		
 		$limitall	= false;
 		if(isset($arr['all']))$limitall= $arr['all'];
@@ -101,10 +101,17 @@ class Action extends mainAction
 			$wherea		= str_replace($arr['sou'],$arr['rep'],$wherea);
 			$order		= str_replace($arr['sou'],$arr['rep'],$order);
 		}
-		$sql		= "select $fields from $table where $wherea $group $order ";
-		$total 		= $this->db->rows($table, $wherea);
+		$sql		= "select[SQL_CALC] $fields from $table where $wherea $group $order ";
+		$total		= 0;
+		if($group!=''){
+			$sql		= str_replace('[SQL_CALC]', ' SQL_CALC_FOUND_ROWS', $sql);
+		}else{
+			$sql		= str_replace('[SQL_CALC]','',$sql);
+			$total 		= $this->db->rows($table, $wherea);
+		}
 		if(!$limitall)$sql.=' '.$this->getLimit();
 		$rows		= $this->db->getall($sql);
+		if($group!='')$total = $this->db->found_rows();
 		if(!is_array($rows))$rows = array();
 		return array(
 			'total'	=> $total,
@@ -170,6 +177,7 @@ class Action extends mainAction
 		$this->iszclogin();
 		$table			= $this->rock->iconvsql($this->request('tablename_abc','',1),1);
 		$fields			= '*';
+		$group			= '';
 		$order			= $this->rock->iconvsql($this->request('defaultorder'));
 		$aftera			= $this->request('storeafteraction');
 		$modenum		= $this->post('modenum');
@@ -185,6 +193,7 @@ class Action extends mainAction
 			$_wehs		= $nas['where'];
 			if(!isempt($nas['order']))$order 	= $nas['order'];
 			if(!isempt($nas['fields']))$fields 	= $nas['fields'];
+			if(!isempt($this->rock->arrvalue($nas, 'group')))$group = $nas['group'];
 			if($_wehs!='')$where .= ' '.$_wehs.' ';
 			$_tabsk		= $nas['table'];
 			if(contain($_tabsk,' ')){
@@ -202,12 +211,15 @@ class Action extends mainAction
 					if(isset($nas['order']))$order = $nas['order'];
 					if(isset($nas['fields']))$fields = $nas['fields'];
 					if(isset($nas['table']))$tables = $nas['table'];
+					if(isset($nas['group']))$group = $nas['group'];
 				}else{
 					$where .= $nas;
 				}
 			}
 		}
-		$arr	= $this->limitRows($tables, $fields, $where, $order);
+		$arr	= $this->limitRows($tables, $fields, $where, $order, array(
+			'group' => $group
+		));
 		$total	= $arr['total'];
 		$rows	= $arr['rows'];
 

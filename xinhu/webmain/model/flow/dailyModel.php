@@ -20,9 +20,9 @@ class flow_dailyClassModel extends flowModel
 			if(isset($rs['adddt']))$rs['adddt']	= str_replace(' ','<br>', $rs['adddt']);
 			
 			$zt = $this->logobj->isread('daily', $rs['id'], $this->adminid);
-			$status = 1;
-			if($zt>0)$status=0;
-			$rs['status']		= $status;
+	
+			if($zt>0)$rs['ishui'] = 1;
+	
 			
 			$dt 	= $rs['dt'];
 			if($rs['type']!=0 && !isempt($rs['enddt'])){

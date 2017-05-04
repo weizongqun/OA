@@ -113,7 +113,7 @@ abstract class mysql{
 	public function query($sql, $ebo=true)
 	{
 		if($this->conn == null)$this->connect();
-		if($this->conn == null)exit('mysql user or pass error!');
+		if($this->conn == null)exit('数据库的帐号/密码有错误!');
 		$sql	= trim($sql);
 		$sql	= str_replace(array('[Q]','[q]', '[date]', '[now]'), array($this->perfix, $this->perfix, date('Y-m-d'), date('Y-m-d H:i:s')), $sql);
 		$this->countsql++;
@@ -157,11 +157,17 @@ abstract class mysql{
 		return $to;
 	}
 	
+	/**
+	*	返回使用SQL_CALC_FOUND_ROWS，统计总记录数
+	*/
 	public function found_rows()
 	{
 		return $this->getsyscount('found_rows');
 	}
 	
+	/**
+	*	返回update,insert,delete上所影响的条数
+	*/
 	public function row_count()
 	{
 		return $this->getsyscount('row_count');

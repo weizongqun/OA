@@ -122,6 +122,7 @@ $(document).ready(function(){
 					d.push(d2);
 				}
 			}
+			if(isflow==1)d.push({text:'状态',dataIndex:'statustext'});
 			if(nstr=='' || nstr.indexOf(',caozuo,')>=0)d.push({text:'',dataIndex:'caozuo',callback:'opegs{rand}'});
 			if(!bots){
 				bootparams.columns=d;
@@ -164,7 +165,7 @@ $(document).ready(function(){
 	
 	//表格参数设定
 	var bootparams = {
-		fanye:true,modenum:modenum,modename:modename,
+		fanye:true,modenum:modenum,modename:modename,statuschange:false,
 		url:c.storeurl(),storeafteraction:'storeaftershow',storebeforeaction:'storebeforeshow',
 		params:{atype:atype},
 		columns:[{text:"标题",dataIndex:"title",align:"left"},{text:"时间",dataIndex:"startdt",sortable:true},{text:"重复",dataIndex:"rate"},{text:"说明",dataIndex:"explain"},{text:"记事人",dataIndex:"optname",sortable:true},{text:"截止时间",dataIndex:"enddt"},{text:"提醒",dataIndex:"txsj",sortable:true},{text:"提醒给",dataIndex:"recename"},{

@@ -106,15 +106,23 @@ var c={
 	},
 	selectdatadata:{},
 	onselectdata:{},
-	selectdata:function(s1,ced,fid,tit){
+	selectdata:function(s1,ced,fid,tit,zbis){
 		if(isedit==0)return;
 		if(!tit)tit='请选择...';
-		var a1 = s1.split(',');
+		var a1 = s1.split(','),idobj=false;
+		var fids = a1[1];
+		if(fids){
+			if(zbis==1){
+				var gezs = this.getxuandoi(fid);
+				fids+=gezs[2];
+			}
+			idobj=form(fids);
+		}
 		$.selectdata({
 			data:this.selectdatadata[fid],title:tit,
 			fid:fid,
 			url:geturlact('getselectdata',{act:a1[0]}),
-			checked:ced, nameobj:form(fid), idobj:form(a1[1]),
+			checked:ced, nameobj:form(fid),idobj:idobj,
 			onloaddata:function(a){
 				c.selectdatadata[fid]=a;
 			},
@@ -384,12 +392,13 @@ var c={
 	},
 	subtablefields:[],
 	initsubtable:function(){
-		var i,oba,j,o,nas,nle,nasa,fname;
-		for(i=0;i<=3;i++){
-			if(get('tablesub'+i+'')){
+		var i,oba,j,o,nas,nle,nasa,fname,o2;
+		for(i=0;i<=6;i++){
+			o2 = get('tablesub'+i+'');
+			if(o2){
 				fname=[];
 				o=$('#tablesub'+i+'');
-				form('sub_totals'+i+'').value=o.find('tr').length-1;
+				form('sub_totals'+i+'').value=o2.rows.length-1;
 				this.repaixuhao(i);
 				oba = o.find('tr:eq(1)').find('[name]');
 				for(j=0;j<oba.length;j++){
@@ -428,7 +437,7 @@ var c={
 			$(o).remove();
 			return;
 		}
-		var o1=$('#tablesub'+xu+'').find('tr');
+		var o1=get('tablesub'+xu+'').rows;
 		if(o1.length<=2){
 			js.msg('msg','最后一行不能删除');
 			return;
@@ -444,21 +453,25 @@ var c={
 		}
 	},
 	insertrow:function(xu, d, isad){
-		if(!get('tablesub'+xu+'')){
+		var o2 = get('tablesub'+xu+'');
+		if(!o2){
 			alert('error=201：表单设计有误');
 			return;
 		}
 		var o=$('#tablesub'+xu+'');
-		var o1=o.find('tr'),oi=o1.length-1,i,str,oba,nas,oj,nna,ax2,d1;
-		str = o.find('tr:eq('+oi+')').html();
+		var oi = o2.rows.length-1,i,str='',oba,nas,oj,nna,ax2,d1,nass;
+		oi=1;
+		var cell = o2.rows[oi].cells.length;
+		for(i=0;i<cell;i++)str+='<td>'+o2.rows[oi].cells[i].innerHTML+'</td>';
 		oba = o.find('tr:eq('+oi+')').find('[name]');
 		oj  = parseFloat(form('sub_totals'+xu+'').value);
 		var narrs=[],fasr=this.subtablefields[xu],wux=''+xu+'_'+oj+'';
 		for(i=0;i<oba.length;i++){
 			nas=oba[i].name;
-			nna=fasr[i]+''+wux+'';
-			str=str.replace(nas, nna);
-			str=str.replace(nas, nna);
+			oi = nas.lastIndexOf('_');
+			nass= nas.substr(0, oi-1);
+			nna=nass+''+wux+'';
+			str=str.replace(new RegExp(nas,'gi'), nna);
 			narrs.push(nna);
 		}
 		form('sub_totals'+xu+'').value=(oj+1);
@@ -481,12 +494,20 @@ var c={
 			if(form(ans)&&d[fasr[i]])form(ans).value=d[fasr[i]];
 		}
 	},
+	//设置子表行数据
 	setrowdata:function(xu, oj, d){
 		var ans;
 		for(var i in d){
 			ans=i+''+xu+'_'+oj+'';
 			if(form(ans))form(ans).value=d[i];
 		}
+	},
+	//根据名称获取第几个子，哪一行
+	getxuandoi:function(fid){
+		var naa = fid.substr(fid.lastIndexOf('_')-1);
+		var spa = naa.split('_');
+		spa[2] = naa;
+		return spa;
 	},
 	addrow:function(o,xu){
 		if(isedit==0){
