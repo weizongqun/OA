@@ -236,7 +236,7 @@ js.jssdkwixin = function(qxlist,afe){
 	js.ajax('weixin','getsign',{url:jm.base64encode(surl),agentid:js.request('agentid')},function(ret){
 		if(!ret.appId)return js.jssdkcall(false);
 		wx.config({
-			debug: ISDEMO,
+			debug: false,
 			appId: ret.appId,
 			timestamp:ret.timestamp,
 			nonceStr: ret.nonceStr,

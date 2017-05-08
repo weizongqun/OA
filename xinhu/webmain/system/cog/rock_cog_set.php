@@ -54,9 +54,11 @@ $(document).ready(function(){
 		<table cellspacing="0" width="550" border="0" cellpadding="0">
 		
 		<tr>
-			<td  colspan="2"><div class="inputtitle">基本信息</div></td>
+			<td  colspan="2"><div class="inputtitle">基本信息
+			<div style="padding:5px;line-height:18px;font-size:12px;color:#888888">此保存在配置文件下，也可以自己打开配置文件(webmain/webmainConfig.php)来修改</div>
+			</div></td>
 		</tr>
-		
+	
 		<tr>
 			<td  align="right" width="180">系统标题：</td>
 			<td class="tdinput"><input id="title_{rand}" class="form-control"></td>
@@ -117,11 +119,10 @@ $(document).ready(function(){
 		
 		<tr>
 			<td  align="right"></td>
-			<td style="padding:15px 0px" colspan="3" align="left"><button click="save" class="btn btn-success" type="button"><i class="icon-save"></i>&nbsp;保存</button></span>
+			<td style="padding:15px 0px" colspan="3" align="left"><button click="save" class="btn btn-success" type="button"><i class="icon-save"></i>&nbsp;保存</button>
 		</td>
 		</tr>
 		
-
-	
+		</table>
 </div>
 </div>

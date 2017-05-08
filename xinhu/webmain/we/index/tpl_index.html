@@ -289,12 +289,15 @@ var im={
 				name:'刷新数据',lx:1
 			},{
 				name:'修改密码',lx:2
+			},{
+				name:'退出登录',lx:3
 			}],
 			onclick:function(a){
 				var lx=a.lx;
 				if(lx==0)im.changetab(3);
 				if(lx==1)im.reload();
 				if(lx==2)im.editpass();
+				if(lx==3)im.loginout();
 			}
 		});
 	},

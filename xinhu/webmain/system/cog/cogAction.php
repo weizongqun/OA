@@ -61,6 +61,7 @@ class cogClassAction extends Action
 		$arr['asynkey'] 	= getconfig('asynkey');
 		$arr['openkey'] 	= getconfig('openkey');
 		$arr['db_drive'] 	= getconfig('db_drive');
+		$arr['xinhukey'] 	= getconfig('xinhukey');
 		$arr['asynsend'] 	= getconfig('asynsend') ? '1' : '0';
 		$arr['sqllog'] 		= getconfig('sqllog') ? '1' : '0';
 		$this->returnjson($arr);

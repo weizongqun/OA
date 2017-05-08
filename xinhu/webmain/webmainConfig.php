@@ -1,6 +1,6 @@
 <?php
 if(!defined('HOST'))die('not access');
-//[管理员]在2017-05-03 19:23:27通过[系统→系统工具→系统设置]，保存修改了配置文件
+//[管理员]在2017-05-05 16:17:49通过[系统→系统工具→系统设置]，保存修改了配置文件
 return array(
 	'title'	=> 'lEGEND协同办公系统',	//系统默认标题
 	'apptitle'	=> 'legend OA',	//APP上或PC客户端上的标题
@@ -22,6 +22,6 @@ return array(
 	'asynsend'	=> false,	//是否异步发送提醒消息，为true需开启服务端
 	'install'	=> true,	//已安装，不要去掉啊
 	'sqllog'	=> false,	//是否记录sql日志保存upload/sqllog下
-	'xinhukey'	=> '',	//信呼官网key，用于在线升级使用
+	'xinhukey'	=> 'ba0ecf9a35df7e5049389c3f918beef3',	//信呼官网key，用于在线升级使用
 
 );

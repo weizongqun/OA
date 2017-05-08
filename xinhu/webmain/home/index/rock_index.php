@@ -261,7 +261,7 @@ $(document).ready(function(){
 				
 				<div class="panel panel-danger">
 				  <div class="panel-heading">
-					<h3 class="panel-title">微信企业号/企业微信办公</h3>
+					<h3 class="panel-title">企业微信和微信企业号办公</h3>
 				  </div>
 				  <div class="panel-body">
 						<table><tr valign="top">
@@ -269,7 +269,7 @@ $(document).ready(function(){
 						<div style="color:#888888">扫一扫体验微信办公</div></td>
 						<td>
 							<div style="line-height:26px;padding:5px;">
-							<b>微信办公/企业微信办公</b><br>&nbsp; &nbsp; 结合了信呼上系统，单据待办推送提醒，<a href="http://xh829.com/view_weixin.html" target="_blank">[微信企业号]</a>，<a href="http://xh829.com/view_weixinqy.html" target="_blank">[企业微信]</a>。<br>
+							<b>企业微信和微信企业号办公</b><br>&nbsp; &nbsp; 结合了信呼上系统，单据待办推送提醒到个人微信和企业微信上，<a href="http://xh829.com/view_weixin.html" target="_blank">[微信企业号]</a>，<a href="http://xh829.com/view_weixinqy.html" target="_blank">[企业微信]</a>。<br>
 							1、申请微信企业号体验，去<a href="http://xh829.com/view_weixinty.html" target="_blank">[申请]</a>。<br>
 							2、扫一扫验证帐号即可使用。<br>
 							3、可到【系统→系统工具→升级系统】下安装，有问题？<a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=290802026&site=qq&menu=yes"><img border="0" align="absmiddle" src="http://xh829.com/images/qquser.png" height="22" title="在线交流"/></a>
