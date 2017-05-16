@@ -16,6 +16,7 @@ include_once(''.ROOT_PATH.'/include/rockFun.php');
 include_once(''.ROOT_PATH.'/include/Chajian.php');
 include_once(''.ROOT_PATH.'/include/class/rockClass.php');
 $rock 		= new rockClass();
+if(file_exists('../ip.php')){include_once('../ip.php');pandhei($rock->ip);}
 $db			= null;		
 $smarty		= false;
 define('HOST', $rock->host);
@@ -24,7 +25,7 @@ if(!defined('PROJECT'))define('PROJECT', $rock->get('p', 'webmain'));
 if(!defined('ENTRANCE'))define('ENTRANCE', 'index');
 error_reporting(DEBUG ? E_ALL : 0);
 $config		= array(
-	'title'		=> 'LEGEND',
+	'title'		=> '信呼',
 	'url'		=> 'http://'.HOST.'/app/xinhu/',
 	'urly'		=> 'http://xh829.com/',
 	'db_host'	=> '',

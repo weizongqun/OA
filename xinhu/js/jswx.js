@@ -226,13 +226,12 @@ js.jssdkwixin = function(qxlist,afe){
 	if(!js.iswxbo())return js.jssdkcall(false);
 	var wxurl = 'http://res.wx.qq.com/open/js/jweixin-1.1.0.js';
 	if(js.isqywx)wxurl = 'https://res.wx.qq.com/wwopen/js/jsapi/jweixin-1.0.0.js';
-	//if(js.isqywx)wxurl = 'https://res.wx.qq.com/open/js/jweixin-1.2.0.js';
 	if(!afe)$.getScript(wxurl, function(){
 		js.jssdkwixin(qxlist, true);
 	});
 	if(!afe)return;
 	var surl= location.href;
-	if(!qxlist)qxlist= ['openLocation','getLocation'];
+	if(!qxlist)qxlist= ['openLocation','getLocation','chooseImage','previewImage'];
 	js.ajax('weixin','getsign',{url:jm.base64encode(surl),agentid:js.request('agentid')},function(ret){
 		if(!ret.appId)return js.jssdkcall(false);
 		wx.config({
@@ -264,9 +263,9 @@ js.jssdkwxgzh = function(qxlist,afe){
 	});
 	if(!afe)return;
 	var surl= location.href;
-	if(!qxlist)qxlist= ['openLocation','getLocation'];
+	if(!qxlist)qxlist= ['openLocation','getLocation','chooseImage','previewImage'];
 	js.ajax('wxgzh','getsign',{url:jm.base64encode(surl)},function(ret){
-		if(!ret.appId)return js.jssdkcall(false);;
+		if(!ret.appId)return js.jssdkcall(false);
 		wx.config({
 			debug: false,
 			appId: ret.appId,

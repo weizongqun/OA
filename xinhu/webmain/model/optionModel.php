@@ -1,6 +1,8 @@
 <?php
 class optionClassModel extends Model
 {
+	private	$getypsarr = array();
+	
 	/**
 		获取选项
 	*/
@@ -80,7 +82,7 @@ class optionClassModel extends Model
 	
 	private function getfoldrowsss($pid)
 	{
-		$rows 	= $this->db->getall("select `id`,`pid`,`name`,`optdt`,`sort` from [Q]option where `pid`='$pid' and `valid`=1 order by `sort`,`id`");
+		$rows 	= $this->db->getall("select `id`,`pid`,`name`,`optdt`,`sort`,`receid`,`recename` from [Q]option where `pid`='$pid' and `valid`=1 order by `sort`,`id`");
 		foreach($rows as $k=>$rs){
 			$rows[$k]['expanded']	= true;
 			$rows[$k]['children'] 	= $this->getfoldrowsss($rs['id']);
@@ -103,5 +105,63 @@ class optionClassModel extends Model
 			$barr[$rs['num']] = $rs['value'];
 		}
 		return $barr;
+	}
+	
+	//获取所有下级Id
+	public function getalldownid($id)
+	{
+		$str  = $id;
+		$rows = $this->getall('`pid`='.$id.' and `valid`=1','`id`');
+		foreach($rows as $k=>$rs){
+			$str1= $this->getalldownid($rs['id']);
+			$str.=','.$str1.'';
+		}
+		return $str;
+	}
+	
+	//根据receid获取记录 $type=0，默认1其他
+	public function getreceiddownall($uid, $optid=0, $type=0)
+	{
+		$rstr = m('admin')->getjoinstr('`receid`', $uid, 1,1);
+		$whe  = '';
+		if($optid>0)$whe=' and `optid`='.$optid.'';
+		$rows = $this->getall('`valid`=1 and `type`='.$type.' and ('.$rstr.') '.$whe.'','`id`');
+		$strs = '';
+		foreach($rows as $k=>$rs){
+			$str1 = $this->getalldownid($rs['id']);
+			$strs.=','.$str1.'';
+		}
+		if($strs!='')$strs = substr($strs, 1);
+		return $strs;
+	}
+	
+	/**
+	*	根据名称如：技术姿势/PHP知识 得到对应ID
+	*/
+	public function gettypeid($djnum,$s)
+	{
+		if(isset($this->getypsarr[$s]))return $this->getypsarr[$s];
+		$sid = 0;
+		$s 	 = str_replace(',','/', $s);
+		$djid= $this->getval($djnum,'0',2);
+		if(isempt($djid)){
+			$djid = $this->insert(array('name' => '分类','num' => $djnum,'pid'=> 0,'valid'=> 1));
+		}
+		$dsja= $djid;
+		$sarr= explode('/', $s);
+		foreach($sarr as $safs){
+			$pid 	= $djid;
+			$djid 	= (int)$this->getmou('id', "`pid`='$pid' and `name`='$safs'");
+			if($djid==0){
+				$djid = $this->insert(array(
+					'name' => $safs,
+					'pid'  => $pid,
+					'valid'  => 1,
+				));
+			}
+		}
+		if($djid != $dsja)$sid 	= $djid;
+		$this->getypsarr[$s] 	= $sid;
+		return $sid;
 	}
 }

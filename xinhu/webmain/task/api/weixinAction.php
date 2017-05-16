@@ -26,6 +26,8 @@ class weixinClassAction extends apiAction{
 	
 	public function addlocationAction()
 	{
+		$fileid 			= (int)$this->post('fileid','0');
+		$imgpath			= m('file')->getmou('filepath', $fileid);
 		$now 				= $this->rock->now;
 		$uid				= $this->adminid;
 		$type 				= (int)$this->post('type');
@@ -37,6 +39,7 @@ class weixinClassAction extends apiAction{
 		$arr['explain']		= $this->getvals('sm');
 		$arr['optdt']		= $now;
 		$arr['uid']			= $uid;
+		$arr['imgpath']		= $imgpath;
 		m('location')->insert($arr);
 		if($type==1){
 			$dkdt 	= $now;
@@ -45,7 +48,8 @@ class weixinClassAction extends apiAction{
 				'dkdt' 	=> $dkdt,
 				'uid'	=> $uid,
 				'optdt'	=> $now,
-				'address'=> $arr['label'],
+				'imgpath'	=> $imgpath,
+				'address'	=> $arr['label'],
 				'lat'=> $arr['location_x'],
 				'lng'=> $arr['location_y'],
 				'accuracy'=> $arr['precision'],

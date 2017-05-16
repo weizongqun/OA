@@ -98,7 +98,11 @@ function closetabs(num){
 	$('#tabs_'+num+'').remove();
 }
 function closenowtabs(){
-	closetabs(nowtabs.num);
+	if(get('xpbg_bodydds')){
+		js.tanclose($('#xpbg_bodydds').attr('xpbody'));
+	}else{
+		closetabs(nowtabs.num);
+	}
 }
 function bodyunload(){
 	nwjs.removetray();
@@ -137,6 +141,7 @@ function connectserver(){
 			im.initnotify();
 		},
 		onclose:function(){
+			if(otherlogin)return;
 			connectbool=false;
 			js.msg('msg','连接已经断开了<br><span id="lianmiao"></span><a href="javascript:;" onclick="return connectserver()">[重连]</a>',-1);
 			notifyobj.playerrsound();
@@ -227,6 +232,7 @@ var im={
         document.ondragover=function(e){e.preventDefault();};
         document.ondrop=function(e){e.stopPropagation();e.preventDefault();im.dropfile(e);};
 		viewheight = 400;
+		this.shownowci=0;
 		this.shownow();
 		$(window).resize(im.resize);
 		setTimeout('im.initnwjs()',1000);
@@ -235,6 +241,10 @@ var im={
 			var bo  = (lxs=='input' || lxs=='textarea');
 			if(e.keyCode==8 && !bo)return false;
 		});
+		
+		nwjs.serverdata=function(d){
+			return im.serverdata(d);
+		}
 	},
 	initnwjs:function(){
 		if(!nwjs.nw)return;
@@ -283,6 +293,8 @@ var im={
 	},
 	shownow:function(){
 		$('#datenow').html(js.now('H:i:s(周W)<br>Y-m-d'));
+		this.shownowci++;
+		if(this.shownowci==600)this.indexlunxuns();
 		setTimeout('im.shownow()',1000);
 	},
 	resize:function(){
@@ -317,7 +329,7 @@ var im={
 		$('#myname').html(adminname);
 		$('#taskbarname').html(adminname);
 		$('#myinfor').html(adminmyrs.deptname+'，'+adminmyrs.ranking);
-		this.indexlunxun();
+		this.shownowci = 0;
 	},
 	initdata:function(bo){
 		js.ajax('indexreim','indexinit',{}, function(ret){
@@ -328,16 +340,15 @@ var im={
 				fromrecid=ret.config.recid;
 				fromwshost=jm.base64decode(ret.config.wsurl);
 				connectserver();
+			}else{
+				im.getonline();
 			}
 		},'none');
 	},
-	indexlunxun:function(){
-		clearTimeout(this.indexlunxtime);
-		this.indexlunxtime=setTimeout('im.indexlunxuns();',10*60*1000);
-	},
 	indexlunxuns:function(){
 		this.ldata('history');
-		this.indexlunxun();
+		this.getonline();
+		this.shownowci = 0;
 	},
 	ldata:function(lx){
 		js.ajax('indexreim','ldata',{type:lx,loaddt:jm.base64encode(js.servernow)}, function(ret){
@@ -354,6 +365,7 @@ var im={
 		var i=0,len=a.length,d;
 		for(i=0;i<len;i++){
 			d 	= a[i];
+			d.i = i;
 			userarr[d.id] = d;
 		}
 	},
@@ -385,7 +397,7 @@ var im={
 	
 	showdept:function(pid, xu){
 		im.clobbol=true;
-		var i=0,len=maindata.darr.length,s='',a,wfj;
+		var i=0,len=maindata.darr.length,s='',a,wfj,cls;
 		var o = $('#showdept_'+pid+'');
 		var tx= o.text();
 		if(tx){if(pid!=0){o.toggle();}return;}
@@ -406,7 +418,8 @@ var im={
 		for(i=0;i<len;i++){
 			a=maindata.uarr[i];
 			if(pid==a.deptid){
-				s='<div style="padding-left:'+(xu*20+10)+'px" onclick="im.openuser('+a.id+')">';
+				cls='offline';if(a.online==1)cls='online';
+				s='<div uid="'+a.id+'" class="'+cls+'" style="padding-left:'+(xu*20+10)+'px" onclick="im.openuser('+a.id+')">';
 				s+='	<img src="'+a.face+'" align="absmiddle"> '+a.name+' <font>('+a.ranking+')<font>';
 				s+='</div>';
 				o.append(s);
@@ -421,7 +434,7 @@ var im={
 	},
 	showhistorys:function(d,pad){
 		if(!d)return;
-		var s,ty,o=$('#historylist'),d1,st,attr;
+		var s,ty,o=$('#historylist'),d1,st,attr,stst;
 		ty	= d.type;
 		if(ty=='user')d1=userarr[d.receid];
 		if(ty=='group')d1=grouparr[d.receid];
@@ -432,9 +445,14 @@ var im={
 			if(d.optdt.indexOf(date)!=0)ops=d.optdt.substr(5,5);
 			attr = 'oncontextmenu="im.rightdivobj=this" tsaid="'+d.receid+'" tsaype="'+d.type+'" ';
 			st	 = d.stotal;if(st=='0')st='';
+			stst = '';
+			if(d.type=='user'){
+				stst='uid="'+d.receid+'"';
+				if(d1.online==0)stst+=' class="offline"';
+			}
 			s	= '<div class="lists" '+attr+' rtype="hist" id="history_'+num+'" onclick="im.clickitems(\''+ty+'\','+d.receid+')">';
 			s+='<table cellpadding="0" border="0" width="100%"><tr>';
-			s+='<td style="padding-right:8px"><img src="'+d1.face+'"></td>';
+			s+='<td style="padding-right:8px"><div '+stst+' style="height:34px;overflow:hidden"><img src="'+d1.face+'"></div></td>';
 			s+='<td align="left" width="100%"><div class="name">'+d1.name+'</div><div class="huicont">'+jm.base64decode(d.cont)+'</div></td>';
 			s+='<td align="center" nowrap><span id="histotal_'+num+'" class="badge">'+st+'</span><br><span style="color:#cccccc;font-size:10px">'+ops+'</span></td>';
 			s+='</tr></table>';
@@ -604,13 +622,16 @@ var im={
 	},
 	otherlogin:function(){
 		nwjs.winshow();
+		otherlogin = true;
 		var msg='您的帐号已在别的地方登录';
 		notifyobj.showpopup(msg,{soundbo:false});
 		js.confirm(msg,function(s){
 			im.exitlogin();
 		});
-		setTimeout("js.msg('none')",100);
-		clearTimeout(relianshotime_time);
+		setTimeout(function(){
+			js.msg('none');
+			clearTimeout(relianshotime_time);
+		},100);
 	},
 	chatshow:function(nu){
 		var ops=this.getchatobj(nu);
@@ -631,7 +652,18 @@ var im={
 	loadagent:function(){
 		this.ldata('agent');
 	},
-	onoffline:function(){},
+	onoffline:function(sid,cont){
+		var o1 = $('div[uid='+sid+']');
+		o1.removeClass();
+		o1.addClass(cont);
+		var online = 0;
+		if(cont=='online')online=1;
+		var a 	= userarr[sid];
+		if(a){
+			userarr[sid].online=online;
+			maindata.uarr[a.i].online=online;
+		}
+	},
 	addhistory:function(lx,id,sot,cont,opt){
 		var d={type:lx,receid:id,stotal:sot,cont:cont,optdt:opt};
 		this.showhistorys(d, true);
@@ -641,6 +673,20 @@ var im={
 	},
 	receivecmd:function(d){
 		
+	},
+	//获取在线人员列表
+	getonline:function(){
+		serversend({atype:'getonline'});
+	},
+	getonlineb:function(str){
+		var stra = ','+str+',',i,online;
+		$('div[uid]').removeClass();
+		$('div[uid]').addClass('offline');
+		for(i in userarr){
+			online = 'offline';
+			if(stra.indexOf(','+i+',')>-1)online='online';
+			this.onoffline(i, online);
+		}
 	},
 	receivemesb:function(d){
 		var lx=d.type,sendid=d.adminid,num,face,ops=false,msg='',ot,ots,garr,tits,gid;
@@ -659,10 +705,10 @@ var im={
 		}
 		gid = d.gid;
 		if(lx=='onoffline'){
-			if(sendid!=adminid)this.onoffline(sendid, d.cont);
+			this.onoffline(sendid, d.cont);
 		}
 		if(lx=='getonline'){
-			this.onoffline(sendid, d.cont);
+			this.getonlineb(d.online);
 		}
 		if(lx == 'user' || lx == 'group'){
 			num		= ''+lx+'_'+sendid+'';
@@ -823,6 +869,9 @@ var im={
 		var url = ''+apiurl+'index.php?a=lu&m=input&d=flow&num='+num+'';
 		im.openurl('＋'+name, url);
 	},
+	changefolderdown:function(path){
+		js.setoption('changefolderdown', path);
+	},
 	getsavepath:function(){
 		var path = nwjsgui.App.dataPath+'\\downfile';
 		if(!nwjs.fs.existsSync(path))nwjs.fs.mkdirSync(path);  
@@ -846,11 +895,14 @@ var im={
 		js.tanbody('downfile','下载的文件',500,310,{
 			html:'<div style="height:260px;overflow:auto">'+s+'</div>'
 		});
-		$('#msgview_downfile').html('下载路径：<input class="inputs" style="width:310px" type="text" value="'+this.getsavepath()+'">&nbsp;<a onclick="im.opendownpath()" href="javascript:;">打开</a>&nbsp; ');
+		$('#msgview_downfile').html('下载路径：<input class="inputs" style="width:310px" type="text" value="'+this.getsavepath()+'">&nbsp;<a onclick="im.opendownpath()" href="javascript:;">打开</a>&nbsp;');
 	},
 	opendownpath:function(){
 		var spath = this.getsavepath();
 		nwjsgui.Shell.openItem(spath);
+	},
+	changedfolder:function(){
+		this.openexe('getfolder');
 	},
 	backemts:function(s){
 		var num=nowtabs.num;
@@ -877,11 +929,7 @@ var im={
 	onkeyup:function(event){
 		var code	= event.keyCode;
 		if(code==27){
-			if(get('xpbg_bodydds')){
-				js.tanclose($('#xpbg_bodydds').attr('xpbody'));
-			}else{
-				closenowtabs();
-			}
+			closenowtabs();
 			return false;
 		}
 		if(enterbool && !event.ctrlKey && code == 13){im.nowsend();return false;}
@@ -955,6 +1003,7 @@ var im={
 		if(lx!='ok'){
 			js.msg('msg','为了可及时收到信息通知 <br>请开启提醒,<span class="zhu cursor" onclick="im.indexsyscog()">[开启]</span>',-1);
 		}
+		setTimeout('im.getonline()',2000);
 	},
 	indexsyscogs:function(){
 		var str = notifyobj.getnotifystr('im.indexsyscogss()');
@@ -1057,7 +1106,9 @@ var im={
 		var wi = winWb()-150;if(wi>mxw)wi=mxw;if(wi<700)wi=700;
 		js.tanbody("winiframe",tit,wi,410,{html:'<div id="winiframe_hei" style="height:'+hm+'px"><iframe src="" name="winiframe" onload="im.openurlload(this)" width="100%" height="100%" frameborder="0"></iframe></div>',bbar:'none',resize:true,reheiid:'winiframe_hei'});
 		var lxs = (url.indexOf('?')<0)?'?':'&';
-		url+=''+lxs+'ofrom=zmb';
+		var ofrom = 'desk';
+		if(nwjs.nw)ofrom='deskclient';
+		url+=''+lxs+'ofrom='+ofrom+'';
 		winiframe.location.href=url;
 	},
 	openurlload:function(o1){
@@ -1074,12 +1125,27 @@ var im={
 		if(!fus)fus=function(){}
 		js.ajax('kaoqin','adddkjl',dacs, function(s){js.msg('success','打卡成功时间：'+s+'');fus(s);},'');
 	},
-	udpreceive:function(msg, infs){
-		var a=js.decode(msg);
-		if(a.atype=='cropfinish'){
+	//内置服务器,发送命令来控制客户端
+	serverdata:function(a){
+		var lx = a.atype;
+		if(lx=='cropfinish' && !this.cropScreenbo && a.filepath){
 			nwjs.winshow();
-			chatobj[nowtabs.num].readcropimg(a.filepath);
+			if(chatobj[nowtabs.num])chatobj[nowtabs.num].readcropimg(a.filepath);
 		}
+		if(lx=='closenowtabs')closenowtabs();
+		if(lx=='focus')nwjs.winshow();
+		if(lx=='crop')this.cropScreen(true);
+		if(lx=='crop')this.cropScreen(true);
+		if(lx=='notify')this.shownotify(a);
+		if(lx=='changefolder' && a.folder)this.changefolderdown(a.folder);
+		if(lx=='getlogin')return {uid:adminid,uname:adminname,face:adminface};
+	},
+	shownotify:function(d1){
+		var d = js.apply({icon:'images/logo.png','title':'系统提醒',url:''}, d1);
+		if(d.msg)notifyobj.showpopup(d.msg,{icon:d.icon,title:d.title,url:d.url,click:function(b){
+			if(b.url)js.open(b.url, 950, 500);
+			return true;
+		}});
 	},
 	dropfile:function(e){
 		var o = chatobj[nowtabs.num];
@@ -1175,6 +1241,25 @@ var im={
 			_nw = w*bl;
 		}
 		$('#os_bodybgimg').css({width:''+_nw+'px',height:''+_nh+'px'});
+	},
+	openexe:function(lx){
+		var oatg = this.getpath();
+		nwjsgui.Shell.openItem(''+oatg+'/images/'+lx+'.exe');
+	},
+	cropScreen:function(bo){
+		if(!nwjsgui){
+			js.msg('msg','无法使用截屏，请使用客户端,<a href="http://xh829.com/" target="_blank">[去下载]</a>');
+			return;
+		}
+		this.cropScreenbo = bo;
+		this.openexe('reimcaptScreen');
+	},
+	getpath:function(){
+		var url = nwjsgui.App.manifest.main;
+		var las = url.lastIndexOf('\\');
+		var oatg = url.substr(0, las);
+		if(oatg.substr(0,5)=='file:')oatg=oatg.substr(7);
+		return oatg;
 	}
 }
 js.changeok=function(sna,sid, blx,plx){
@@ -1198,7 +1283,10 @@ var chatclass = function(opts){
 		this.inputobj.focus();
 		this.showobj.perfectScrollbar();
 		this.loaddata();
-		var s='<table width="100%" style="border-bottom:1px #dddddd solid" cellpadding="0"><tr><td nowrap>&nbsp;&nbsp;</td><td height="39"><div style="height:24px;overflow:hidden"><img src="'+this.receinfor.face+'" height="24"></div></td><td nowrap>&nbsp;'+this.receinfor.name+'</td><td width="100%"></td>';
+		var onlins = this.receinfor.online==1 ? '在线' : '离线';
+		var sstr 	= '(PC端'+onlins+')';
+		if(this.type!='user')sstr='';
+		var s='<table width="100%" style="border-bottom:1px #dddddd solid" cellpadding="0"><tr><td nowrap>&nbsp;&nbsp;</td><td height="39"><div style="height:24px;overflow:hidden"><img src="'+this.receinfor.face+'" height="24"></div></td><td nowrap>&nbsp;'+this.receinfor.name+' <font style="font-size:12px;color:#888888">'+sstr+'</font></td><td width="100%"></td>';
 		s+='<td nowrap style="display:none"><span><i class="icon-wrench"></i>&nbsp;功能 <i class="icon-angle-down"></i></span></td>';
 		if(this.type=='user'){
 			s+='<td nowrap><span onclick="im.openuserzl('+this.gid+')"><i class="icon-user"></i>&nbsp;资料</span></td>';
@@ -1213,6 +1301,7 @@ var chatclass = function(opts){
 		
 		if(typeof(uploadobj)=='undefined')uploadobj = $.rockupload({
 			inputfile:'allfileinput',
+			initpdbool:true,
 			onchange:function(f){
 				chatobj[f.chatnum].sendfile(f);
 			},
@@ -1324,11 +1413,13 @@ var chatclass = function(opts){
 	this._groupusershow=function(a){
 		this.receinfor.groupuser = a;
 		grouparr[this.gid].groupuser = a;
-		var i,len=a.length,d,s='';
+		var i,len=a.length,d,s='',cls;
 		s+='<table border="0" width="99%"><tr>';
 		for(i=0;i<len;i++){
 			d =a[i];
-			s+='<td align="center" style="padding:5px 0px" onclick="im.openuserzl('+d.id+')" width="20%"><img src="'+d.face+'" height="40" width="40"><br><font color=#888888>'+d.name+'</font></td>';
+			cls='offline';
+			if(userarr[d.id] && userarr[d.id].online==1)cls='';
+			s+='<td align="center" style="padding:5px 0px" class="'+cls+'" onclick="im.openuserzl('+d.id+')" width="20%"><img src="'+d.face+'" height="40" width="40"><br><font color=#888888>'+d.name+'</font></td>';
 			if((i+1)%5==0)s+='</tr><tr>';
 		}
 		s+='</tr></table>';
@@ -1488,7 +1579,7 @@ var chatclass = function(opts){
 		if(lx=='send')this.sendcont();
 		if(lx=='emts')this.getemts(o);
 		if(lx=='clear')this.clearping();
-		if(lx=='crop')this.cropScreen();
+		if(lx=='crop')im.cropScreen(false);
 		if(lx=='close')closetabs(this.num);
 		if(lx=='file')uploadobj.click({chatnum:this.num});
 		if(lx=='change')this.changesend(o);
@@ -1511,21 +1602,6 @@ var chatclass = function(opts){
 		js.setoption('sendkey',''+oi);
 		enterbool = (oi==1);
 	};
-	this.cropScreen=function(){
-		if(!nwjsgui){
-			js.msg('msg','无法使用截屏，请使用客户端,<a href="http://xh829.com/" target="_blank">[去下载]</a>');
-			return;
-		}
-		var oatg = this.getpath();
-		nwjsgui.Shell.openItem(''+oatg+'/images/reimcaptScreen.exe');
-	};
-	this.getpath=function(){
-		var url = nwjsgui.App.manifest.main;
-		var las = url.lastIndexOf('\\');
-		var oatg = url.substr(0, las);
-		if(oatg.substr(0,5)=='file:')oatg=oatg.substr(7);
-		return oatg;
-	};
 	this.readclip=function(evt){
 		this.clipevent =evt;
 		var clipboardData = evt.clipboardData;
@@ -1542,12 +1618,11 @@ var chatclass = function(opts){
 			}  
 		} 
 	};
+	//读取截图过来的
 	this.readcropimg=function(path){
-		var fs = require('fs');
-		fs.readFile(path, function (err, data){
+		nwjs.fs.readFile(path, function (err, data){
 			if(data){
 				me.readclipshow('data:image/jpeg;base64,'+data.toString('base64'));
-				fs.unlink(path);
 			}
 		});
 	};

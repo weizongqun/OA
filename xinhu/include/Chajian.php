@@ -25,7 +25,6 @@ abstract class Chajian{
 		$this->adminid		= $this->rock->adminid;
 		$this->adminname	= $this->rock->adminname;
 		$this->initChajian();
-		
 	}
 	
 	public function __destruct()
@@ -41,7 +40,8 @@ abstract class Chajian{
 	public function contain($str, $s1)
 	{
 		return $this->rock->contain($str, $s1);
-	}	
+	}
+		
 	protected function initChajian(){}
 	protected function destChajian(){}
 }

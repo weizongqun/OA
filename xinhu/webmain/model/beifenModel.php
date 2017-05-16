@@ -12,7 +12,7 @@ class beifenClassModel extends Model
 		$data 		= array();
 		foreach($alltabls as $tabs){
 			if(in_array($tabs, $nobeifne))continue;
-			$rows  	= $this->db->getall('select * from '.$tabs.'');
+			$rows  	= $this->db->getall('select * from `'.$tabs.'`');
 			$fields	= $this->db->gettablefields($tabs);
 			$data[$tabs] = array(
 				'fields' 	=> $fields,

@@ -5,9 +5,9 @@ class modeClassModel extends Model
 	{
 		$this->settable('flow_set');
 	}
-	public function getmodearr()
+	public function getmodearr($whe='')
 	{
-		$arr = $this->getall('status=1','`id`,`num`,`name`,`table`,`type`,`isflow`','sort');
+		$arr = $this->getall('status=1 '.$whe.'','`id`,`num`,`name`,`table`,`type`,`isflow`','sort');
 		foreach($arr as $k=>$rs){
 			$arr[$k]['name'] = ''.$rs['id'].'.'.$rs['name'].'('.$rs['num'].')';
 		}
@@ -47,9 +47,15 @@ class modeClassModel extends Model
 		$isflow	= $mors['isflow'];
 		$columnsstr = '';
 		$showzt	= false;
-		
-		$farr 	= m('flow_element')->getall("`mid`='$modeid' and `iszb`=0",'`fields`,`name`,`fieldstype`,`ispx`,`isalign`,`islb`','`sort`');
-		foreach($farr as $k=>$rs){
+		if($isflow==1){
+			$columnsstr = '{text:"申请人",dataIndex:"base_name",sortable:true},{text:"申请人部门",dataIndex:"base_deptname",sortable:true},{text:"单号",dataIndex:"sericnum"},';
+		}
+		$farr[] = array('name'=>'申请人','fields'=>'base_name');
+		$farr[] = array('name'=>'申请人部门','fields'=>'base_deptname');
+		$farr[] = array('name'=>'单号','fields'=>'sericnum');
+		$farrs 	= m('flow_element')->getall("`mid`='$modeid' and `iszb`=0",'`fields`,`name`,`fieldstype`,`ispx`,`isalign`,`islb`','`sort`');
+		foreach($farrs as $k=>$rs){
+			$farr[] = $rs;
 			if($rs['islb']==0)continue;
 			$columnsstr.='{text:"'.$rs['name'].'",dataIndex:"'.$rs['fields'].'"';
 			if($rs['ispx']==1)$columnsstr.=',sortable:true';
@@ -82,7 +88,8 @@ class modeClassModel extends Model
 		$fselarr	= array();
 		$bear		= $this->db->getrows('[Q]option',"`num` like 'columns_".$num."_%'",'`num`,`value`');
 		foreach($bear as $k2=>$rs2)$fselarr[$rs2['num']]=$rs2['value'];
-		
+		$placeholder= '关键字';
+		if($isflow==1)$placeholder= '关键字/申请人/单号';
 		
 $html= "".$hstart."
 <div>
@@ -90,11 +97,11 @@ $html= "".$hstart."
 	<tr>
 		<td style=\"padding-right:10px;\" id=\"tdleft_{rand}\" nowrap><button class=\"btn btn-primary\" click=\"clickwin,0\" type=\"button\"><i class=\"icon-plus\"></i> 新增</button></td>
 		<td>
-			<input class=\"form-control\" style=\"width:160px\" id=\"key_{rand}\" placeholder=\"搜索关键词\">
+			<input class=\"form-control\" style=\"width:160px\" id=\"key_{rand}\" placeholder=\"".$placeholder."\">
 		</td>
 		$zthtml
 		<td style=\"padding-left:10px\">
-			<div style=\"width:81px\" class=\"btn-group\">
+			<div style=\"width:85px\" class=\"btn-group\">
 			<button class=\"btn btn-default\" click=\"searchbtn\" type=\"button\">搜索</button><button class=\"btn btn-default\" id=\"downbtn_{rand}\" type=\"button\" style=\"padding-left:8px;padding-right:8px\"><i class=\"icon-angle-down\"></i></button> 
 			</div>
 		</td>
@@ -217,6 +224,10 @@ $(document).ready(function(){
 			var num = 'columns_'+modenum+'_'+pnum+'',d=[],d1,d2={},i,len=fieldsarr.length,bok;
 			var nstr= fieldsselarr[num];if(!nstr)nstr='';
 			if(nstr)nstr=','+nstr+',';
+			if(nstr=='' && isflow==1){
+				d.push({text:'申请人',dataIndex:'base_name',sortable:true});
+				d.push({text:'申请人部门',dataIndex:'base_deptname',sortable:true});
+			}
 			for(i=0;i<len;i++){
 				d1 = fieldsarr[i];
 				bok= false;
@@ -335,5 +346,23 @@ $rstr 	= "".$hstart."
 		$bo = $this->rock->createtxt($path, $str);
 		if(!$bo)$path='';
 		return $path;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	*	统计
+	*/
+	public function flowtotal($modeid, $fields, $type)
+	{
+		
 	}
 }

@@ -243,4 +243,23 @@ class flowbillClassModel extends Model
 		}
 		return $arows;
 	}
+	
+	/*
+	*	更新记录
+	*/
+	public function updatebill()
+	{
+		$rows = $this->db->getall('SELECT a.`id`,a.`uname`,a.`udeptname`,a.`status`,b.`name`,b.`deptname` FROM `[Q]flow_bill` a left join `[Q]admin` b on a.`uid`=b.id');
+		$ztara= array(1,5);
+		foreach($rows as $k=>$rs){
+			if(isempt($rs['name']))continue;
+			$zt = $rs['status'];
+			if(isempt($rs['uname']) || isempt($rs['udeptname']) || !in_array($zt, $ztara)){
+				$this->update(array(
+					'uname' 	=> $rs['name'],
+					'udeptname' => $rs['deptname'],
+				), $rs['id']);
+			}
+		}
+	}
 }

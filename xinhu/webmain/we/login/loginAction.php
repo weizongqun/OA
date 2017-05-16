@@ -3,7 +3,17 @@ class loginClassAction extends ActionNot{
 	
 	public function defaultAction()
 	{
-		
+		//判断是否可以快捷登录
+		$iskj = 0;
+		if($this->rock->web == 'wxbro'){
+			if($this->rock->isqywx){
+				if(!isempt($this->option->getval('weixinqy_corpid')))$iskj=2;
+			}else{
+				$coppid = $this->option->getval('weixin_corpid');
+				if(!isempt($coppid))$iskj=1;
+			}
+		}
+		$this->smartydata['iskj'] = $iskj;
 	}
 	
 	/**

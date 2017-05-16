@@ -10,7 +10,7 @@
 	maxupgloble = 0;
 	function rockupload(opts){
 		var me 		= this;
-		var opts	= js.apply({inputfile:'',initremove:true,uptype:'*',maxsize:5,onchange:function(){},onprogress:function(){},onsuccess:function(){},xu:0,fileallarr:[],autoup:true,
+		var opts	= js.apply({inputfile:'',initpdbool:false,initremove:true,uptype:'*',maxsize:5,onchange:function(){},onprogress:function(){},onsuccess:function(){},xu:0,fileallarr:[],autoup:true,
 		onerror:function(){},fileidinput:'fileid',
 		onabort:function(){},
 		allsuccess:function(){}
@@ -49,6 +49,12 @@
 			if(this.upbool)return;
 			this.setparams(ars);
 			get(this.inputfile).click();
+		};
+		this.clear=function(){
+			this.fileallarr = [];
+			this.filearr	= {};
+			this.xu 		= 0;
+			$('#'+this.fileview+'').html('');
 		};
 		this.change=function(o1){
 			if(!o1.files){
@@ -90,13 +96,13 @@
 			this.filearr = a;
 			this.fileallarr.push(a);
 			this.xu++;
+			this.onchange(a);
+			this.reset();
 			if(!this.autoup){
 				var s='<div style="padding:3px;font-size:14px;border-bottom:1px #dddddd solid">'+filename+'('+a.filesizecn+')&nbsp;<span style="color:#ff6600" id="'+this.fileview+'_'+a.xu+'"></span>&nbsp;<a onclick="$(this).parent().remove()" href="javascript:;">×</a></div>';
 				$('#'+this.fileview+'').append(s);
 				return;
 			}
-			this.onchange(a);
-			this.reset();
 			this._startup(f);
 		};
 		this.getimgview=function(o1){
@@ -136,7 +142,7 @@
 				return this.startss(this.nowoi+1);
 			}
 			this.filearr = f;
-			this.onsuccess=function(f,str){
+			this.onsuccessa=function(f,str){
 				var dst= js.decode(str);
 				if(dst.id){
 					this.fileallarr[this.nowoi].id=dst.id;
@@ -147,7 +153,7 @@
 				}
 				this.startss(this.nowoi+1);
 			}
-			this.onprogress=function(f,bil){
+			this.onprogressa=function(f,bil){
 				this.fileviewxu(this.nowoi, ''+bil+'%');
 			}
 			this.onerror=function(){
@@ -161,8 +167,23 @@
 			if(typeof(st)=='string')$('#'+this.fileview+'_'+oi+'').html(st);
 			return get(''+this.fileview+'_'+oi+'');
 		};
-		this._startup=function(fs, nr){
+		//初始化文件防止重复上传
+		this._initfile=function(f){
+			var a 	= this.filearr;
+			var url = js.apiurl('upload','initfile', {'filesize':a.filesize,'fileext':a.fileext});
+			$.getJSON(url, function(ret){
+				if(ret.success){
+					var bstr = ret.data;
+					me.upbool= false;
+					me.onsuccess(a,bstr);
+				}else{
+					me._startup(f,false,true);
+				}
+			});
+		};
+		this._startup=function(fs, nr, bos){
 			this.upbool = true;
+			if(this.initpdbool && fs && !bos){this._initfile(fs);return;}
 			try{var xhr = new XMLHttpRequest();}catch(e){js.msg('msg','当前浏览器不支持2');return;}
 			var url = js.apiurl('upload','upfile', {'maxsize':this.maxsize});
 			if(nr)url = js.apiurl('upload','upcont');
@@ -186,12 +207,16 @@
 			}
 			this.xhr = xhr;
 		};
+		this.onsuccessa=function(){
+			
+		};
 		this._onsuccess=function(o){
 			this.upbool = false;
 			var bstr 	= o.response;
 			if(bstr.indexOf('id')<0){
 				this._error(bstr);
 			}else{
+				this.onsuccessa(this.filearr,bstr,o);
 				this.onsuccess(this.filearr,bstr,o);
 			}
 		};
@@ -203,10 +228,14 @@
 		this._statechange=function(o){
 			
 		};
+		this.onprogressa=function(){
+			
+		};
 		this._onprogress=function(evt){
 			var loaded 	= evt.loaded;  
 			var tot 	= evt.total;  
 			var per 	= Math.floor(100*loaded/tot);
+			this.onprogressa(this.filearr,per, evt);
 			this.onprogress(this.filearr,per, evt);
 		};
 		this.abort=function(){

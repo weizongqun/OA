@@ -44,7 +44,7 @@ class Action extends mainAction
 				if($this->rock->ismobile() || $ismo)$lurl='?d=we&m=login';
 				if(ENTRANCE != 'index')$lurl = 'index.php'.$lurl.'';
 				$backurl   = $this->rock->jm->base64encode($this->rock->nowurl());
-				if($backurl!='' && $_GET)$lurl = $lurl.'&backurl='.$backurl.'';
+				if($backurl!='' && M!='index')$lurl = $lurl.'&backurl='.$backurl.'';
 				$this->rock->location($lurl);
 			}
 			exit();

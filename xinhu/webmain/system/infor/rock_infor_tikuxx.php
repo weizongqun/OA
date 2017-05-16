@@ -27,6 +27,8 @@ $(document).ready(function(){
 		columns:[{
 			text:'题名',dataIndex:'title',editor:false,align:'left'
 		},{
+			text:'分类',dataIndex:'typename'
+		},{
 			text:'类型',dataIndex:'type'
 		},{
 			text:'A',dataIndex:'ana'
@@ -90,7 +92,7 @@ $(document).ready(function(){
 		</td>
 		
 		<td style="padding-left:10px">
-		<input class="form-control" style="width:200px" id="key_{rand}"   placeholder="题名">
+		<input class="form-control" style="width:200px" id="key_{rand}"   placeholder="题名/分类">
 		</td>
 		<td style="padding-left:10px">
 			<button class="btn btn-default" click="search" type="button">搜索</button> 

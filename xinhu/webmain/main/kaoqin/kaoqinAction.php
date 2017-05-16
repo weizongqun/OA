@@ -141,8 +141,13 @@ class kaoqinClassAction extends Action
 	public function kqdistbefore($table)
 	{
 		$type	= (int)$this->post('type','0');
+		$gzid	= (int)$this->post('gzid','0');
+		$key	= $this->post('key');
+		$where 	= 'and `type`='.$type.'';
+		if($gzid!=0)$where.=" and `mid` ='$gzid'";
+		if(!isempt($key))$where.=" and `recename` like '%$key%'";
 		return array(
-			'where' => 'and `type`='.$type.'',
+			'where' => $where,
 			'order' => 'id desc'
 		);
 	}
@@ -426,5 +431,66 @@ class kaoqinClassAction extends Action
 		$sid = $this->post('id');
 		//m('kqdkjl')->delete('id in('.$sid.')');
 		$this->showreturn('');
+	}
+	
+	
+	
+	
+	
+	
+	//排班读取人员
+	public function pbkqdistbefore($table)
+	{
+		$dt1			= $this->post('dt1', date('Y-m'));
+		$this->months 	= $dt1;
+		$key	= $this->post('key');
+		$atype	= $this->post('atype');
+		$s 		= m('admin')->monthuwhere($dt1,'a.');
+		if($atype=='my'){
+			$s = 'and a.`id`='.$this->adminid.'';
+		}
+		
+		if(!isempt($key))$s.=" and (a.`name` like '%$key%' or a.`ranking` like '%$key%' or a.`deptname` like '%$key%')";
+		$table  = "[Q]userinfo a left join `[Q]admin` b on a.id=b.id";
+		
+		$fields = 'a.id,a.name,a.deptname,a.ranking,a.workdate,a.state';
+		return array(
+			'where' =>$s,
+			'fields'=>$fields,
+			'order'=>'b.`sort`,a.`id`',
+			'table'=> $table
+		);
+	}
+	
+	public function pbkqdistafter($table, $rows)
+	{
+		$zta 	= m('flow:userinfo');
+		$maxjg	= c('date')->getmaxdt($this->months);
+		$kqobj  = m('kaoqin');
+		foreach($rows as $k=>$rs){
+			if($rs['state']==5)$rows[$k]['ishui']=1;
+			$rows[$k]['state'] = $zta->getuserstate($rs['state']);
+			$uid = $rs['id'];
+			for($i=1;$i<=$maxjg;$i++){
+				$oi  	= ($i<10) ? '0'.$i.'' : $i;
+				$dt 	= $this->months.'-'.$oi;
+				$zt 	= '';
+				$iswork = $kqobj->isworkdt($uid, $dt);
+				if($iswork==1){
+					$zt = $kqobj->getdistid($uid, $dt);
+				}
+				$rows[$k]['day'.$i.''] = $zt;
+			}
+		}
+		
+		//读取考勤时间规则
+		$gzrows = m('kqsjgz')->getall('pid=0','`id`,`name`','`sort`');
+		
+		return array(
+			'rows' => $rows,
+			'maxjg'=> $maxjg,
+			'week' => date('w', strtotime($this->months.'-01')),
+			'gzrows'=> $gzrows
+		);
 	}
 }

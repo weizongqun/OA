@@ -14,6 +14,7 @@ class inputChajian extends Chajian
 	{
 		$this->date = $this->rock->date;
 		$this->now 	= $this->rock->now;
+		$this->option 	= m('option');
 	}
 	
 	public function initUser($uid)
@@ -123,7 +124,7 @@ class inputChajian extends Chajian
 				$sel = ($rs['value']==$val)?'selected':'';
 				$sel2 = ($rs['value']==$val)?'checked':'';
 				$ocn = '';
-				foreach($rs as $k1=>$v1)if($k1!='id'&&$k1!='value'&&$k1!='name')$ocn.=' '.$k1.'="'.$v1.'"';
+				if($type=='select')foreach($rs as $k1=>$v1)if($k1!='id'&&$k1!='value'&&$k1!='name')$ocn.=' '.$k1.'="'.$v1.'"';
 				$str.='<option'.$ocn.' value="'.$rs['value'].'" '.$sel.'>'.$rs['name'].'</option>';
 				$str1.='<label><input name="'.$fname.'[]" value="'.$rs['value'].'" type="checkbox">'.$rs['name'].'</label>&nbsp;&nbsp;';
 				$str2.='<label><input'.$ocn.' name="'.$fname.'" '.$sel2.' value="'.$rs['value'].'" type="radio">'.$rs['name'].'</label>&nbsp;&nbsp;';
@@ -209,7 +210,7 @@ class inputChajian extends Chajian
 		}
 		if(!isempt($datanum) && ($type=='rockcombo' || $type=='checkboxall' || $type=='radio') && !$fopt){
 			$_ars = explode(',', $datanum);
-			$fopt = m('option')->getselectdata($_ars[0], isset($_ars[2]));
+			$fopt = $this->option->getselectdata($_ars[0], isset($_ars[2]));
 			$fvad = 'name';
 			if(isset($_ars[1])&&($_ars[1]=='value'||$_ars[1]=='id'||$_ars[1]=='num'))$fvad=$_ars[1];
 			

@@ -1,9 +1,13 @@
-﻿var objcont,tabs_title,tabsarr={},nowtabs,opentabs=[],menutabs,menuarr;
+﻿var objcont,tabs_title,tabsarr={},nowtabs,opentabs=[],menutabs,menuarr,admintype='0';
 var viewwidth,viewheight,optmenudatas=[];
 function publicstore(mo,dos,oans){
 	if(!mo)mo='index';
 	if(!dos)dos='';
 	return js.getajaxurl('publicstore',mo,dos,oans);
+}
+function publicmodeurl(num,act,oans){
+	if(!act)act='publicstore';
+	return js.getajaxurl(act,'mode_'+num+'|input','flow',oans);
 }
 function publicsave(mo, dos,oans){
 	if(!mo)mo='index';
@@ -268,7 +272,7 @@ function highsearchclass(options){
 	};
 	this.initfields=function(){
 		if(this.type==1){
-			var i,a=this.fieldsarr,b=this.fieldsselarr,len=a.length,str='',fid='columns_'+this.modenum+'_'+this.pnum+'',selstr='caozuo';
+			var i,a=this.fieldsarr,b=this.fieldsselarr,len=a.length,str='',fid='columns_'+this.modenum+'_'+this.pnum+'',selstr='caozuo,base_name,base_deptname';
 			for(i=0;i<len;i++){
 				str+='<div class="div01"><label><input name="selfields" type="checkbox" value="'+a[i].fields+'">&nbsp;'+a[i].name+'('+a[i].fields+')</label></div>';
 				if(a[i].islb==1)selstr+=','+a[i].fields+'';

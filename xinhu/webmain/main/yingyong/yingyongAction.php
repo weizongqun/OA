@@ -77,4 +77,14 @@ class yingyongClassAction extends Action
 			$this->getmenu($sid, $oi+1, $wh);
 		}
 	}
+	
+	public function yingyongafter($table, $rows)
+	{
+		foreach($rows as $k=>$rs){
+			if($rs['valid']=='0')$rows[$k]['status']=0;
+		}
+		return array(
+			'rows' => $rows
+		);
+	}
 }

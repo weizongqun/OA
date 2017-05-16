@@ -26,13 +26,14 @@ WScript.Echo(docfile);
 var path  	= docfile.substr(0, docfile.lastIndexOf('.'));
 var isok	= 0;
 var Obj 	= new ActiveXObject("Word.Application");
+Obj.DisplayAlerts = false;
 var doc 	= Obj.Documents.Open(docfile);
-var pdfpath = ""+path+".pdf";
+var pdfpath = ""+path+".html";
 var fso 	= new ActiveXObject("Scripting.FileSystemObject"); 
 if(fso.FileExists(pdfpath))fso.DeleteFile(pdfpath);
 fso = false;
 try{
-	doc.SaveAs(pdfpath,17, true);
+	doc.SaveAs(pdfpath,8, true);
 	WScript.Echo("isuccess");
 	isok	= 1;
 }catch(e){

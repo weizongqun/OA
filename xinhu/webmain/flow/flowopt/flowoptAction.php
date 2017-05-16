@@ -70,4 +70,15 @@ class flowoptClassAction extends Action
 		if($msg != 'ok')$this->showreturn('', $msg, 201);
 		$this->showreturn('');
 	}
+	
+	/**
+	*	模块统计
+	*/
+	public function flowtotalAjax()
+	{
+		$modenum= $this->post('modenum');
+		$rows 	= m('flow')->initflow($modenum)->flowtotal();
+		$barr['rows'] = $rows;
+		echo json_encode($barr);
+	}
 }

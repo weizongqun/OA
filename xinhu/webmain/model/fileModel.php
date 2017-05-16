@@ -264,8 +264,9 @@ class fileClassModel extends Model
 		$fstr= '';
 		if(!$rs)return $fstr;
 		$str = $this->rock->jm->strrocktoken(array('a'=>'down','id'=>$rs['id']));
-		$url = ''.URL.'?rocktoken='.$str.'';
+		$url = ''.URL.'index.php?rocktoken='.$str.'';
 		$str = 'href="'.$url.'" target="_blank"';
+		$strd= $str;
 		if($lx==1)$str='href="javascript:;" onclick="return js.downshow('.$rs['id'].')"';
 		if($lx==2){
 			$paths = $rs['filepath'];
@@ -275,8 +276,11 @@ class fileClassModel extends Model
 		$flx   = $rs['fileext'];
 		if(!$this->contain($this->fileall,','.$flx.','))$flx='wz';
 		$str1  = '';
-		//if(!isempt($rs['optname']))$str1=','.$rs['optname'].'';
-		$fstr .='<img src="'.URL.'web/images/fileicons/'.$flx.'.gif" align="absmiddle" height=16 width=16> <a '.$str.' style="color:blue">'.$rs['filename'].'</a> ('.$rs['filesizecn'].''.$str1.')';
+		$fstr .='<img src="'.URL.'web/images/fileicons/'.$flx.'.gif" align="absmiddle" height=16 width=16> <a '.$str.' style="color:blue">'.$rs['filename'].'</a>';
+		if($lx==2 && !$this->rock->ismobile()){
+			$fstr .= ' <a '.$strd.' class="zhu">[下载]</a>';
+		}
+		$fstr .= ' ('.$rs['filesizecn'].''.$str1.')';
 		return $fstr;
 	}
 	

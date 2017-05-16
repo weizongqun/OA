@@ -7,7 +7,11 @@ $(document).ready(function(){
 	var at = $('#optionview_{rand}').bootstree({
 		url:js.getajaxurl('getmywordtype','word','system'),
 		columns:[{
-			text:'文档类型',dataIndex:'name',align:'left',xtype:'treecolumn',width:'79%'
+			text:'文档类型',dataIndex:'name',align:'left',xtype:'treecolumn',width:'79%',renderer:function(v,d){
+				var s1 = v;
+				if(!isempt(d.recename))s1+='&nbsp;<span style="font-size:10px;color:#888888"><i  title="共享给：'+d.recename+'" class="icon-share-alt"></i></span>';
+				return s1;
+			}
 		},{
 			text:'序号',dataIndex:'sort',width:'20%'
 		}],
@@ -26,7 +30,7 @@ $(document).ready(function(){
 			c.typeclidks(d);
 			c.ismoveok(d);
 		}
-	});;
+	});
 	
 	var a = $('#view_{rand}').bootstable({
 		tablename:'file',celleditor:true,autoLoad:false,checked:true,modedir:'{mode}:{dir}',storebeforeaction:'wordbeforeaction',fanye:true,
@@ -41,6 +45,8 @@ $(document).ready(function(){
 			text:'大小',dataIndex:'filesizecn',sortable:true
 		},{
 			text:'添加时间',dataIndex:'optdt',sortable:true
+		},{
+			text:'分类',dataIndex:'typename'
 		},{
 			text:'共享给',dataIndex:'shate'
 		},{
@@ -218,7 +224,36 @@ $(document).ready(function(){
 			c.movedata=false;
 		},
 		floadshate:function(){
-			
+			var d = at.changedata;
+			if(!d){js.msg('msg','没有选中行');return;}
+			if(isempt(d.receid)){
+				var cans = {
+					type:'deptusercheck',
+					title:'文档['+d.name+']共享给...',
+					callback:function(sna,sid){
+						if(sid)c.floadshates(sna,sid, d.id);
+					}
+				}
+				js.getuser(cans);
+			}else{
+				js.confirm('确定要将['+d.name+']取消共享吗？',function(jg){
+					if(jg=='yes'){
+						c.floadshatess(d.id);
+					}
+				});
+			}
+		},
+		floadshates:function(sna,sid,fid){
+			if(sid==''||fid=='')return;
+			js.ajax(js.getajaxurl('sharefileer','{mode}','{dir}'),{'sid':sid,'sna':sna,'fid':fid},function(s){
+				at.reload();
+			},'post',false, '共享中...,共享成功');
+		},
+		floadshatess:function(fid){
+			if(fid=='')return;
+			js.ajax(js.getajaxurl('sharefileer','{mode}','{dir}'),{'sid':'','sna':'','fid':fid},function(s){
+				at.reload();
+			},'get',false, '取消中...,取消成功');
 		}
 	};
 	js.initbtn(c);
@@ -238,9 +273,9 @@ $(document).ready(function(){
 		<a href="javascript:" title="删除" click="typedel" onclick="return false"><i class="icon-trash"></i></a>&nbsp; &nbsp;
 		<a href="javascript:" title="刷新" click="reload" onclick="return false"><i class="icon-refresh"></i></a>&nbsp; &nbsp;
 		<a href="javascript:" title="移动" click="move" onclick="return false"><i class="icon-move"></i></a>&nbsp; &nbsp;
-		<a href="javascript:" title="移动到顶级" click="moveto" onclick="return false"><i class="icon-arrow-up"></i></a><!--
+		<a href="javascript:" title="移动到顶级" click="moveto" onclick="return false"><i class="icon-arrow-up"></i></a>
 		&nbsp; 
-		<a href="javascript:" title="共享/取消共享" click="floadshate" onclick="return false"><i class="icon-share-alt"></i></a>-->
+		<a href="javascript:" title="共享/取消共享" click="floadshate" onclick="return false"><i class="icon-share-alt"></i></a>
 	  </div>
 	</div>  
 </td>

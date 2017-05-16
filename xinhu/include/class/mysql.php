@@ -515,9 +515,10 @@ abstract class mysql{
 	/**
 		返回所有数据库的表
 	*/	
-	public function getalltable()
+	public function getalltable($base='')
 	{	
-		$sql = "select `TABLE_NAME` from information_schema.`TABLES` where `TABLE_SCHEMA`='$this->basename'";
+		if($base=='')$base = $this->basename;
+		$sql = "select `TABLE_NAME` from information_schema.`TABLES` where `TABLE_SCHEMA`='$base'";
 		$arr = $this->getall($sql);
 		$rows= array();
 		foreach($arr as $k=>$rs)$rows[] = $rs['TABLE_NAME'];
@@ -661,9 +662,9 @@ abstract class mysql{
 	}	
 	
 	/**
-		获取所有顶级信息连接起来
-		$table	表名
-		$pfields	上级字段
+	*	获取所有顶级信息连接起来
+	*	@param $table	表名
+	*	@param $pfields	上级字段 $jfield 要连接的字段名 $afid = 值
 	*/
 	private $joinarr=array();
 	public function getpval($table,$pfields,$jfield,$afid,$plit='/',$afield='id',$maxlen=5)

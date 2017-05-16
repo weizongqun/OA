@@ -8,7 +8,7 @@ $(document).ready(function(){
 		window:false,rand:'{rand}',tablename:'flow_element',
 		url:publicsave('{mode}','{dir}'),
 		params:{otherfields:'mid='+mid+''},
-		submitfields:'name,fields,fieldstype,dev,savewhere,sort,ispx,isalign,issou,islu,islb,isbt,iszs,data,iszb,attr,lens',
+		submitfields:'name,fields,fieldstype,dev,savewhere,sort,istj,ispx,isalign,issou,islu,islb,isbt,iszs,data,iszb,attr,lens',
 		requiredfields:'name,fields,fieldstype,lens',aftersaveaction:'elemensavefields',beforesaveaction:'elemensavefieldsbefore',
 		success:function(){
 			closenowtabs();
@@ -120,6 +120,7 @@ $(document).ready(function(){
 				<label><input name="islb" value="1" checked type="checkbox"> 列表列</label>&nbsp; &nbsp; 
 				<label><input name="ispx" value="0" type="checkbox"> 列表列排序</label>&nbsp; &nbsp; 
 				<label><input name="issou" value="0" type="checkbox"> 可搜索筛选</label>&nbsp; &nbsp; 
+				<label><input name="istj" value="0" type="checkbox"> 可统计</label>&nbsp; &nbsp; 
 			</td>
 		</tr>
 

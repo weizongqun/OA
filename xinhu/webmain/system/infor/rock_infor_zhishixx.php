@@ -29,6 +29,8 @@ $(document).ready(function(){
 		columns:[{
 			text:'标题',dataIndex:'title',editor:false,align:'left'
 		},{
+			text:'分类',dataIndex:'typename'
+		},{
 			text:'添加时间',dataIndex:'adddt'
 		},{
 			text:'操作时间',dataIndex:'optdt'
@@ -91,7 +93,7 @@ $(document).ready(function(){
 		</td>
 		
 		<td style="padding-left:10px">
-		<input class="form-control" style="width:180px" id="key_{rand}"   placeholder="标题">
+		<input class="form-control" style="width:180px" id="key_{rand}"   placeholder="标题/分类">
 		</td>
 		<td style="padding-left:10px">
 			<button class="btn btn-default" click="search" type="button">搜索</button> 

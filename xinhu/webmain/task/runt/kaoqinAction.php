@@ -34,4 +34,14 @@ class kaoqinClassAction extends runtAction
 		m('kaoqin')->kqanayall($month);
 		echo 'success';
 	}
+	
+	//分析工作日报统计
+	public function dailyfxAction()
+	{
+		$dt 	= c('date')->adddate($this->rock->date, 'd', -1);
+		$flow 	= m('flow')->initflow('daily');
+		$flow->dailyanay(0, $dt);
+		$flow->dailytodo($dt); 	//未写日报通知
+		echo 'success';
+	}
 }

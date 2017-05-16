@@ -23,6 +23,7 @@ class flow_hrsalaryClassModel extends flowModel
 		if($dt!='')$where.=" and `month`='$dt'";
 		return array(
 			'where' => $where,
+			'table'	=> '`[Q]'.$this->mtable.'` a',
 			'fields'=> 'id,status,xuid,udeptname,uname,ranking,optdt,month,optname,base,money,isturn,ispay',
 			'order' => '`optdt` desc'
 		);

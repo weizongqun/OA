@@ -11,14 +11,15 @@ var nwjs={
 		this.fs  = require('fs');
 		this.win = nwjsgui.Window.get();
 	},
-	
+	serverdata:function(str){
+		
+	},
 	createtray:function(tls, lx){
 		if(!this.nw)return;
 		var icon = 'images/logo.png';
 		if(lx==0)icon='images/logo_hui.png';
 		var tray = new nwjsgui.Tray({ title:tls, icon: icon});
 		tray.tooltip = tls;
-		//this.win.setShowInTaskbar(false);
 		var menu = new nwjsgui.Menu();
 		menu.append(new nwjsgui.MenuItem({label: '打开窗口',click:function(){
 			nwjs.winshow();
@@ -26,7 +27,8 @@ var nwjs={
 		this.closebool = false;
 		menu.append(new nwjsgui.MenuItem({label: '退出',click:function(){
 			nwjs.closebool = true;
-			nwjs.win.close();
+			try{bodyunload();js.onunload();}catch(e){}
+			nw.App.quit();
 		}}));
 		
 		tray.menu 	= menu;
@@ -41,7 +43,8 @@ var nwjs={
 		this.win.on('close',function(){
 			if(nwjs.closebool){
 				try{bodyunload();js.onunload();}catch(e){}
-				nwjsgui.Window.get().close(true);
+				nw.App.quit();
+				//nw.Window.get().close(true);
 			}else{
 				nwjs.win.hide();
 			}
@@ -51,6 +54,7 @@ var nwjs={
 		var kjj=js.getoption('kuaijj','Q');
 		this.addShortcut(kjj);
 		this.addfile();
+		this.udpserver();
 	},
 	addShortcut:function(v){
 		var option = {
@@ -70,12 +74,11 @@ var nwjs={
 	},
 	removetray:function(){
 		if(!this.nw)return;
-		if(this.server)this.server.close();
 		this.tray.remove();
 		if(this.shortcut)nwjsgui.App.unregisterGlobalHotKey(this.shortcut);
+		this.closeserver();
 		this.tray = false;
 		this.shortcut = false;
-		this.server=false;
 	},
 	changewinhide:function(){
 		if(windowfocus){
@@ -83,6 +86,11 @@ var nwjs={
 		}else{
 			this.winshow();
 		}
+	},
+	runcmd:function(cmd){
+		if(!this.nw)return;
+		if(!this.execcmd)this.execcmd= require('child_process').exec;
+		this.execcmd(cmd);
 	},
 	winshow:function(){
 		if(!this.nw){
@@ -146,25 +154,43 @@ var nwjs={
 		}
 		return json;
 	},
+	closeserver:function(){
+		if(!this.server)return;
+		if(this.socketobj)this.socketobj.destroy();
+		this.server.close();
+	},
+	socketobj:false,
 	udpserver:function(funarr){
-		return;if(!this.nw)return;
-		if(!funarr)funarr=function(){};
-		try{
-			var dgram 	= require("dgram");
-			this.server = dgram.createSocket("udp4");
-			this.server.on("error", function (err) {
-				nwjs.server.close();
-			});
-			this.server.on("message", function (msg, rinfo){
-				funarr(msg, rinfo);
-			});
-			this.server.on("listening", function (){
-				
-			});
-			this.server.bind(8299,'0.0.0.0');
-		}catch(e){
-			this.server=false;
-		}
+		if(!this.nw)return;
+		var http 	= require('http');
+		this.server = http.createServer(function(req, res){
+			var url = req.url.toString(),bstr='ok';
+			if(url.indexOf('?')>-1){
+				try{
+				var urla= url.split('?'),batr= urla[urla.length-1],i,bas1,bst='',bas={},k,v;
+				var batra = batr.split('&');
+				for(i=0;i<batra.length;i++){
+					bas1  = batra[i].split('=');
+					k 	  = bas1[0]; v = bas1[1]; if(!v)v='';
+					if(v.indexOf('base64')==0)v=jm.base64decode(v.substr(6));
+					bas[k]= v;
+				}
+				var barr = nwjs.serverdata(bas);
+				if(typeof(barr)=='object')bas = js.apply(bas, barr);
+				for(k in bas)bst+=',"'+k+'":"'+bas[k]+'"';
+				if(bst!='')bst=bst.substr(1);
+				bstr= '{'+bst+'}';
+				if(bas.callback)bstr=''+bas.callback+'({'+bst+'})';
+				}catch(e){}
+			}
+			res.writeHead(200,{'Content-Type':'text/html;charset=utf-8'});res.write(bstr);res.end();
+			nwjs.socketobj.destroy();
+			nwjs.socketobj=false;
+		});
+		this.server.on('connection',function(socket){
+			nwjs.socketobj = socket;
+		});
+		this.server.listen(2829,'127.0.0.1',function(){});
 	},
 	downfile:function(params){
 		var cans 	= js.apply({url:'',savefile:'',onsuccess:function(){},onjindu:function(){},onerror:function(){}},params);

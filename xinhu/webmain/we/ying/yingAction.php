@@ -29,7 +29,7 @@ class yingClassAction extends ActionNot{
 		$arr 	= m('waichu')->getoutrows($this->date,$this->adminid);
 		$this->assign('rows', $arr);
 		$dt 	= $this->rock->date;
-		$dwarr	= m('location')->getrows("uid='$this->adminid' and `optdt` like '$dt%'",'optdt,label,id','`id` desc');
+		$dwarr	= m('location')->getrows("uid='$this->adminid' and `optdt` like '$dt%'",'*','`id` desc');
 		$this->assign('dwarr', $dwarr);
 		$kqrs 	= m('kaoqin')->dwdkrs($this->adminid, $this->date);
 		$isgzh	= m('wxgzh:index')->isusegzh();

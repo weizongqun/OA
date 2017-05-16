@@ -236,7 +236,7 @@ js.winiframe=function(tit, url){
 	var mxw= 900;
 	var hm = winHb()-150;if(hm>800)hm=800;if(hm<400)hm=400;
 	if(url.indexOf('wintype=max')>0){
-		mxw= 1100;
+		mxw= 900;
 		hm=winHb()-45;
 	}
 	var wi = winWb()-150;if(wi>mxw)wi=mxw;if(wi<700)wi=700;
@@ -862,4 +862,17 @@ function appobj1(act, can1){
 		}
 	}
 	return bo;
+}
+//向PC客户端发送命令
+js.cliendsend=function(at, cans, fun){
+	var url = unescape('http%3A//127.0.0.1%3A2829/%3Fatype');
+	if(!cans)cans={};if(!fun)fun=function(){}
+	url+='='+at+'&callback=?';
+	var i,v,bo=typeof(jm);
+	for(i in cans){
+		v = cans[i];
+		if(bo=='object')v='base64'+jm.base64encode(v)+'';
+		url+='&'+i+'='+v+'';
+	}
+	$.getJSON(url, function(ret){fun(ret);});
 }

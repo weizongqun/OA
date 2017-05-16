@@ -2,6 +2,9 @@
 header('Access-Control-Allow-Origin: *');
 class uploadClassAction extends apiAction
 {
+	/**
+	*	上传文件
+	*/
 	public function upfileAction()
 	{
 		if(!$_FILES)exit('sorry!');
@@ -13,6 +16,26 @@ class uploadClassAction extends apiAction
 		if(!is_array($upses))exit($upses);
 		$arr 	= c('down')->uploadback($upses);
 		$this->returnjson($arr);
+	}
+	
+	/**
+	*	上传时初始化看是不是存在文件
+	*/
+	public function initfileAction()
+	{
+		$filesize	= $this->post('filesize');
+		$fileext	= $this->post('fileext');
+		$frs 		= m('file')->getone("`fileext`='$fileext' and `filesize`=$filesize",'*','`id` desc');
+		$bo 		= false;
+		if($frs){
+			$filepath = $frs['filepath'];
+			if(!isempt($filepath) && file_exists($filepath))$bo=true;
+		}
+		if($bo){
+			$this->showreturn(json_encode($frs));
+		}else{
+			$this->showreturn('','not found', 201);
+		}
 	}
 	
 	public function upfileappAction()

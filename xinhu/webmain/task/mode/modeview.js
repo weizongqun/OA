@@ -139,8 +139,13 @@ var c={
 		if(ismobile==1)js.msg('msg', msg);
 	},
 	close:function(){
-		window.close();
-		try{parent.js.tanclose('winiframe');}catch(e){}
+		var ofrom = js.request('ofrom');
+		if(ofrom=='deskclient'){
+			js.cliendsend('closenowtabs');
+		}else{
+			window.close();
+			try{parent.js.tanclose('winiframe');}catch(e){}
+		}
 	},
 	other:function(nae,las){
 		_submitother(nae,'','1','',las);

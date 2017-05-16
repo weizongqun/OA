@@ -1,12 +1,14 @@
 <?php
 class kaoqinClassModel extends Model
 {
-	private $userarr = array();
+	private $userarr 	= array();
+	private $_pipeiarr 	= array();
 	
 	public function initModel()
 	{
 		$this->settable('kqdist');
-		$this->admindb = m('admin');
+		$this->admindb 	= m('admin');
+		$this->dtobj 	= c('date');
 	}
 	
 	public function adddkjl($uid,$type=0, $dkdt='',$ip='',$mac='')
@@ -46,12 +48,19 @@ class kaoqinClassModel extends Model
 	*/
 	public function getkqsj($uid, $dt, $lx=0)
 	{
+		$key 	= $this->rock->getfunkey(func_get_args(),'kqdist');
+		$rows 	= arrvalue($this->_pipeiarr, $key);
+		if($rows)return $rows;
 		$mid 	= $this->getdistid($uid, $dt, 0);
-		$rows 	= $this->db->getrows('[Q]kqsjgz','pid='.$mid.'','id,name,stime,etime,qtype','`sort`');
-		if($lx==1)return $rows;
-		foreach($rows as $k=>$rs){
-			$rows[$k]['children'] = $this->db->getrows('[Q]kqsjgz','pid='.$rs['id'].'','id,name,stime,etime,qtype,sort','`sort`');
+		$rows 	= $this->db->getrows('[Q]kqsjgz','pid='.$mid.'','id,name,stime,etime,qtype,iskq','`sort`');
+		if($lx==1){
+			$this->_pipeiarr[$key] = $rows;
+			return $rows;
 		}
+		foreach($rows as $k=>$rs){
+			$rows[$k]['children'] = $this->db->getrows('[Q]kqsjgz','pid='.$rs['id'].'','id,name,stime,etime,qtype,sort,iskt,iskq','`sort`');
+		}
+		$this->_pipeiarr[$key] = $rows;
 		return $rows;
 	}
 	
@@ -77,10 +86,41 @@ class kaoqinClassModel extends Model
 	*	获取匹配Id
 	*	$type 0考勤时间,1休息,2定位
 	*/
-	public function getdistid($uid, $dt, $type)
+	private $getdistrows = array();
+	public function getdistid($uid, $dt, $type=0)
 	{
-		$s 		= $this->admindb->getjoinstr('receid', $uid);
-		$rows  	= $this->getall("`status`=1 and `type`=".$type." and '$dt' between `startdt` and `enddt` $s ");
+		$uarr[] 	= 'u'.$uid.'';
+		$deptpath 	= arrvalue($this->getusarr($uid), 'deptpath');
+		if(!isempt($deptpath)){
+			$depa = explode(',', str_replace(array('[',']'), array('',''), $deptpath));
+			foreach($depa as $depas){
+				$uarr[] = 'd'.$depas.'';
+			}
+		}
+		if(!isset($this->getdistrows[$type])){
+			$barr = $this->getall("`status`=1 and `type`=".$type." ",'*', '`sort`');
+			foreach($barr as $k=>$rs)if(isempt($rs['enddt']))$barr[$k]['enddt'] = $rs['startdt'];
+			$this->getdistrows[$type] = $barr;
+		}else{
+			$barr = $this->getdistrows[$type];
+		}
+		$rows 		= array();
+		if($barr)foreach($barr as $k=>$rs){
+			$receid = $rs['receid'];
+			if($dt<$rs['startdt'] || $dt>$rs['enddt'])continue;
+			if(isempt($receid) || $receid=='all'){
+				$rows[] = $rs;
+				continue;
+			}
+			$receida = explode(',', $receid);
+			$bo 	 = false;
+			foreach($uarr as $uarrs){
+				if(in_array($uarrs, $receida))$bo=true;
+			}
+			if($bo)$rows[] = $rs;
+		}
+		//$s 		= $this->admindb->getjoinstr('receid', $uid);
+		//$rows  	= $this->getall("`status`=1 and `type`=".$type." and '$dt' between `startdt` and `enddt` $s ",'*', '`sort`');
 		$mid 	= $this->getpipeimid($uid, $rows);
 		return $mid;
 	}
@@ -88,12 +128,46 @@ class kaoqinClassModel extends Model
 	/**
 	*	是不是工作日
 	*/
+	private $isworkdtarr = array();
 	public function isworkdt($uid, $dt)
 	{
+		$month 	= substr($dt, 0, 7);
+		$key 	= 'a'.$month.'';
+		$barr 	= array();
+		if(!isset($this->isworkdtarr[$key])){
+			$rows = $this->db->getrows('[Q]kqxxsj',"`dt` like '$month%'");
+			foreach($rows as $k=>$rs){
+				$barr['a'.$rs['pid'].''.$rs['dt'].'_'.$rs['uid'].''] = $rs['type'];
+			}
+			$this->isworkdtarr[$key] = $barr;
+		}else{
+			$barr = $this->isworkdtarr[$key];
+		}
+		$isw	= 1;
 		$mid 	= $this->getdistid($uid, $dt, 1);
-		$tos 	= $this->db->rows('[Q]kqxxsj',"`pid`=$mid and `dt`='$dt'");
-		$isw 	= ( $tos>0 ) ? 0 : 1;
+		$type 	= arrvalue($barr, 'a'.$mid.''.$dt.'_0');
+		if($type=='0')$isw = 0;
+		$types 	= arrvalue($barr, 'a'.$mid.''.$dt.'_'.$uid.'');
+		if(!isempt($types))$isw = (int)$types;
+		//$tos 	= $this->db->rows('[Q]kqxxsj',"`pid`=$mid and `dt`='$dt'");
+		//$isw 	= ( $tos>0 ) ? 0 : 1;
 		return $isw;
+	}
+	
+	//返回人员
+	public function getusarr($uid)
+	{
+		if(is_array($uid)){
+			return $uid;
+		}else{
+			if(!isset($this->userarr[$uid])){
+				$_urs = $this->db->getone('[Q]admin', "`id`='$uid'", '`id`,`deptid`,`deptpath`');
+				$this->userarr[$uid] = $_urs;
+				return $_urs;
+			}else{
+				return $this->userarr[$uid];
+			}
+		}
 	}
 	
 	/**
@@ -113,17 +187,11 @@ class kaoqinClassModel extends Model
 		$mid 	= $momid;
 		if($uid==0)return $mid;
 		$mid 	= 0;
-		$deptpath = '';
-		if(is_array($uid)){
-			if(isset($uid['deptpath']))$deptpath = $uid['deptpath'];
-			$uid = $uid['id'];
-		}else{
-			if(!isset($this->userarr[$uid])){
-				$_urs = $this->db->getone('[Q]admin', "`id`='$uid'", '`deptid`,`deptpath`');
-				$this->userarr[$uid] = $_urs;
-			}
-			$deptpath = $this->userarr[$uid]['deptpath'];
-		}
+		
+		$uarr 		= $this->getusarr($uid);
+		$deptpath 	= arrvalue($uarr, 'deptpath');
+		$uid		= arrvalue($uarr, 'id','0');
+
 		$utid  	= $dtid  =  array();$allars=false;$dttime = 0;
 		if($dt!='')$dttime	= strtotime($dt);
 		foreach($garrs as $k=>$rs){
@@ -145,17 +213,17 @@ class kaoqinClassModel extends Model
 				$sid = str_replace('u','', $ssid);
 				$sid = str_replace('d','', $sid);
 				if($fs=='d'){
-					$dtid[$sid]= $rs;
+					$dtid[$sid][]= $rs;
 				}else{
-					$utid[$sid]= $rs;
+					$utid[$sid][]= $rs;
 				}					
 			}
 		}
-		if(isset($utid[$uid]))$mid = (int)$utid[$uid][$esfi];
+		if(isset($utid[$uid]))$mid = (int)$utid[$uid][0][$esfi];
 		if($mid == 0 && !$this->isempt($deptpath)){
 			$depa = explode(',', str_replace(array('[',']'), array('',''), $deptpath));
 			foreach($depa as $depas){
-				if(isset($dtid[$depas]))$mid = (int)$dtid[$depas][$esfi];
+				if(isset($dtid[$depas]))$mid = (int)$dtid[$depas][0][$esfi];
 			}
 		}
 		if($mid == 0 && is_array($allars))$mid = (int)$allars[$esfi];
@@ -216,15 +284,46 @@ class kaoqinClassModel extends Model
 		if(!isempt($str))$this->db->delete('[Q]kqanay',"`uid`=$uid and ($str)");
 	}
 	
+	private function geetdkarr($uid, $dt)
+	{
+		return $this->db->getrows('[Q]kqdkjl',"`uid`='$uid' and `dkdt` like '$dt%'",'`dkdt`','`dkdt` asc');
+	}
+	
+	/**
+	*	考勤分析
+	*	@param $uid 用户Id
+	*	@param $dt 分析日期
+	*/
 	public function kqanay($uid, $dt)
 	{
 		if($dt > $this->rock->date)return;
-		$dkarr 	= $this->db->getrows('[Q]kqdkjl',"`uid`='$uid' and `dkdt` like '$dt%'",'`dkdt`','`dkdt` asc');
-		$this->_dkarr = $dkarr;
+		$dkarr 	= $this->geetdkarr($uid, $dt);
+		
 		$iswork	= $this->isworkdt($uid, $dt);
 		$sjarr	= $this->getkqsj($uid, $dt);
 		$db 	= m('kqanay');
 		$ids 	= '0';
+		
+		//是否有跨天的
+		$isjy_1	=  $isjy_2	= 0;
+		foreach($sjarr as $k=>$rs){
+			foreach($rs['children'] as $k1=>$rs1){
+				if($rs1['iskt']==2)$isjy_2=1; //-1天
+				if($rs1['iskt']==1)$isjy_1=1; //+1天
+			}
+		}
+		if($isjy_2==1){
+			$dt2 	= $this->dtobj->adddate($dt,'d', -1);
+			$dtarr2 = $this->geetdkarr($uid, $dt2);
+			if($dtarr2)$dkarr = array_merge($dtarr2, $dkarr);
+		}
+		if($isjy_1==1){
+			$dt1 	= $this->dtobj->adddate($dt,'d', 1);
+			$dtarr1 = $this->geetdkarr($uid, $dt1);
+			if($dtarr1)$dkarr = array_merge($dkarr, $dtarr1);
+		}
+		
+		$this->_dkarr = $dkarr;
 		foreach($sjarr as $k=>$rs){
 			$ztname = $rs['name'];
 			$arrs 	= $this->kqanaysss($uid, $dt, $rs, $this->_dkarr);
@@ -237,7 +336,7 @@ class kaoqinClassModel extends Model
 				foreach($rs['children'] as $k2=>$cog2){
 					if($cog2['name']=='正常')$zcarr = $cog2;
 				}
-				$states = $this->getstates($zcarr, $dt, $uid);	
+				if($zcarr)$states = $this->getstates($zcarr, $dt, $uid);	
 			}
 			
 			$emiao	= $arrs['emiao'];
@@ -272,6 +371,26 @@ class kaoqinClassModel extends Model
 			$stime 	= strtotime(''.$dt.' '.$rs['stime'].'');
 			$etime 	= strtotime(''.$dt.' '.$rs['etime'].'');
 			$qtype	= $rs['qtype'];
+			$iskt	= $rs['iskt'];
+			
+			//-1跨天
+			if($iskt==2){
+				$dt2	= $this->dtobj->adddate($dt,'d', -1);
+				$stime 	= strtotime(''.$dt2.' '.$rs['stime'].'');
+				if($rs['stime']<$rs['etime']){
+					$etime 	= strtotime(''.$dt2.' '.$rs['etime'].'');
+				}
+			}
+			
+			//+1跨天
+			if($iskt==1){
+				$dt1	= $this->dtobj->adddate($dt,'d', 1);
+				$etime 	= strtotime(''.$dt1.' '.$rs['etime'].'');
+				if($rs['stime']<$rs['etime']){
+					$stime 	= strtotime(''.$dt1.' '.$rs['stime'].'');
+				}
+			}
+			
 			foreach($dkarr as $k1=>$rs1){
 				$dkdt = strtotime($rs1['dkdt']);
 				if($stime>$dkdt || $etime<$dkdt)continue;
@@ -464,6 +583,32 @@ class kaoqinClassModel extends Model
 			if(!isempt($rs['stime']) && !isempt($rs['etime']))$barr[] = $rs;
 		}
 		return $barr;
+	}
+	
+	/**
+	*	获取默认某天应该上班时间段
+	*	返回09:00-18:30
+	*/
+	public function getsbstr($uid, $dt)
+	{
+		$barr	= $this->getsbarr($uid, $dt);
+		$stime 	= $etime = '';
+		foreach($barr as $k=>$rs){
+			if($rs['iskq']==1){
+				if($stime=='')$stime = $rs['stime'];
+				$etime = $rs['etime'];
+			}
+		}
+		if($stime=='')$stime = '09:00:00';
+		if($etime=='')$etime = '18:00:00';
+		$stimes 	= $dt.' '.$stime;
+		$etimes 	= $dt.' '.$etime;
+		return array(
+			'stime' 	=> $stimes,
+			'stimes' 	=> strtotime($stimes),
+			'etime' 	=> $etimes,
+			'etimes' 	=> strtotime($etimes),
+		);
 	}
 	
 	/**

@@ -30,8 +30,8 @@ class flow_dailyClassModel extends flowModel
 			}
 			$rs['dt'] = $dt;
 		}
-		$rs['content'] 		= str_replace("\n",'<br>', $rs['content']);
-		$rs['plan'] 		= str_replace("\n",'<br>', $rs['plan']);
+		$this->replacepbr($rs, 'content');
+		$this->replacepbr($rs, 'plan');
 		$rs['type'] 		= $this->typearr[$rs['type']];
 		return $rs;
 	}
@@ -136,4 +136,146 @@ class flow_dailyClassModel extends flowModel
 		);
 	}
 	
+	/**
+	*	日报分析
+	*/
+	public function dailyanay($uid=0, $month='')
+	{
+		$dto	= c('date');
+		if($month=='')$month = $this->rock->date;
+		$mon	= substr($month,0, 7);
+		$start 	= $mon.'-01';
+		$enddt	= $dto->getenddt($mon);
+		$jg		= $dto->getmaxdt($start);
+		$dtarr  = $dailydt = $leavedt = array();
+		for($i=1; $i<=$jg; $i++){
+			$oi	= ''.$i.'';
+			if($i<10)$oi= '0'.$i.'';
+			$dt = $mon.'-'.$oi.'';
+			if($dt>=$this->rock->date)break;
+			$dtarr[] = array($dt, strtotime($dt));
+		}
+		$kql	= m('kaoqin');
+		$dbfx	= m('dailyfx');
+		$where  = m('admin')->monthuwheres($start, $enddt);
+		if($uid!=0)$where="and `id`='$uid'";
+		$urows	= m('userinfo')->getall("1=1 $where", 'id,name,workdate,quitdt,isdaily');
+		
+		
+		$dailya = $this->getall("`type`=0 and `dt` like '$mon%' group by `uid`,`dt`",'`uid`,`dt`');
+		foreach($dailya as $k=>$rs){
+			$dailydt['a'.$rs['uid'].'_'.$rs['dt'].''] = 1;
+		}
+		
+		//读取是不是全天请假(这种情况无法统计，全天请假写了2个上午和下午的请假条，下次改进)
+		$qjarr = $this->db->getall("select `stime`,`etime`,`uid` from `[Q]kqinfo` where `status`=1 and `kind`='请假' and `etime`>='$start' and `stime`<='$enddt' ");
+		if($qjarr){
+			foreach($qjarr as $k=>$rs){
+				$qjarr[$k]['stimes'] = strtotime($rs['stime']);
+				$qjarr[$k]['etimes'] = strtotime($rs['etime']);
+			}
+			foreach($dtarr as $d1=>$dtss){
+				$dt  = $dtss[0];
+				foreach($qjarr as $k=>$rs){
+					$uid  = $rs['uid'];
+					$sbdt = $kql->getsbstr($uid, $dt);
+					
+					if($rs['stimes']<=$sbdt['stimes'] && $rs['etimes']>=$sbdt['etimes']){
+						$leavedt['a'.$uid.'_'.$dt.''] = 1; //全天请假
+					}
+				}
+			}
+		}
+		
+		foreach($urows as $k=>$urs){
+			$totaly = 0;//应写
+			$totalx	= 0;//已写次数
+			$totalw	= 0;//未写次数
+			$dtjoin	= '';
+			$uid	= $urs['id'];
+			$dtarra	= array();
+			$ruzd	= 0;$lzzt = 9999999999999;
+			if(!isempt($urs['workdate']))$ruzd 	= strtotime($urs['workdate']);
+			if(!isempt($urs['quitdt']))$lzzt 	= strtotime($urs['quitdt']);
+			
+			$uarr 	= array(
+				'uid' 	=> $uid,
+				'month' => $mon,
+				'optdt' => $this->rock->now
+			);
+			foreach($dtarr as $d1=>$dtss){
+				$dt  	= $dtss[0];
+				$d 		= $d1+1;
+				$zt  	= 0; //0未写,1已写,2请假,3休息日,4没入职或已离职,5不需要写日报,时间还没到
+				
+				//入职离职判断
+				if($dtss[1]<$ruzd || $dtss[1]>$lzzt){
+					$uarr['day'.$d.''] 	= 4;
+					continue;
+				}
+				
+				$keys 	= 'a'.$uid.'_'.$dt.'';
+				
+				$xbo 	= true;
+				$iswork = $kql->isworkdt($uid, $dt);
+				if($iswork==0){
+					$zt = 3;
+					if(isset($dailydt[$keys])){
+						$zt = 1;
+					}
+				}else{
+					
+					if(isset($leavedt[$keys])){
+						$zt = 2;
+					}else{
+						$totaly++;
+					}
+					if(isset($dailydt[$keys])){
+						$zt = 1;
+					}
+					if($zt==0){
+						if($urs['isdaily']==0){
+							$zt = 5;
+						}else{
+							$totalw++;//没写没请假
+						}
+					}
+				}
+				$uarr['day'.$d.''] 	= $zt;
+			}
+			
+			$totalx				= $totaly - $totalw;
+			$uarr['totaly'] 	= $totaly;
+			$uarr['totalx'] 	= $totalx;
+			$uarr['totalw'] 	= $totalw;
+			
+			$where = "`uid`='$uid' and `month`='$mon'";
+			if($dbfx->rows($where)==0)$where = '';
+			
+			$dbfx->record($uarr, $where);
+		}
+	}
+	
+	/**
+	*	未写日报通知
+	*	return 未写人员如：貂蝉(人事部),大乔(开发部)
+	*/
+	public function dailytodo($dt='')
+	{
+		if($dt=='')$dt = $this->rock->date;
+		$dta = explode('-', $dt);
+		$month = substr($dt, 0,7);
+		$d 	 = (int)$dta[2];
+		$rows= $this->db->getall("select a.`id`,a.`name`,a.`deptname`,b.`day".$d."` from `[Q]admin` a left join `[Q]dailyfx` b on a.`id`=b.`uid` and b.`month`='$month' where a.`status`=1 and b.`day".$d."`=0");
+		$w	 = c('date')->cnweek($dt);
+		$cont= '你昨天['.$dt.',周'.$w.']的工作日报未写，请及时补充填写。';
+		$receid = '';
+		foreach($rows as $k=>$rs){
+			$receid.=','.$rs['id'].'';
+		}
+		$this->flowweixinarr = array(
+			'url' => $this->getwxurl()
+		);
+		if($receid!='')$this->push(substr($receid, 1),'', $cont, '工作日报未写提醒');
+	}
 }

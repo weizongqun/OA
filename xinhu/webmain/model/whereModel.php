@@ -18,10 +18,21 @@ class whereClassModel extends Model
 		$sw1		= $this->rock->dbinstr('superid',$uid);
 		$super		= "select `id` from `[Q]admin` where $sw1";//我的直属下属
 		$allsuper	= "select `id` from `[Q]admin` where instr(`superpath`,'[$uid]')>0"; //我所有下属的下属
-		$str 	= str_replace(
+		
+		//加上a.
+		$str  = str_replace('[A]`uid`','`uid`', $str);
+		$str  = str_replace('[A]uid','`uid`', $str);
+		$barr = $this->rock->matcharr($str,2);
+		$itsha= array('status','uid','optid','optname','applydt','createdt');
+		foreach($barr as $bsuid){
+			if(in_array($bsuid, $itsha)){
+				$str  = str_replace('`'.$bsuid.'`','{asqom}`'.$bsuid.'`', $str);
+			}
+		}
+		
+		$str 		= str_replace(
 			array('{uid}','{date}','[date]','{now}','{super}','{allsuper}'), 
-			array($uid, "'".$this->rock->date."'", $this->rock->date ,"'".$this->rock->now."'", $super,$allsuper), 
-		$str);
+			array($uid, "'".$this->rock->date."'", $this->rock->date ,"'".$this->rock->now."'", $super,$allsuper), $str);
 		
 		//未读替换
 		if(contain($str,'{unread}')){

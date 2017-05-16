@@ -119,7 +119,7 @@ function yanzdengl(){
 	<input class="weui_btn weui_btn_primary" type="button" onclick="loginsubmit(0)" value="确定" id="btn0">
 </div>
 <?php 
-if($da['web']=='wxbro' || $da['web']=='qywxbro')echo '<div onclick="yanzdengl()" style="text-align:center;padding-top:10px;color:#04BE02">微信快捷登录</div>';
+if($da['iskj']>0)echo '<div onclick="yanzdengl()" style="text-align:center;padding-top:10px;color:#04BE02">'.(($da['iskj']==2)?'企业':'').'微信快捷登录</div>';
 ?>
 
 

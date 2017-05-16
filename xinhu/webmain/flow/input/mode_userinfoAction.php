@@ -36,5 +36,6 @@ class mode_userinfoClassAction extends inputAction{
 		$uarr['mobile'] = $arr['mobile'];
 		m('admin')->update($uarr, "`id`='$id'");
 	}
+	
 }	
 			

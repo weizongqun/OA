@@ -15,7 +15,7 @@ function zhuang(id,o){
 	$.get(url,function(s){
 		if(s=='ok'){
 			o1.html(js.getmsg('√ 已发送，大概在<font color=red id="times">20</font>秒后可刷新查看', 'green')+'，<a href="javascript:;" class="zhu" onclick="location.reload()">[刷新看一下]</a>');
-			timeshow(20);
+			timeshow(15);
 		}else{
 			o1.html(js.getmsg(s, 'red'));
 		}
@@ -39,8 +39,8 @@ function downxia(id){
 	<div>无法预览[<?=$da['frs']['fileext']?>]的类型。</div>
 	<div style="margin-top:15px">如是文档类型需要自己转pdf文件上传才能预览。</div>
 	<div style="margin-top:15px"><button type="button" style="padding:15px" onclick="downxia(<?=$da['frs']['id']?>, this)" class="webbtn">↓直接下载</button></div>
-	<!--
-	<div style="margin-top:15px"><button type="button" style="padding:15px" onclick="zhuang(<?=$da['frs']['id']?>, this)" class="webbtn">开始转pdf</button>&nbsp; <a class="zhu" href="javascript:;" onclick="location.reload()">[刷新]</a></div>-->
+	
+	<div style="margin-top:15px"><button type="button" onclick="zhuang(<?=$da['frs']['id']?>, this)" class="webbtn">开始转html查看</button>&nbsp; <a class="zhu" href="javascript:;" onclick="location.reload()">[刷新]</a></div>
 </div>
 
 </body>

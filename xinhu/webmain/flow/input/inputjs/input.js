@@ -257,6 +257,12 @@ var c={
 							$('#fileview_'+sna+'').html(c.showfilestr(d));
 							form(sna).value=d.id;
 						}
+					},
+					'onprogress':function(f,bl){
+						var sna= f.sname,tsye=f.snape;
+						if(tsye=='file'){
+							$('#fileview_'+sna+'').html('上传中('+bl+'%)...');
+						}
 					}
 				});
 			}

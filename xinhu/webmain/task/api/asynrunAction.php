@@ -81,8 +81,16 @@ class asynrunClassAction extends apiAction
 	public function topdfokAction()
 	{
 		$id    	= (int)$this->get('id');
+		$type 	= $this->get('type','html');
 		$frs 	= m('file')->getone($id);
-		$pdfpath= str_replace('.'.$frs['fileext'].'','.pdf', $frs['filepath']);
+		$pdfpath= str_replace('.'.$frs['fileext'].'','.'.$type.'', $frs['filepath']);
+		if(!file_exists($pdfpath))return;
+		if($type=='html'){
+			$cont = file_get_contents($pdfpath);
+			$str1 = '<meta http-equiv=Content-Type content="text/html; charset=gb2312">';
+			$cont = str_replace('</title>', '</title>'.$str1.'', $cont);
+			$this->rock->createtxt($pdfpath, $cont);
+		}
 		m('file')->update("`pdfpath`='$pdfpath'", $id);
 	}
 }

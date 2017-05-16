@@ -23,6 +23,9 @@ class publicClassAction extends Action{
 			if(!file_exists($filepath)){
 				$this->topdfshow($frs);
 				return;
+			}else{
+				$exta = substr($filepath, -4);
+				if($exta=='html')$this->rock->location($filepath);
 			}
 		}else if(contain($vest, $types)){
 			$content  = file_get_contents($filepath);
@@ -64,10 +67,9 @@ class publicClassAction extends Action{
 		if(!file_exists($filepath))exit('文件不存在了2');
 		$docx		= ',doc,docx,xls,xlsx,';
 		if(!contain($docx, $types))exit('只能doc,excel的文件类型才能转化');
-		//$bo 		= c('socket')->topdf($frs['filepath'], $id, $type);
-		echo '暂不能使用';return;
-		if(!$bo){
-			echo '没有设置安装转pdf服务，<a target="_blank" class="zhu" href="http://xh829.com/view_topdf.html">[查看帮助?]</a>';
+		$bo 		= c('socket')->topdf($frs['filepath'], $id, $type);
+		if(!$bo || is_string($bo)){
+			echo ''.$bo.'，<a target="_blank" class="zhu" href="http://xh829.com/view_topdf.html">[查看帮助?]</a>';
 		}else{
 			echo 'ok';
 		}

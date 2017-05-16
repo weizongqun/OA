@@ -73,7 +73,10 @@ class flowModel extends Model
 	//自定义是否可查看本单据
 	protected function flowisreadqx(){return false;}
 	
+	//自定义是否可以删除权限，如返回0不能删除,1可删除，其他值无效
+	protected function flowisdeleteqx(){return false;}
 	
+	//已弃用
 	protected function flowprintrows($r){return $r;}
 	
 	//子表数据替换处理
@@ -99,11 +102,11 @@ class flowModel extends Model
 	
 	public function initdata($num, $id=null)
 	{
-		$this->modenum	= $num;
-		$this->moders 	= m('flow_set')->getone("`num`='$num'");
+		$this->moders 	= m('flow_set')->getone(is_numeric($num) ? $num : "`num`='$num'");
 		if(!$this->moders)$this->echomsg('not found mode['.$num.']');
 		$table 			= $this->moders['table'];
 		$this->modeid	= $this->moders['id'];
+		$this->modenum	= $this->moders['num'];
 		$this->modename	= $this->moders['name'];
 		$this->isflow	= (int)$this->moders['isflow'];
 		$this->settable($table);
@@ -159,6 +162,9 @@ class flowModel extends Model
 		$this->billrs 	= $this->billmodel->getone($this->mwhere);
 		if($this->billrs){
 			$this->sericnum = $this->billrs['sericnum'];
+			if(isempt(arrvalue($this->billrs,'uname'))){
+				$this->savebill();
+			}
 		}else{
 			if($this->isflow==1)$this->savebill();
 		}
@@ -224,6 +230,9 @@ class flowModel extends Model
 		return $bo;
 	}
 	
+	/**
+	*	判断当前单据是否可以删除
+	*/
 	public function isdeleteqx()
 	{
 		$bo = 0;
@@ -239,6 +248,10 @@ class flowModel extends Model
 			$tos 	= $this->rows("`id`='$this->id'  $where ");
 			if($tos>0)$bo=1;
 		}
+		
+		$isd 	= $this->flowisdeleteqx();
+		if(is_numeric($isd) && $isd <= 1)$bo = $isd;
+		
 		return $bo;
 	}
 	
@@ -270,6 +283,13 @@ class flowModel extends Model
 		return $url;
 	}
 	
+	public function replacepbr(&$arr, $k)
+	{
+		$val = arrvalue($arr, $k);
+		if(!isempt($val) && !contain($val, '<p>'))$arr[$k] = str_replace("\n",'<br>', $val);
+		return $arr;
+	}
+	
 	/**
 	*	读取展示数据
 	*	$lx 0pc, 1移动
@@ -292,8 +312,9 @@ class flowModel extends Model
 		if($fstr != ''){
 			$this->rs['file_content'] 	= $fstr;
 		}
-		if(isset($this->rs['explain']))$this->rs['explain'] = str_replace("\n",'<br>', $this->rs['explain']);
-		if(isset($this->rs['content']))$this->rs['content'] = str_replace("\n",'<br>', $this->rs['content']);
+		
+		$this->replacepbr($this->rs, 'explain');
+		$this->replacepbr($this->rs, 'content');
 		
 		$data 			= $this->flowrsreplace($this->rs, 1);
 		//读取多行子表
@@ -1091,16 +1112,16 @@ class flowModel extends Model
 			'optid' 	=> $this->adminid,
 			'modeid'  	=> $this->modeid,
 			'updt'  	=> $this->rock->now,
-			'isdel'		=> '0',
 			'nstatus'	=> $this->rs['status'],
 			'applydt'	=> $this->rs['applydt'],
-			'modename'  => $this->modename
+			'modename'  => $this->modename,
+			'uname'  	=> $this->rs['base_name'],
+			'udeptname' => $this->rs['base_deptname']
 		);
 		foreach($oarr as $k=>$v)$arr[$k]=$v;
 		if($biid==0){
 			$arr['uid'] 	= $this->uid;
-			$arr['uname'] 	= $this->rs['base_name'];
-			$arr['udeptname']= $this->rs['base_deptname'];
+			$arr['isdel'] 	= '0';
 			$arr['status'] 	= $arr['nstatus'];
 			$arr['createdt']= $arr['optdt'];
 			$arr['sericnum']= $this->createnum();
@@ -1652,7 +1673,7 @@ class flowModel extends Model
 			$upgcont		= $ors['upgcont'];
 			if(!isempt($upgcont)){
 				$upgcont	= $this->rock->jm->base64decode($upgcont);
-				$upgcont 	= str_replace(array('{now}','{date}','{adminid}','{admin}','{sm}','{cname}','{cnameid}'),array($this->rock->now,$this->rock->date, $this->adminid, $this->adminname, $sm, $cname, $cnameid), $upgcont);
+				$upgcont 	= str_replace(array('{now}','{date}','{uid}','{adminid}','{admin}','{sm}','{cname}','{cnameid}'),array($this->rock->now,$this->rock->date, $this->adminid, $this->adminid, $this->adminname, $sm, $cname, $cnameid), $upgcont);
 				$this->update($upgcont, $this->id);
 			}
 			$this->flowoptmenu($ors, $barrs);
@@ -1692,12 +1713,14 @@ class flowModel extends Model
 		$fwhere			= $this->getflowwhere($uid, $lx);//流程模块上条件
 		$path 			= ''.P.'/flow/page/rock_page_'.$this->modenum.'.php';
 		
-		
-		if($this->rock->arrvalue($nas, 'leftbill')==1){
+		$table 			= $arr['table'];
+		$temsao			= 0;
+		if(!contain($table, ' ') && $this->isflow==1){
 			$arr['table'] = '`[Q]'.$this->mtable.'` a left join `[Q]flow_bill` b on a.`id`=b.`mid` and b.`table`=\''.$this->mtable.'\'';
 			$arr['asqom'] = 'a.';
-			$arr['fields']= 'a.*,b.`uname`,b.`udeptname`';
+			$arr['fields']= 'a.*,b.`uname` as base_name,b.`udeptname` as base_deptname,b.`sericnum`';
 			$arr['order'] = 'a.`optdt` desc';
+			$temsao		  = 1;
 		}
 		
 		if(isempt($fwhere) && isempt($inwhere) && $this->moders['isscl']==1){
@@ -1724,9 +1747,14 @@ class flowModel extends Model
 			$_kearr = array();
 			$skeay 	= array('text','textarea','htmlediter','changeuser','changeusercheck','changedept','changedeptusercheck','selectdatafalse','selectdatatrue');
 			foreach($this->fieldsarra as $k=>$rs){
-				if($rs['issou']==1 && in_array($rs['fieldstype'], $skeay) && in_array($rs['fields'], $allfields)){
+				if($rs['issou']==1 && in_array($rs['fieldstype'], $skeay) && in_array($rs['fields'], $allfields) && substr($rs['fields'],-2) != 'dt'){
 					$_kearr[] = "{asqom}`".$rs['fields']."` like '%".$key."%'";
 				}
+			}
+			if($temsao==1){
+				$_kearr[] = "b.`uname` like '%".$key."%'";
+				$_kearr[] = "b.`udeptname` like '%".$key."%'";
+				$_kearr[] = "b.`sericnum` = '$key'";
 			}
 			if($_kearr)$arr['keywhere'] = "and (".join($_kearr, ' or ').")";
 		}
@@ -1793,11 +1821,13 @@ class flowModel extends Model
 			$type 	= $rs['fieldstype'];
 			$fields = $rs['fields'];
 			$val  	= $this->rock->post('soufields_'.$fields.'');
-			if($type=='date' || $type=='datetime' || $type=='number'){
+			if($type=='date' || $type=='datetime' || $type=='number' || substr($fields,-2)=='dt'){
 				$val1  	= $this->rock->post('soufields_'.$fields.'_start');
 				$val2  	= $this->rock->post('soufields_'.$fields.'_end');
+				$val3  	= $this->rock->post('soufields_'.$fields.'_equal');
 				if($type!='number'){
 					if(!isempt($val1))$val1 = "'$val1'";
+					if(!isempt($val3))$val3 = "'$val3'";
 					if(!isempt($val2)){
 						if($type=='datetime')$val2 = "$val2 23:59:59";
 						$val2 = "'$val2'";
@@ -1805,6 +1835,7 @@ class flowModel extends Model
 				}
 				if(!isempt($val1))$s.=" and {asqom}`$fields`>=".$val1."";
 				if(!isempt($val2))$s.=" and {asqom}`$fields`<=".$val2."";
+				if(!isempt($val3))$s.=" and {asqom}`$fields`=".$val3."";
 			}else{
 				if(isempt($val))continue;
 				if($type=='select' || $type=='radio' || $type=='rockcombo'){
@@ -1973,5 +2004,50 @@ class flowModel extends Model
 			}
 			$this->push($receid, '', $cont, '');
 		}
+	}
+	
+	
+	/**
+	*	统计报表
+	*/
+	public function flowtotal($fields='', $type='')
+	{
+		if($fields=='')$fields = $this->rock->post('total_fields');
+		if($type=='')$type 	   = $this->rock->post('total_type','jls');
+		$typea	= explode('|', $type);
+		$typefields = '';
+		$type 	= $typea[0]; $typefields = arrvalue($typea, 1);
+		$rowa 	= array();
+		$rowa[] = array(
+			'name' 	=> '暂无数据',
+			'value' => 0,
+			'bili'	=> ''
+		);
+		$tofiels= 'count(1)';
+		if($type=='sum')$tofiels = 'sum([A]`'.$typefields.'`)';
+		if($type=='avg')$tofiels = 'avg([A]`'.$typefields.'`)';
+		$atype	= $this->rock->post('atype');
+		$table 	= '[Q]'.$this->mtable.'';
+		
+		$narr 	= $this->billwhere($this->adminid, $atype);
+		$where 	= $narr['where'];
+		$table	= $narr['table'];
+		if(!contain($table,' '))$table = '[Q]'.$table.'';
+		
+		$sql 	= 'select '.$fields.' as `name`,'.$tofiels.' as value from '.$table.' where 1=1 '.$where.' group by '.$fields.'';
+		$sql 	= str_replace('[A]', $narr['asqom'], $sql);
+		
+		$rows 	= $this->db->getall($sql);
+		$total	= 0;
+		if($rows){
+			foreach($rows as $k=>$rs)$total+=floatval($rs['value']);
+			if($total>0)foreach($rows as $k=>$rs){
+				$rows[$k]['bili'] = $this->rock->number($rs['value']*100/$total).'%';
+			}
+			if($type!='avg' && count($rows)>1)$rows[] = array('name' 	=> '合计','value' => $total,'bili'	=> '');
+		}else{
+			$rows = $rowa;
+		}
+		return $rows;
 	}
 }

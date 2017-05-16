@@ -22,6 +22,6 @@ return array(
 	'asynsend'	=> false,	//是否异步发送提醒消息，为true需开启服务端
 	'install'	=> true,	//已安装，不要去掉啊
 	'sqllog'	=> false,	//是否记录sql日志保存upload/sqllog下
-	'xinhukey'	=> 'ba0ecf9a35df7e5049389c3f918beef3',	//信呼官网key，用于在线升级使用
+	'xinhukey'	=> '2d056e0e22b1985a8edb54637a4912c1',	//信呼官网key，用于在线升级使用
 
 );

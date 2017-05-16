@@ -26,13 +26,15 @@ WScript.Echo(docfile);
 var path  	= docfile.substr(0, docfile.lastIndexOf('.'));
 var isok	= 0;
 var Obj 	= new ActiveXObject("Excel.Application");
+Obj.DisplayAlerts = false;
 var doc 	= Obj.Workbooks.Open(docfile);
-var pdfpath = ""+path+".pdf";
+var pdfpath = ""+path+".html";
 var fso 	= new ActiveXObject("Scripting.FileSystemObject"); 
 if(fso.FileExists(pdfpath))fso.DeleteFile(pdfpath);
 fso = false;
 try{
-	doc.ExportAsFixedFormat(0, pdfpath);
+	//doc.ExportAsFixedFormat(0, pdfpath);
+	doc.SaveAs(pdfpath,44, false);
 	WScript.Echo("isuccess");
 	isok	= 1;
 }catch(e){

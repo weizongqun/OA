@@ -406,6 +406,10 @@ class adminClassModel extends Model
 			}
 		}
 		$this->updateuserinfo($where);
+		
+		//更新单据上flow_bill上的uname,udeptname
+		m('flowbill')->updatebill();
+		
 		return array($total, $cl);
 	}
 	public function updateuserinfo($whe='')
@@ -436,17 +440,17 @@ class adminClassModel extends Model
 	}
 	
 	//返回这个月份人员
-	public function monthuwhere($month)
+	public function monthuwhere($month, $qz='')
 	{
 		$month	= substr($month, 0, 7);
 		$start	= ''.$month.'-01';
 		$enddt	= c('date')->getenddt($month);
-		$s 		= $this->monthuwheres($start, $enddt);
+		$s 		= $this->monthuwheres($start, $enddt, $qz);
 		return $s;
 	}
-	public function monthuwheres($start, $enddt)
+	public function monthuwheres($start, $enddt, $qz='')
 	{
-		$s 		= " and (`quitdt` is null or `quitdt`>='$start') and (`workdate` is null or `workdate`<='$enddt')";
+		$s 		= " and ($qz`quitdt` is null or $qz`quitdt`>='$start') and ($qz`workdate` is null or $qz`workdate`<='$enddt')";
 		return $s;
 	}
 	

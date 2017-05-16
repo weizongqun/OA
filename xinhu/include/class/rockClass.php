@@ -545,11 +545,23 @@ URL：'.$_SERVER['QUERY_STRING'].'
 	{
 		$match	= '/\{(.*?)\}/';
 		if($lx==1)$match	= '/\[(.*?)\]/';
+		if($lx==2)$match	= '/\`(.*?)\`/';
 		preg_match_all($match, $str, $list);
 		$barr = array();
 		foreach($list[1] as $k=>$nrs){
 			$barr[] = $nrs;
 		}
 		return $barr;
+	}
+	
+	/**
+	*	函数参数转为key
+	*/
+	public function getfunkey($arr=array(),$qz='a')
+	{
+		$s = '';
+		foreach($arr as $k=>$v)$s.='_'.$v.'';
+		$s = ''.$qz.''.$s.'';
+		return $s;
 	}
 }

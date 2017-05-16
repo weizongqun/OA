@@ -207,6 +207,7 @@ var im={
 	sendfile:function(){
 		if(typeof(uploadobj)=='undefined')uploadobj = $.rockupload({
 			inputfile:'allfileinput',
+			initpdbool:true,
 			onchange:function(d){
 				im.sendfileshow(d);
 			},

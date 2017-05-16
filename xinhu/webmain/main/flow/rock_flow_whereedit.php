@@ -103,7 +103,7 @@ $(document).ready(function(){
 
 		<tr>
 			<td  align="right" >主表字段条件：</td>
-			<td class="tdinput" colspan="3"><textarea  name="wheresstr" style="height:60px" class="form-control"></textarea><div class="tishi" style="padding-top:0px">对应主表上字段条件,<a click="setwhere" href="javascript:;">[设置条件]</a>&nbsp;<a href="javascript:;" click="setdab,0">[已读记录]</a>&nbsp;<a href="javascript:;" click="setdab,1">[未读记录]</a></div></td>
+			<td class="tdinput" colspan="3"><textarea  name="wheresstr" style="height:60px" class="form-control"></textarea><div class="tishi" style="padding-top:0px">对应主表上字段条件，字段必须用``包含，如：`uid`={uid},<a click="setwhere" href="javascript:;">[设置条件]</a>&nbsp;<a href="javascript:;" click="setdab,0">[已读记录]</a>&nbsp;<a href="javascript:;" click="setdab,1">[未读记录]</a></div></td>
 		</tr>
 		
 		<tr>

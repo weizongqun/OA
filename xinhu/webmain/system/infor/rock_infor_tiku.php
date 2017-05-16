@@ -34,6 +34,8 @@ $(document).ready(function(){
 		},{
 			text:'题名',dataIndex:'title',editor:false,align:'left'
 		},{
+			text:'分类',dataIndex:'typename'
+		},{
 			text:'类型',dataIndex:'type'
 		},{
 			text:'A',dataIndex:'ana'
@@ -145,6 +147,10 @@ $(document).ready(function(){
 				}
 			},'get',false, '移动中...,移动成功');
 			c.movedata=false;
+		},
+		daoru:function(){
+			tikumangena = a;
+			addtabs({num:'daorutik',url:'system,infor,tikudao',icons:'plus',name:'导入题库'});
 		}
 	};
 	js.initbtn(c);
@@ -179,7 +185,7 @@ $(document).ready(function(){
 		</td>
 		
 		<td style="padding-left:10px">
-		<input class="form-control" style="width:200px" id="key_{rand}"   placeholder="题名">
+		<input class="form-control" style="width:200px" id="key_{rand}"   placeholder="题名/分类">
 		</td>
 		<td style="padding-left:10px">
 			<button class="btn btn-default" click="search" type="button">搜索</button> 
@@ -187,7 +193,8 @@ $(document).ready(function(){
 		<td width="90%">
 			&nbsp;&nbsp;<span id="megss{rand}"></span>
 		</td>
-		<td align="right">
+		<td align="right" nowrap>
+			<button class="btn btn-default"  click="daoru" type="button">导入题库</button>&nbsp;
 			<button class="btn btn-default"  click="daochu" type="button">导出</button>
 		</td>
 	</tr></table>

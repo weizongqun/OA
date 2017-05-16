@@ -37,7 +37,7 @@ class loginClassAction extends ActionNot{
 			$barr['success'] = false;
 			$barr['msg'] 	 = $arr;
 		}
-		$this->returnjson($barr);
+		return $barr;
 	}
 	
 	public function exitAction()

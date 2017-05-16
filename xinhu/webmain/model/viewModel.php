@@ -9,7 +9,8 @@ class viewClassModel extends Model
 	public function initModel()
 	{
 		$this->settable('flow_extent');
-		$this->addb = m('admin');
+		$this->addb 	= m('admin');
+		$this->whereobj = m('where');
 	}
 	
 	private function getursss($mid, $uid=0)

@@ -11,7 +11,7 @@ $(document).ready(function(){
 	{params}
 	var modenum = 'reward',modename='奖惩处罚',isflow=1,modeid='39',atype = params.atype,pnum=params.pnum;
 	if(!atype)atype='';if(!pnum)pnum='';
-	var fieldsarr = [{"fields":"uname","name":"\u7533\u8bf7\u4eba","fieldstype":"text","ispx":"1","isalign":"0","islb":"1"},{"fields":"udeptname","name":"\u7533\u8bf7\u4eba\u90e8\u95e8","fieldstype":"text","ispx":"1","isalign":"0","islb":"1"},{"fields":"applydt","name":"\u7533\u8bf7\u65e5\u671f","fieldstype":"text","ispx":"0","isalign":"0","islb":"1"},{"fields":"object","name":"\u5956\u60e9\u5bf9\u8c61","fieldstype":"changeuser","ispx":"1","isalign":"0","islb":"1"},{"fields":"happendt","name":"\u53d1\u751f\u65f6\u95f4","fieldstype":"datetime","ispx":"0","isalign":"0","islb":"1"},{"fields":"hapaddress","name":"\u53d1\u751f\u5730\u70b9","fieldstype":"text","ispx":"0","isalign":"0","islb":"1"},{"fields":"type","name":"\u5956\u60e9\u7c7b\u578b","fieldstype":"select","ispx":"0","isalign":"0","islb":"1"},{"fields":"result","name":"\u5956\u60e9\u7ed3\u679c","fieldstype":"rockcombo","ispx":"0","isalign":"0","islb":"1"},{"fields":"money","name":"\u5956\u60e9\u91d1\u989d","fieldstype":"number","ispx":"0","isalign":"0","islb":"1"},{"fields":"explain","name":"\u8bf4\u660e","fieldstype":"textarea","ispx":"0","isalign":"0","islb":"1"}],fieldsselarr= [];
+	var fieldsarr = [{"name":"\u7533\u8bf7\u4eba","fields":"base_name"},{"name":"\u7533\u8bf7\u4eba\u90e8\u95e8","fields":"base_deptname"},{"name":"\u5355\u53f7","fields":"sericnum"},{"fields":"applydt","name":"\u7533\u8bf7\u65e5\u671f","fieldstype":"text","ispx":"0","isalign":"0","islb":"1"},{"fields":"object","name":"\u5956\u60e9\u5bf9\u8c61","fieldstype":"changeuser","ispx":"1","isalign":"0","islb":"1"},{"fields":"happendt","name":"\u53d1\u751f\u65f6\u95f4","fieldstype":"datetime","ispx":"0","isalign":"0","islb":"1"},{"fields":"hapaddress","name":"\u53d1\u751f\u5730\u70b9","fieldstype":"text","ispx":"0","isalign":"0","islb":"1"},{"fields":"type","name":"\u5956\u60e9\u7c7b\u578b","fieldstype":"select","ispx":"0","isalign":"0","islb":"1"},{"fields":"result","name":"\u5956\u60e9\u7ed3\u679c","fieldstype":"rockcombo","ispx":"0","isalign":"0","islb":"1"},{"fields":"money","name":"\u5956\u60e9\u91d1\u989d","fieldstype":"number","ispx":"0","isalign":"0","islb":"1"},{"fields":"explain","name":"\u8bf4\u660e","fieldstype":"textarea","ispx":"0","isalign":"0","islb":"1"}],fieldsselarr= [];
 	
 	//常用操作c方法
 	var c = {
@@ -106,6 +106,10 @@ $(document).ready(function(){
 			var num = 'columns_'+modenum+'_'+pnum+'',d=[],d1,d2={},i,len=fieldsarr.length,bok;
 			var nstr= fieldsselarr[num];if(!nstr)nstr='';
 			if(nstr)nstr=','+nstr+',';
+			if(nstr=='' && isflow==1){
+				d.push({text:'申请人',dataIndex:'base_name',sortable:true});
+				d.push({text:'申请人部门',dataIndex:'base_deptname',sortable:true});
+			}
 			for(i=0;i<len;i++){
 				d1 = fieldsarr[i];
 				bok= false;
@@ -168,7 +172,7 @@ $(document).ready(function(){
 		fanye:true,modenum:modenum,modename:modename,statuschange:false,
 		url:c.storeurl(),storeafteraction:'storeaftershow',storebeforeaction:'storebeforeshow',
 		params:{atype:atype},
-		columns:[{text:"申请人",dataIndex:"uname",sortable:true},{text:"申请人部门",dataIndex:"udeptname",sortable:true},{text:"申请日期",dataIndex:"applydt"},{text:"奖惩对象",dataIndex:"object",sortable:true},{text:"发生时间",dataIndex:"happendt"},{text:"发生地点",dataIndex:"hapaddress"},{text:"奖惩类型",dataIndex:"type"},{text:"奖惩结果",dataIndex:"result"},{text:"奖惩金额",dataIndex:"money"},{text:"说明",dataIndex:"explain"},{text:"状态",dataIndex:"statustext"},{
+		columns:[{text:"申请人",dataIndex:"base_name",sortable:true},{text:"申请人部门",dataIndex:"base_deptname",sortable:true},{text:"单号",dataIndex:"sericnum"},{text:"申请日期",dataIndex:"applydt"},{text:"奖惩对象",dataIndex:"object",sortable:true},{text:"发生时间",dataIndex:"happendt"},{text:"发生地点",dataIndex:"hapaddress"},{text:"奖惩类型",dataIndex:"type"},{text:"奖惩结果",dataIndex:"result"},{text:"奖惩金额",dataIndex:"money"},{text:"说明",dataIndex:"explain"},{text:"状态",dataIndex:"statustext"},{
 			text:'',dataIndex:'caozuo',callback:'opegs{rand}'
 		}],
 		itemdblclick:function(){
@@ -213,11 +217,11 @@ $(document).ready(function(){
 	<tr>
 		<td style="padding-right:10px;" id="tdleft_{rand}" nowrap><button class="btn btn-primary" click="clickwin,0" type="button"><i class="icon-plus"></i> 新增</button></td>
 		<td>
-			<input class="form-control" style="width:160px" id="key_{rand}" placeholder="搜索关键词">
+			<input class="form-control" style="width:160px" id="key_{rand}" placeholder="关键字/申请人/单号">
 		</td>
 		<td style="padding-left:10px"><select class="form-control" style="width:120px" id="selstatus_{rand}"><option value="">-全部状态-</option><option style="color:blue" value="0">待处理</option><option style="color:green" value="1">已审核</option><option style="color:red" value="2">未通过</option><option style="color:#888888" value="5">已作废</option><option style="color:#17B2B7" value="23">退回</option></select></td>
 		<td style="padding-left:10px">
-			<div style="width:81px" class="btn-group">
+			<div style="width:85px" class="btn-group">
 			<button class="btn btn-default" click="searchbtn" type="button">搜索</button><button class="btn btn-default" id="downbtn_{rand}" type="button" style="padding-left:8px;padding-right:8px"><i class="icon-angle-down"></i></button> 
 			</div>
 		</td>

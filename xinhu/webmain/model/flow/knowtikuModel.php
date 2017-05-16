@@ -25,15 +25,19 @@ class flow_knowtikuClassModel extends flowModel
 		$where  = '';
 		$typeid = $this->rock->post('typeid','0');
 		$key 	= $this->rock->post('key');
-		if($lx=='xuexi')$where='and `status`=1';
+		if($lx=='xuexi')$where='and a.`status`=1';
 		if($typeid!='0'){
-			$where .= ' and `typeid`='.$typeid.'';
+			$alltpeid = m('option')->getalldownid($typeid);
+			$where .= ' and a.`typeid` in('.$alltpeid.')';
 		}
-		if($key != '')$where.=" and `title` like '%$key%'";
+		if($key != ''){
+			$where.=" and (a.`title` like '%$key%' or b.`name` like '%$key%')";
+		}
 		return array(
 			'where' => $where,
-			'order' => 'sort,optdt desc',
-			'fields'=> '`id`,`title`,`typeid`,`type`,`ana`,`anb`,`anc`,`and`,`sort`,`answer`,`status`'
+			'order' => 'a.sort,a.`optdt` desc',
+			'table'	=> '`[Q]'.$this->mtable.'` a left join `[Q]option` b on a.`typeid`=b.`id`',
+			'fields'=> 'a.*,b.name as typename'
 		);
 	}
 }

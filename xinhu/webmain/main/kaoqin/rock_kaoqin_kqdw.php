@@ -6,11 +6,13 @@ $(document).ready(function(){
 		columns:[{
 			text:'规则名称',dataIndex:'name',align:'left',editor:true
 		},{
-			text:'经度',dataIndex:'location_x',renderer:function(v,d,i){
+			text:'经度',dataIndex:'location_x',editor:true
+		},{
+			text:'纬度',dataIndex:'location_y',editor:true
+		},{
+			text:'经纬度',dataIndex:'xuanz',renderer:function(v,d,i){
 				return ''+v+'&nbsp;<a href="javascript:;" onclick="changeweizhi{rand}('+i+')">选择位置</a>';
 			}
-		},{
-			text:'纬度',dataIndex:'location_y'
 		},{
 			text:'位置名称',dataIndex:'address',editor:true
 		},{

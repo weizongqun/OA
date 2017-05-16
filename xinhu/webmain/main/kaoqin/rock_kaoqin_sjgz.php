@@ -40,6 +40,15 @@ $(document).ready(function(){
 		},{
 			text:'排序号',dataIndex:'sort',editor:true
 		},{
+			text:'需考勤?',dataIndex:'iskq',renderer:function(v, d){
+				var s='&nbsp;';
+				if(d.level==2){
+					if(v==0)s='<font color="#888888">否</font>';
+					if(v==1)s='<font color="green">√</font>';
+				}
+				return s;
+			}
+		},{
 			text:'ID',dataIndex:'id'
 		}],
 		itemclick:function(){
@@ -68,7 +77,7 @@ $(document).ready(function(){
 				title:'考勤规则',height:380,width:400,
 				tablename:'kqsjgz',isedit:lx,
 				params:{int_filestype:'pid,sort,qtype,iskt'},
-				submitfields:'name,pid,sort,qtype,stime,etime,iskt',
+				submitfields:'name,pid,sort,qtype,stime,etime,iskt,iskq',
 				items:[{
 					labelText:'名称',name:'name',required:true
 				},{
@@ -81,6 +90,8 @@ $(document).ready(function(){
 					labelText:'跨天类型',name:'iskt',type:'select',valuefields:'id',displayfields:'name',store:[{id:'0',name:'不跨天'},{id:'2',name:'开始时间-1天'},{id:'1',name:'结束时间+1天'}]
 				},{
 					labelText:'取值类型',name:'qtype',type:'select',valuefields:'id',displayfields:'name',store:[{id:'0',name:'最小值'},{id:'1',name:'最大值'}]
+				},{
+					name:'iskq',labelBox:'需考勤?',type:'checkbox'
 				},{
 					labelText:'序号',name:'sort',type:'number',value:'0'
 				}],

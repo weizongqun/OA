@@ -37,6 +37,8 @@ $(document).ready(function(){
 		},{
 			text:'可搜索',dataIndex:'issou',type:'checkbox',editor:true,sortable:true
 		},{
+			text:'可统计',dataIndex:'istj',type:'checkbox',editor:true,sortable:true
+		},{
 			text:'对齐',dataIndex:'isalign',type:'select',editor:true,sortable:true,renderer:function(v,d){
 				var s='<font color="#888888">居中</font>';
 				if(v==1)s='<font color="#ff6600">居左</font>';

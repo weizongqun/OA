@@ -80,6 +80,34 @@ class emailClassModel extends Model
 		return $msg;
 	}
 	
+	public function sendtoemail($params=array())
+	{
+		$setrs		= m('option')->getpidarr(-1);
+		if(!$setrs)return '未设置发送邮件';
+		
+		$serversmtp 	= $this->rock->arrvalue($setrs, 'email_sendhost');
+		$emailuser  	= $this->rock->arrvalue($setrs, 'email_sysuser');
+		$emailname  	= $this->rock->arrvalue($setrs, 'email_sysname');
+		$emailpass  	= $this->rock->arrvalue($setrs, 'email_syspass');
+		$serverport  	= $this->rock->arrvalue($setrs, 'email_sendport');
+		$emailsecure  	= $this->rock->arrvalue($setrs, 'email_sendsecure');
+		
+		$barr 			= array(
+			'emailpass' 	=> $emailpass,
+			'serversmtp' 	=> $serversmtp,
+			'serverport' 	=> $serverport,
+			'emailsecure' 	=> $emailsecure,
+			'emailuser' 	=> $emailuser,
+			'emailname' 	=> $emailname,
+			'receemail' 	=> '',
+			'recename' 		=> '',
+			'title' 		=> '',
+			'body' 			=> '',
+		);
+		foreach($params as $k=>$v)$barr[$k]=$v;
+		return $this->sendddddd($barr, true);
+	}
+	
 	private function sendddddd($arr, $jbs)
 	{
 		extract($arr);
